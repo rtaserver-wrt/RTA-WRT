@@ -104,22 +104,53 @@ jobs:
         esac
         echo "::endgroup::"
 
+        echo "::group::Debug: Check initial config"
+        echo "Config file content:"
+        cat .config
+        echo "Available targets in this source:"
+        find target -name "Makefile" -path "*/linux/*" | head -10 || echo "No target makefiles found"
+        echo "::endgroup::"
+
         echo "::group::make defconfig"
-        make defconfig
+        if make defconfig; then
+          echo "✅ make defconfig succeeded"
+        else
+          echo "❌ make defconfig failed"
+          echo "Available targets for ${{ matrix.source }}:"
+          ls -la target/ || echo "No target directory"
+          echo "Trying to find similar targets:"
+          find target -name "*armsr*" -o -name "*arm*" | head -10 || echo "No ARM targets found"
+          exit 1
+        fi
+        echo "::endgroup::"
+
+        echo "::group::Debug: Check final config"
+        echo "Final config file size: $(wc -l < .config) lines"
+        echo "Config contains target: $(grep -c "CONFIG_TARGET.*=y" .config || echo "0") target configs"
         echo "::endgroup::"
 
         echo "::group::Save output config"
         CFG_DIR="configs/${{ matrix.source }}/${{ env.CURRENT_VERSI }}"
         mkdir -p "$CFG_DIR"
-        cp .config "$CFG_DIR/${{ matrix.target }}.config"
+        
+        if [ -f ".config" ] && [ -s ".config" ]; then
+          cp .config "$CFG_DIR/${{ matrix.target }}.config"
+          echo "✅ Config saved to $CFG_DIR/${{ matrix.target }}.config"
+          echo "File size: $(ls -la "$CFG_DIR/${{ matrix.target }}.config")"
+        else
+          echo "❌ Config file is empty or doesn't exist"
+          exit 1
+        fi
         echo "::endgroup::"
 
     - name: Upload generated configs
       uses: actions/upload-artifact@v4
+      if: always()  # Upload even if previous steps had issues
       with:
         name: configs-${{ matrix.source }}-${{ matrix.target }}
         path: configs/
         retention-days: 1
+        if-no-files-found: warn  # Just warn instead of failing
 
   commit_configs:
     needs: generate_matrix
