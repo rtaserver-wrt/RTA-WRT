@@ -55,19 +55,22 @@ jobs:
         case "${{ matrix.source }}" in
           "openwrt")
             REPO_URL=$REPO_URL_OPENWRT
-            VERSI=$VERSI_OPENWRT
+            CURRENT_VERSI=$VERSI_OPENWRT
+            echo "CURRENT_VERSI=$CURRENT_VERSI" >> $GITHUB_ENV
             ;;
           "lede")
             REPO_URL=$REPO_URL_LEDE
-            VERSI=$VERSI_LEDE
+            CURRENT_VERSI=$VERSI_LEDE
+            echo "CURRENT_VERSI=$CURRENT_VERSI" >> $GITHUB_ENV
             ;;
           "immortalwrt")
             REPO_URL=$REPO_URL_IMMORTALWRT
-            VERSI=$VERSI_IMMORTALWRT
+            CURRENT_VERSI=$VERSI_IMMORTALWRT
+            echo "CURRENT_VERSI=$CURRENT_VERSI" >> $GITHUB_ENV
             ;;
         esac
-        git clone $REPO_URL -b $VERSI openwrt_${{ matrix.source }}_$VERSI
-        ln -sf /workdir/openwrt_${{ matrix.source }}_$VERSI $GITHUB_WORKSPACE/openwrt
+        git clone $REPO_URL -b $CURRENT_VERSI openwrt_${{ matrix.source }}_$CURRENT_VERSI
+        ln -sf /workdir/openwrt_${{ matrix.source }}_$CURRENT_VERSI $GITHUB_WORKSPACE/openwrt
 
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
@@ -104,19 +107,6 @@ jobs:
         # Generate default configuration
         make defconfig
         
-        # Get current version based on source
-        case "${{ matrix.source }}" in
-          "openwrt")
-            CURRENT_VERSI=$VERSI_OPENWRT
-            ;;
-          "lede")
-            CURRENT_VERSI=$VERSI_LEDE
-            ;;
-          "immortalwrt")
-            CURRENT_VERSI=$VERSI_IMMORTALWRT
-            ;;
-        esac
-        
         # Create configs directory
         CFG_DIR="$GITHUB_WORKSPACE/configs/${{ matrix.source }}/$CURRENT_VERSI"
         mkdir -p "$CFG_DIR"
@@ -130,25 +120,9 @@ jobs:
 
     - name: Upload config artifacts
       uses: actions/upload-artifact@v4
-      run: |
-        # Get current version based on source
-        case "${{ matrix.source }}" in
-          "openwrt")
-            CURRENT_VERSI=$VERSI_OPENWRT
-            ;;
-          "lede")
-            CURRENT_VERSI=$VERSI_LEDE
-            ;;
-          "immortalwrt")
-            CURRENT_VERSI=$VERSI_IMMORTALWRT
-            ;;
-        esac
-        
-        # Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: configs-${{ matrix.source }}-$CURRENT_VERSI-${{ matrix.target }}
-          path: configs/${{ matrix.source }}/$CURRENT_VERSI/
+      with:
+        name: configs-${{ matrix.source }}-$CURRENT_VERSI-${{ matrix.target }}
+        path: configs/${{ matrix.source }}/$CURRENT_VERSI/
 
   commit_changes:
     runs-on: ubuntu-22.04
