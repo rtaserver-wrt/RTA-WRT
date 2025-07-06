@@ -1,4 +1,4 @@
-name: Generate OpenWrt Config
+name: Generate OpenWrt Config Matrix
 
 on:
   repository_dispatch:
@@ -16,26 +16,12 @@ on:
       branch:
         description: 'Source branch'
         required: true
-        default: 'main'
-      target:
-        description: 'Target device'
+        default: 'master'
+      targets:
+        description: 'Target devices (comma-separated, or "all" for all targets)'
         required: true
-        default: 'x86_64'
-        type: choice
-        options:
-          - x86_64
-          - ramips_mt7621
-          - ath79_generic
-          - mediatek_filogic
-          - bcm27xx_bcm2711
-          - ipq40xx_generic
-          - ipq806x_generic
-          - mvebu_cortexa9
-          - rockchip_armv8
-      device:
-        description: 'Specific device (optional)'
-        required: false
-        default: ''
+        default: 'all'
+        type: string
 
 env:
   REPO_URL_OPENWRT: https://github.com/openwrt/openwrt
@@ -44,9 +30,69 @@ env:
   TZ: Asia/Jakarta
 
 jobs:
-  generate:
+  prepare:
     runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - name: Set matrix
+      id: set-matrix
+      run: |
+        # Define all available targets
+        ALL_TARGETS=(
+          "x86_64"
+          "armsr-armv8"
+          "bcm27xx_bcm2710"
+          "bcm27xx_bcm2711"
+          # "ramips_mt7621"
+          # "ath79_generic"
+          # "mediatek_filogic"
+          # "ipq40xx_generic"
+          # "ipq806x_generic"
+          # "mvebu_cortexa9"
+          # "rockchip_armv8"
+          # "lantiq_xrx200"
+          # "lantiq_xway"
+          # "ar71xx_generic"
+          # "brcm2708_bcm2708"
+          # "brcm2708_bcm2709"
+          # "brcm2708_bcm2710"
+          # "sunxi_cortexa7"
+          # "sunxi_cortexa53"
+          # "imx6_generic"
+          # "mxs_generic"
+          # "omap_generic"
+          # "oxnas_ox820"
+          # "pistachio_generic"
+          # "tegra_generic"
+          # "zynq_generic"
+        )
+        
+        # Check if user wants all targets or specific ones
+        INPUT_TARGETS="${{ github.event.inputs.targets }}"
+        if [ "$INPUT_TARGETS" = "all" ]; then
+          TARGETS=("${ALL_TARGETS[@]}")
+        else
+          IFS=',' read -ra TARGETS <<< "$INPUT_TARGETS"
+          # Trim whitespace
+          for i in "${!TARGETS[@]}"; do
+            TARGETS[i]=$(echo "${TARGETS[i]}" | xargs)
+          done
+        fi
+        
+        # Create matrix JSON
+        MATRIX_JSON=$(printf '%s\n' "${TARGETS[@]}" | jq -R . | jq -s '{"target": .}')
+        echo "matrix=$MATRIX_JSON" >> $GITHUB_OUTPUT
+        
+        echo "Generated matrix for targets: ${TARGETS[*]}"
 
+  generate:
+    needs: prepare
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
+    
     steps:
     - name: Checkout
       uses: actions/checkout@main
@@ -55,12 +101,14 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo -E apt-get -qq update
-        sudo -E apt-get -qq install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev \
-        libz-dev patch python3 python2.7 unzip zlib1g-dev libc6-dev-i386 subversion flex uglifyjs \
-        git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx \
-        libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget \
-        curl swig rsync
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends \
+          build-essential clang flex bison g++ gawk \
+          gcc-multilib g++-multilib gettext git \
+          libncurses5-dev libncursesw5-dev libssl-dev \
+          python3-setuptools python3-dev python3-distutils python3-pyelftools \
+          rsync swig unzip zlib1g-dev file wget zstd shfmt jq curl || exit 1
+        pip3 install --upgrade pip setuptools || exit 1
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
@@ -89,115 +137,232 @@ jobs:
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Generate default config
+    - name: Generate config for ${{ matrix.target }}
       run: |
         cd openwrt
         
-        # Set target
-        TARGET="${{ github.event.inputs.target }}"
+        # Clear any existing config
+        rm -f .config
+        
+        # Set target based on matrix
+        TARGET="${{ matrix.target }}"
         case "$TARGET" in
           "x86_64")
             echo "CONFIG_TARGET_x86=y" >> .config
             echo "CONFIG_TARGET_x86_64=y" >> .config
             echo "CONFIG_TARGET_x86_64_DEVICE_generic=y" >> .config
             ;;
-          "ramips_mt7621")
-            echo "CONFIG_TARGET_ramips=y" >> .config
-            echo "CONFIG_TARGET_ramips_mt7621=y" >> .config
+          "armsr-armv8")
+            echo "CONFIG_TARGET_armsr=y" >> .config
+            echo "CONFIG_TARGET_armsr_armv8=y" >> .config
             ;;
-          "ath79_generic")
-            echo "CONFIG_TARGET_ath79=y" >> .config
-            echo "CONFIG_TARGET_ath79_generic=y" >> .config
-            ;;
-          "mediatek_filogic")
-            echo "CONFIG_TARGET_mediatek=y" >> .config
-            echo "CONFIG_TARGET_mediatek_filogic=y" >> .config
+          "bcm27xx_bcm2710")
+            echo "CONFIG_TARGET_bcm27xx=y" >> .config
+            echo "CONFIG_TARGET_bcm27xx_bcm2710=y" >> .config
             ;;
           "bcm27xx_bcm2711")
             echo "CONFIG_TARGET_bcm27xx=y" >> .config
             echo "CONFIG_TARGET_bcm27xx_bcm2711=y" >> .config
             ;;
-          "ipq40xx_generic")
-            echo "CONFIG_TARGET_ipq40xx=y" >> .config
-            echo "CONFIG_TARGET_ipq40xx_generic=y" >> .config
-            ;;
-          "ipq806x_generic")
-            echo "CONFIG_TARGET_ipq806x=y" >> .config
-            echo "CONFIG_TARGET_ipq806x_generic=y" >> .config
-            ;;
-          "mvebu_cortexa9")
-            echo "CONFIG_TARGET_mvebu=y" >> .config
-            echo "CONFIG_TARGET_mvebu_cortexa9=y" >> .config
-            ;;
-          "rockchip_armv8")
-            echo "CONFIG_TARGET_rockchip=y" >> .config
-            echo "CONFIG_TARGET_rockchip_armv8=y" >> .config
+          # "ramips_mt7621")
+          #   echo "CONFIG_TARGET_ramips=y" >> .config
+          #   echo "CONFIG_TARGET_ramips_mt7621=y" >> .config
+          #   ;;
+          # "ath79_generic")
+          #   echo "CONFIG_TARGET_ath79=y" >> .config
+          #   echo "CONFIG_TARGET_ath79_generic=y" >> .config
+          #   ;;
+          # "mediatek_filogic")
+          #   echo "CONFIG_TARGET_mediatek=y" >> .config
+          #   echo "CONFIG_TARGET_mediatek_filogic=y" >> .config
+          #   ;;
+          # "ipq40xx_generic")
+          #   echo "CONFIG_TARGET_ipq40xx=y" >> .config
+          #   echo "CONFIG_TARGET_ipq40xx_generic=y" >> .config
+          #   ;;
+          # "ipq806x_generic")
+          #   echo "CONFIG_TARGET_ipq806x=y" >> .config
+          #   echo "CONFIG_TARGET_ipq806x_generic=y" >> .config
+          #   ;;
+          # "mvebu_cortexa9")
+          #   echo "CONFIG_TARGET_mvebu=y" >> .config
+          #   echo "CONFIG_TARGET_mvebu_cortexa9=y" >> .config
+          #   ;;
+          # "rockchip_armv8")
+          #   echo "CONFIG_TARGET_rockchip=y" >> .config
+          #   echo "CONFIG_TARGET_rockchip_armv8=y" >> .config
+          #   ;;
+          # "lantiq_xrx200")
+          #   echo "CONFIG_TARGET_lantiq=y" >> .config
+          #   echo "CONFIG_TARGET_lantiq_xrx200=y" >> .config
+          #   ;;
+          # "lantiq_xway")
+          #   echo "CONFIG_TARGET_lantiq=y" >> .config
+          #   echo "CONFIG_TARGET_lantiq_xway=y" >> .config
+          #   ;;
+          # "ar71xx_generic")
+          #   echo "CONFIG_TARGET_ar71xx=y" >> .config
+          #   echo "CONFIG_TARGET_ar71xx_generic=y" >> .config
+          #   ;;
+          # "brcm2708_bcm2708")
+          #   echo "CONFIG_TARGET_brcm2708=y" >> .config
+          #   echo "CONFIG_TARGET_brcm2708_bcm2708=y" >> .config
+          #   ;;
+          # "brcm2708_bcm2709")
+          #   echo "CONFIG_TARGET_brcm2708=y" >> .config
+          #   echo "CONFIG_TARGET_brcm2708_bcm2709=y" >> .config
+          #   ;;
+          # "brcm2708_bcm2710")
+          #   echo "CONFIG_TARGET_brcm2708=y" >> .config
+          #   echo "CONFIG_TARGET_brcm2708_bcm2710=y" >> .config
+          #   ;;
+          # "sunxi_cortexa7")
+          #   echo "CONFIG_TARGET_sunxi=y" >> .config
+          #   echo "CONFIG_TARGET_sunxi_cortexa7=y" >> .config
+          #   ;;
+          # "sunxi_cortexa53")
+          #   echo "CONFIG_TARGET_sunxi=y" >> .config
+          #   echo "CONFIG_TARGET_sunxi_cortexa53=y" >> .config
+          #   ;;
+          # "imx6_generic")
+          #   echo "CONFIG_TARGET_imx6=y" >> .config
+          #   echo "CONFIG_TARGET_imx6_generic=y" >> .config
+          #   ;;
+          # "mxs_generic")
+          #   echo "CONFIG_TARGET_mxs=y" >> .config
+          #   echo "CONFIG_TARGET_mxs_generic=y" >> .config
+          #   ;;
+          # "omap_generic")
+          #   echo "CONFIG_TARGET_omap=y" >> .config
+          #   echo "CONFIG_TARGET_omap_generic=y" >> .config
+          #   ;;
+          # "oxnas_ox820")
+          #   echo "CONFIG_TARGET_oxnas=y" >> .config
+          #   echo "CONFIG_TARGET_oxnas_ox820=y" >> .config
+          #   ;;
+          # "pistachio_generic")
+          #   echo "CONFIG_TARGET_pistachio=y" >> .config
+          #   echo "CONFIG_TARGET_pistachio_generic=y" >> .config
+          #   ;;
+          # "tegra_generic")
+          #   echo "CONFIG_TARGET_tegra=y" >> .config
+          #   echo "CONFIG_TARGET_tegra_generic=y" >> .config
+          #   ;;
+          # "zynq_generic")
+          #   echo "CONFIG_TARGET_zynq=y" >> .config
+          #   echo "CONFIG_TARGET_zynq_generic=y" >> .config
+          #   ;;
+          *)
+            echo "Unknown target: $TARGET"
+            exit 1
             ;;
         esac
         
-        # Set specific device if provided
-        if [ -n "${{ github.event.inputs.device }}" ]; then
-          echo "CONFIG_TARGET_DEVICE_${TARGET}_DEVICE_${{ github.event.inputs.device }}=y" >> .config
-        fi
+        # Add common packages
+        echo "CONFIG_PACKAGE_luci=y" >> .config
+        echo "CONFIG_PACKAGE_luci-ssl=y" >> .config
+        echo "CONFIG_PACKAGE_wget-ssl=y" >> .config
+        echo "CONFIG_PACKAGE_curl=y" >> .config
+        echo "CONFIG_PACKAGE_htop=y" >> .config
+        echo "CONFIG_PACKAGE_nano=y" >> .config
         
         # Generate default configuration
         make defconfig
         
-        # Create configs directory
-        mkdir -p $GITHUB_WORKSPACE/configs
+        # Create configs directory structure
+        mkdir -p $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}
         
         # Copy generated config
-        cp .config $GITHUB_WORKSPACE/configs/${{ github.event.inputs.target }}.config
+        cp .config $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}.config
         
         # Generate device list for this target
         make kernel_menuconfig CONFIG_TARGET=subtarget 2>/dev/null || true
-        grep "CONFIG_TARGET.*DEVICE.*=y" .config | sed 's/CONFIG_TARGET_.*_DEVICE_//g' | sed 's/=y//g' > $GITHUB_WORKSPACE/configs/${{ github.event.inputs.target }}_devices.txt || true
-
-    - name: Generate build info
-      run: |
-        cd openwrt
-        echo "# OpenWrt Build Configuration" > $GITHUB_WORKSPACE/configs/README.md
-        echo "" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "Generated on: $(date)" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "Source: ${{ github.event.inputs.source }}" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "Branch: ${{ github.event.inputs.branch }}" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "Target: ${{ github.event.inputs.target }}" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "Commit: $(git rev-parse HEAD)" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "## Available Configs" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "" >> $GITHUB_WORKSPACE/configs/README.md
-        ls -la $GITHUB_WORKSPACE/configs/*.config 2>/dev/null | awk '{print "- " $9}' | sed 's|.*configs/||g' >> $GITHUB_WORKSPACE/configs/README.md || true
+        grep "CONFIG_TARGET.*DEVICE.*=y" .config | sed 's/CONFIG_TARGET_.*_DEVICE_//g' | sed 's/=y//g' > $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_devices.txt 2>/dev/null || true
         
-        # Generate package list
-        echo "" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "## Included Packages" >> $GITHUB_WORKSPACE/configs/README.md
-        echo "" >> $GITHUB_WORKSPACE/configs/README.md
-        grep "CONFIG_PACKAGE.*=y" .config | sed 's/CONFIG_PACKAGE_//g' | sed 's/=y//g' | sort >> $GITHUB_WORKSPACE/configs/README.md || true
+        # Create a summary file
+        echo "# OpenWrt Config Summary for ${{ matrix.target }}" > $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
+        echo "- **Target**: ${{ matrix.target }}" >> $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
+        echo "- **Source**: ${{ github.event.inputs.source }}" >> $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
+        echo "- **Branch**: ${{ github.event.inputs.branch }}" >> $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
+        echo "- **Generated**: $(date)" >> $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
+        echo "" >> $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
+        echo "## Config Statistics" >> $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
+        echo "- **Total config lines**: $(wc -l < .config)" >> $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
+        echo "- **Enabled packages**: $(grep "^CONFIG_PACKAGE.*=y" .config | wc -l)" >> $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
+        echo "- **Kernel modules**: $(grep "^CONFIG_PACKAGE_kmod.*=y" .config | wc -l)" >> $GITHUB_WORKSPACE/configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}_summary.md
 
     - name: Upload config files
       uses: actions/upload-artifact@main
       with:
-        name: OpenWrt_configs_${{ github.event.inputs.source }}_${{ github.event.inputs.target }}_$(date +"%Y%m%d%H%M")
+        name: OpenWrt_config_${{ github.event.inputs.source }}_${{ matrix.target }}_$(date +"%Y%m%d%H%M")
+        path: configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ matrix.target }}*
+        retention-days: 30
+
+  collect:
+    needs: generate
+    runs-on: ubuntu-22.04
+    if: always()
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@main
+      with:
+        path: artifacts/
+
+    - name: Organize configs
+      run: |
+        # Create configs directory structure
+        mkdir -p configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}
+        
+        # Move all config files to the proper location
+        find artifacts/ -name "*.config" -exec cp {} configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/ \;
+        find artifacts/ -name "*_devices.txt" -exec cp {} configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/ \;
+        find artifacts/ -name "*_summary.md" -exec cp {} configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/ \;
+        
+        # Create a master summary
+        echo "# OpenWrt Configs Generation Summary" > configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/README.md
+        echo "- **Source**: ${{ github.event.inputs.source }}" >> configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/README.md
+        echo "- **Branch**: ${{ github.event.inputs.branch }}" >> configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/README.md
+        echo "- **Generated**: $(date)" >> configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/README.md
+        echo "" >> configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/README.md
+        echo "## Generated Configs" >> configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/README.md
+        for config in configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/*.config; do
+          if [ -f "$config" ]; then
+            basename=$(basename "$config" .config)
+            echo "- **$basename**: [config]($basename.config) | [devices]($basename_devices.txt) | [summary]($basename_summary.md)" >> configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/README.md
+          fi
+        done
+
+    - name: Upload complete config collection
+      uses: actions/upload-artifact@main
+      with:
+        name: OpenWrt_configs_complete_${{ github.event.inputs.source }}_${{ github.event.inputs.branch }}_$(date +"%Y%m%d%H%M")
         path: configs/
+        retention-days: 90
 
     - name: Commit and push changes
       run: |
-        cd $GITHUB_WORKSPACE
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add configs/
-        git diff --staged --quiet || git commit -m "Update ${{ github.event.inputs.target }} config from ${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}"
+        git diff --staged --quiet || git commit -m "Update configs from ${{ github.event.inputs.source }}/${{ github.event.inputs.branch }} ($(date))"
         git push || true
 
-    - name: Show config summary
+    - name: Show generation summary
       run: |
-        echo "Configuration generated successfully!"
-        echo "Target: ${{ github.event.inputs.target }}"
-        echo "Source: ${{ github.event.inputs.source }}"
-        echo "Branch: ${{ github.event.inputs.branch }}"
+        echo "🎉 Configuration generation completed successfully!"
         echo ""
-        echo "Generated files:"
-        ls -la configs/
+        echo "📊 Summary:"
+        echo "- Source: ${{ github.event.inputs.source }}"
+        echo "- Branch: ${{ github.event.inputs.branch }}"
+        echo "- Generated configs: $(find configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }} -name "*.config" | wc -l)"
         echo ""
-        echo "Config file size:"
-        wc -l configs/${{ github.event.inputs.target }}.config || true
+        echo "📁 Generated files:"
+        ls -la configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/ || true
+        echo ""
+        echo "🔗 Files available in artifacts and committed to repository"
