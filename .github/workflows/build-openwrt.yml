@@ -31,14 +31,14 @@ on:
       branch:
         description: 'Source branch'
         required: true
-        default: 'main'
+        default: 'master'
 
 env:
   REPO_URL_OPENWRT: https://github.com/openwrt/openwrt
   REPO_URL_LEDE: https://github.com/coolsnowwolf/lede
   REPO_URL_IMMORTALWRT: https://github.com/immortalwrt/immortalwrt
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: configs/${{ github.event.inputs.target }}.config
+  CONFIG_FILE: configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ github.event.inputs.target }}.config
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
