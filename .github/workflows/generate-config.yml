@@ -1,0 +1,206 @@
+name: Generate OpenWrt Config
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'OpenWrt source'
+        required: true
+        default: 'openwrt'
+        type: choice
+        options:
+          - openwrt
+          - lede
+          - immortalwrt
+      branch:
+        description: 'Source branch'
+        required: true
+        default: 'main'
+      target:
+        description: 'Target device'
+        required: true
+        default: 'x86_64'
+        type: choice
+        options:
+          - x86_64
+          - ramips_mt7621
+          - ath79_generic
+          - mediatek_filogic
+          - bcm27xx_bcm2711
+          - ipq40xx_generic
+          - ipq806x_generic
+          - mvebu_cortexa9
+          - rockchip_armv8
+      device:
+        description: 'Specific device (optional)'
+        required: false
+        default: ''
+
+env:
+  REPO_URL_OPENWRT: https://github.com/openwrt/openwrt
+  REPO_URL_LEDE: https://github.com/coolsnowwolf/lede
+  REPO_URL_IMMORTALWRT: https://github.com/immortalwrt/immortalwrt
+  TZ: Asia/Jakarta
+
+jobs:
+  generate:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev \
+        libz-dev patch python3 python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs \
+        git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx \
+        libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget \
+        curl swig rsync
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+
+    - name: Clone source code
+      working-directory: /workdir
+      run: |
+        df -hT $PWD
+        case "${{ github.event.inputs.source }}" in
+          "openwrt")
+            REPO_URL=$REPO_URL_OPENWRT
+            ;;
+          "lede")
+            REPO_URL=$REPO_URL_LEDE
+            ;;
+          "immortalwrt")
+            REPO_URL=$REPO_URL_IMMORTALWRT
+            ;;
+        esac
+        git clone $REPO_URL -b ${{ github.event.inputs.branch }} openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+
+    - name: Update feeds
+      run: cd openwrt && ./scripts/feeds update -a
+
+    - name: Install feeds
+      run: cd openwrt && ./scripts/feeds install -a
+
+    - name: Generate default config
+      run: |
+        cd openwrt
+        
+        # Set target
+        TARGET="${{ github.event.inputs.target }}"
+        case "$TARGET" in
+          "x86_64")
+            echo "CONFIG_TARGET_x86=y" >> .config
+            echo "CONFIG_TARGET_x86_64=y" >> .config
+            echo "CONFIG_TARGET_x86_64_DEVICE_generic=y" >> .config
+            ;;
+          "ramips_mt7621")
+            echo "CONFIG_TARGET_ramips=y" >> .config
+            echo "CONFIG_TARGET_ramips_mt7621=y" >> .config
+            ;;
+          "ath79_generic")
+            echo "CONFIG_TARGET_ath79=y" >> .config
+            echo "CONFIG_TARGET_ath79_generic=y" >> .config
+            ;;
+          "mediatek_filogic")
+            echo "CONFIG_TARGET_mediatek=y" >> .config
+            echo "CONFIG_TARGET_mediatek_filogic=y" >> .config
+            ;;
+          "bcm27xx_bcm2711")
+            echo "CONFIG_TARGET_bcm27xx=y" >> .config
+            echo "CONFIG_TARGET_bcm27xx_bcm2711=y" >> .config
+            ;;
+          "ipq40xx_generic")
+            echo "CONFIG_TARGET_ipq40xx=y" >> .config
+            echo "CONFIG_TARGET_ipq40xx_generic=y" >> .config
+            ;;
+          "ipq806x_generic")
+            echo "CONFIG_TARGET_ipq806x=y" >> .config
+            echo "CONFIG_TARGET_ipq806x_generic=y" >> .config
+            ;;
+          "mvebu_cortexa9")
+            echo "CONFIG_TARGET_mvebu=y" >> .config
+            echo "CONFIG_TARGET_mvebu_cortexa9=y" >> .config
+            ;;
+          "rockchip_armv8")
+            echo "CONFIG_TARGET_rockchip=y" >> .config
+            echo "CONFIG_TARGET_rockchip_armv8=y" >> .config
+            ;;
+        esac
+        
+        # Set specific device if provided
+        if [ -n "${{ github.event.inputs.device }}" ]; then
+          echo "CONFIG_TARGET_DEVICE_${TARGET}_DEVICE_${{ github.event.inputs.device }}=y" >> .config
+        fi
+        
+        # Generate default configuration
+        make defconfig
+        
+        # Create configs directory
+        mkdir -p $GITHUB_WORKSPACE/configs
+        
+        # Copy generated config
+        cp .config $GITHUB_WORKSPACE/configs/${{ github.event.inputs.target }}.config
+        
+        # Generate device list for this target
+        make kernel_menuconfig CONFIG_TARGET=subtarget 2>/dev/null || true
+        grep "CONFIG_TARGET.*DEVICE.*=y" .config | sed 's/CONFIG_TARGET_.*_DEVICE_//g' | sed 's/=y//g' > $GITHUB_WORKSPACE/configs/${{ github.event.inputs.target }}_devices.txt || true
+
+    - name: Generate build info
+      run: |
+        cd openwrt
+        echo "# OpenWrt Build Configuration" > $GITHUB_WORKSPACE/configs/README.md
+        echo "" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "Generated on: $(date)" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "Source: ${{ github.event.inputs.source }}" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "Branch: ${{ github.event.inputs.branch }}" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "Target: ${{ github.event.inputs.target }}" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "Commit: $(git rev-parse HEAD)" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "## Available Configs" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "" >> $GITHUB_WORKSPACE/configs/README.md
+        ls -la $GITHUB_WORKSPACE/configs/*.config 2>/dev/null | awk '{print "- " $9}' | sed 's|.*configs/||g' >> $GITHUB_WORKSPACE/configs/README.md || true
+        
+        # Generate package list
+        echo "" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "## Included Packages" >> $GITHUB_WORKSPACE/configs/README.md
+        echo "" >> $GITHUB_WORKSPACE/configs/README.md
+        grep "CONFIG_PACKAGE.*=y" .config | sed 's/CONFIG_PACKAGE_//g' | sed 's/=y//g' | sort >> $GITHUB_WORKSPACE/configs/README.md || true
+
+    - name: Upload config files
+      uses: actions/upload-artifact@main
+      with:
+        name: OpenWrt_configs_${{ github.event.inputs.source }}_${{ github.event.inputs.target }}_$(date +"%Y%m%d%H%M")
+        path: configs/
+
+    - name: Commit and push changes
+      run: |
+        cd $GITHUB_WORKSPACE
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add configs/
+        git diff --staged --quiet || git commit -m "Update ${{ github.event.inputs.target }} config from ${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}"
+        git push || true
+
+    - name: Show config summary
+      run: |
+        echo "Configuration generated successfully!"
+        echo "Target: ${{ github.event.inputs.target }}"
+        echo "Source: ${{ github.event.inputs.source }}"
+        echo "Branch: ${{ github.event.inputs.branch }}"
+        echo ""
+        echo "Generated files:"
+        ls -la configs/
+        echo ""
+        echo "Config file size:"
+        wc -l configs/${{ github.event.inputs.target }}.config || true
