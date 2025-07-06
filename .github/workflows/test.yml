@@ -130,7 +130,7 @@ jobs:
         echo "::endgroup::"
 
         echo "::group::Save output config"
-        CFG_DIR="configs/${{ matrix.source }}/${{ env.CURRENT_VERSI }}"
+        CFG_DIR="../configs/${{ matrix.source }}/${{ env.CURRENT_VERSI }}"
         mkdir -p "$CFG_DIR"
         
         if [ -f ".config" ] && [ -s ".config" ]; then
