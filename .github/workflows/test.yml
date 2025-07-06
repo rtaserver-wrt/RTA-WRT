@@ -8,6 +8,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 env:
   REPO_URL_OPENWRT: https://github.com/openwrt/openwrt
   REPO_URL_LEDE: https://github.com/coolsnowwolf/lede
@@ -25,7 +30,6 @@ jobs:
         source: ['openwrt', 'lede', 'immortalwrt']
         target: ['x86_64', 'armsr-armv8', 'bcm27xx_bcm2710', 'bcm27xx_bcm2711']
       fail-fast: false
-      max-parallel: 2
 
     steps:
     - name: Checkout repository
@@ -122,6 +126,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         fetch-depth: 0
+        persist-credentials: true
 
     - name: Download all generated configs
       uses: actions/download-artifact@v4
@@ -163,5 +168,7 @@ jobs:
           echo "No changes to commit"
         else
           git commit -m "Update: Generated config for all targets ($(date '+%Y-%m-%d %H:%M:%S'))"
-          git push
+          git push origin main
         fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
