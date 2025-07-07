@@ -41,10 +41,8 @@ log_info "Adding custom feeds to feeds.conf.default"
 # Array berisi feed yang akan ditambahkan
 declare -a feeds=(
     "src-git passwall https://github.com/xiaorouji/openwrt-passwall"
-    "src-git passwall-packages https://github.com/xiaorouji/openwrt-passwall-packages"
+    "src-git passwallpackages https://github.com/xiaorouji/openwrt-passwall-packages"
     "src-git openclash https://github.com/vernesong/OpenClash"
-    "src-git kenzo https://github.com/kenzok8/openwrt-packages"
-    "src-git small https://github.com/kenzok8/small"
 )
 
 # Menambahkan feeds satu per satu dengan validasi
