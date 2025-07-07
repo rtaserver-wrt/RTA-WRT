@@ -141,7 +141,7 @@ jobs:
         if [ -e "$DIY_P1_SH" ]; then
           chmod +x "$DIY_P1_SH"
           cd openwrt
-          "$GITHUB_WORKSPACE/$DIY_P1_SH"
+          "$GITHUB_WORKSPACE/$DIY_P1_SH ${{ github.event.inputs.target }}"
         fi
 
     - name: Update feeds
@@ -171,7 +171,7 @@ jobs:
         if [ -e "$DIY_P2_SH" ]; then
           chmod +x "$DIY_P2_SH"
           cd openwrt
-          "$GITHUB_WORKSPACE/$DIY_P2_SH"
+          "$GITHUB_WORKSPACE/$DIY_P2_SH ${{ github.event.inputs.target }}"
         fi
 
     - name: Generate default config
