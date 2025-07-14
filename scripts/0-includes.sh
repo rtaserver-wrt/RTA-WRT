@@ -6,6 +6,9 @@ set -euo pipefail
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly WORK_DIR="${SCRIPT_DIR}/../work"
 
+# Include
+. "${SCRIPT_DIR}/json_reader.sh"
+
 # Settings
 MAX_PARALLEL=4
 MAX_RETRIES=3

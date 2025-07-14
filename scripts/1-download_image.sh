@@ -7,7 +7,8 @@ cd "${WORK_DIR}" || exit 1
 SOURCE="${1:-openwrt}"
 TARGET="${2:-x86-64}"
 VERSION="${3:-stable}"
-TAG="$(firmware "TAG" "${VERSION}" "${SOURCE}")"
+TAG="$(firmware_id "TAG" "${VERSION}" "${SOURCE}")"
+BRANCH="$(echo "${TAG}" | awk -F. '{print $1"."$2}')"
 
 
 # Download function
@@ -17,17 +18,17 @@ download_image() {
     case "$SOURCE" in
         "openwrt")
             case "$VERSION" in
-                "stable") url="$(firmware "URL" "$VERSION" "$SOURCE")$(device "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware "TAG" "$VERSION" "$SOURCE")-$(device "TARGET_NAME" "$TARGET").Linux-x86_64.tar.zst" ;;
-                "snapshot") url="$(firmware "URL" "$VERSION" "$SOURCE")$(device "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware "TAG" "$VERSION" "$SOURCE")-$(device "TARGET_NAME" "$TARGET").Linux-x86_64.tar.zst" ;;
-                "old-stable") url="$(firmware "URL" "$VERSION" "$SOURCE")$(device "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware "TAG" "$VERSION" "$SOURCE")-$(device "TARGET_NAME" "$TARGET").Linux-x86_64.tar.xz" ;;
+                "stable") url="$(firmware_id "URL" "$VERSION" "$SOURCE")$(device "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware_id "TAG" "$VERSION" "$SOURCE")-$(device_id "TARGET_NAME" "$TARGET").Linux-x86_64.tar.zst" ;;
+                "snapshot") url="$(firmware_id "URL" "$VERSION" "$SOURCE")$(device_id "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware_id "TAG" "$VERSION" "$SOURCE")-$(device_id "TARGET_NAME" "$TARGET").Linux-x86_64.tar.zst" ;;
+                "old-stable") url="$(firmware_id "URL" "$VERSION" "$SOURCE")$(device_id "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware_id "TAG" "$VERSION" "$SOURCE")-$(device_id "TARGET_NAME" "$TARGET").Linux-x86_64.tar.xz" ;;
                 *) echo "Unknown OpenWrt version: $VERSION"; return 1 ;;
             esac
             ;;
         "immortalwrt")
             case "$VERSION" in
-                "stable") url="$(firmware "URL" "$VERSION" "$SOURCE")$(device "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware "TAG" "$VERSION" "$SOURCE")-$(device "TARGET_NAME" "$TARGET").Linux-x86_64.tar.zst" ;;
-                "snapshot") url="$(firmware "URL" "$VERSION" "$SOURCE")$(device "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware "TAG" "$VERSION" "$SOURCE")-$(device "TARGET_NAME" "$TARGET").Linux-x86_64.tar.zst" ;;
-                "old-stable") url="$(firmware "URL" "$VERSION" "$SOURCE")$(device "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware "TAG" "$VERSION" "$SOURCE")-$(device "TARGET_NAME" "$TARGET").Linux-x86_64.tar.xz" ;;
+                "stable") url="$(firmware_id "URL" "$VERSION" "$SOURCE")$(device_id "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware_id "TAG" "$VERSION" "$SOURCE")-$(device_id "TARGET_NAME" "$TARGET").Linux-x86_64.tar.zst" ;;
+                "snapshot") url="$(firmware_id "URL" "$VERSION" "$SOURCE")$(device_id "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware_id "TAG" "$VERSION" "$SOURCE")-$(device_id "TARGET_NAME" "$TARGET").Linux-x86_64.tar.zst" ;;
+                "old-stable") url="$(firmware_id "URL" "$VERSION" "$SOURCE")$(device_id "TARGET_SYSTEM" "$TARGET")/$SOURCE-imagebuilder-$(firmware_id "TAG" "$VERSION" "$SOURCE")-$(device_id "TARGET_NAME" "$TARGET").Linux-x86_64.tar.xz" ;;
                 *) echo "Unknown ImmortalWrt version: $VERSION"; return 1 ;;
             esac
             ;;

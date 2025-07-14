@@ -7,7 +7,8 @@ cd "${WORK_DIR}" || exit 1
 SOURCE="${1:-openwrt}"
 TARGET="${2:-x86-64}"
 VERSION="${3:-stable}"
-TAG="$(firmware "TAG" "${VERSION}" "${SOURCE}")"
+TAG="$(firmware_id "TAG" "${VERSION}" "${SOURCE}")"
+BRANCH="$(echo "${TAG}" | awk -F. '{print $1"."$2}')"
 
 # Apply distribution-specific patches
 apply_distro_patches() {
@@ -47,7 +48,7 @@ configure_partitions() {
 
 # Apply Specific configurations
 configure_config() {
-    local type="$(device "TARGET_NAME" "${TARGET}")"
+    local type="$(device_id "TARGET_NAME" "${TARGET}")"
     case "${type}" in
         armsr-armv8)
             log "INFO" "Applying Amlogic-specific image options"

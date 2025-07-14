@@ -1,285 +1,378 @@
-name: Build OpenWrt
+name: Generate RTA-WRT All Firmware
 
 on:
-  repository_dispatch:
   workflow_dispatch:
     inputs:
-      target:
-        description: 'Target device'
+      base:
+        description: "Select the Base Build:"
         required: true
-        default: 'x86_64'
-        type: choice
-        options:
-          - x86_64
-          - ramips_mt7621
-          - ath79_generic
-          - mediatek_filogic
-          - bcm27xx_bcm2711
-      source:
-        description: 'OpenWrt source'
-        required: true
-        default: 'openwrt'
+        default: "openwrt"
         type: choice
         options:
           - openwrt
-          - lede
           - immortalwrt
       branch:
-        description: 'Source branch'
+        description: "Select the Branch Build:"
         required: true
-        default: 'master'
-        type: string
+        default: "stable"
+        type: choice
+        options:
+          - stable
+          - snapshot
+          - old-stable
+      target:
+        description: "Select device board"
+        required: false
+        default: "all-device"
+        type: choice
+        options:
+          - all-device
+          - Raspberry Pi 3
+          - Raspberry Pi 4
+          - x86-64
+          - Amlogic s905
+          - Amlogic s905 Beelink Mini
+          - Amlogic s905 MXQ Pro Plus
+          - Amlogic s905W
+          - Amlogic s905W W95
+          - Amlogic s905W X96 Mini
+          - Amlogic s905W X96W
+          - Amlogic s905X HG680P
+          - Amlogic s905X B860H
+          - Amlogic s905X Nexbox A95X
+          - Amlogic s905X2
+          - Amlogic s905X2 KM3
+          - Amlogic s905X2 X96 Max 2G
+          - Amlogic s905X3
+          - Amlogic s905X3 H96 Max
+          - Amlogic s905X3 HK1
+          - Amlogic s905X3 X96 Max
+          - Amlogic s905X4
+          - Amlogic s912
+          - Amlogic s912 H96 Pro Plus
+          - Amlogic s912 X92
+          - Allwinner H5 Orange Pi Zero Plus2
+          - Allwinner H5 Orange Pi Zero Plus
+          - Allwinner H5 Orange Pi Prime
+          - Allwinner H5 Orange Pi PC2
+          - Allwinner H6 Orange Pi Lite2
+          - Allwinner H6 Orange Pi 1 Plus
+          - Allwinner H6 Orange Pi 3
+          - Allwinner H6 Orange Pi 3 LTS
+          - Allwinner H616 Orange Pi Zero2
+          - Allwinner H618 Orange Pi Zero2W
+          - Allwinner H618 Orange Pi Zero3
+          - Rockchip rk3318 H96-MAX
+          - Rockchip rk3566 Orange Pi 3B
+          - Rockchip rk3588s Orange Pi 5
+      clean:
+        description: "Do 'make clean' for each run"
+        required: false
+        default: true
+        type: boolean
 
 env:
-  REPO_URL_OPENWRT: https://github.com/openwrt/openwrt
-  REPO_URL_LEDE: https://github.com/coolsnowwolf/lede
-  REPO_URL_IMMORTALWRT: https://github.com/immortalwrt/immortalwrt
-  FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: configs/${{ github.event.inputs.source }}/${{ github.event.inputs.branch }}/${{ github.event.inputs.target }}.config
-  DIY_P1_SH: diy-part1.sh
-  DIY_P2_SH: diy-part2.sh
-  UPLOAD_BIN_DIR: false
-  UPLOAD_FIRMWARE: true
-  UPLOAD_RELEASE: true
   TZ: Asia/Jakarta
+  DEBIAN_FRONTEND: noninteractive
+  BASE: ${{ github.event.inputs.base }}
+  BRANCH: ${{ github.event.inputs.branch }}
+  TARGET: ${{ github.event.inputs.target }}
+  CLEAN: ${{ github.event.inputs.clean }}
 
 jobs:
-  build:
+  prebuild:
     runs-on: ubuntu-22.04
-    timeout-minutes: 360
+    name: ${{ github.event.inputs.release_branch }}
+    outputs:
+      target: ${{ steps.set-matrix.outputs.target }}
+      base: ${{ steps.setupenv.outputs.base }}
+      branch: ${{ steps.setupenv.outputs.branch }}
+      date: ${{ steps.setupenv.outputs.date }}
+      datetime: ${{ steps.setupenv.outputs.datetime }}
+      datemonth: ${{ steps.setupenv.outputs.datemonth }}
+      release_name: ${{ steps.setupenv.outputs.release_name }}
+      release_tag: ${{ steps.setupenv.outputs.release_tag }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set Matrix Run
+        id: set-matrix
+        run: |
+          echo "Selected target option: [ ${{ github.event.inputs.target }} ]"
+          TARGET_JSON=$(cat << 'EOJ'
+          {
+            "target": [
+              "Raspberry Pi 3",
+              "Raspberry Pi 4",
+              "x86-64",
+              "Amlogic s905",
+              "Amlogic s905 Beelink Mini",
+              "Amlogic s905 MXQ Pro Plus",
+              "Amlogic s905W",
+              "Amlogic s905W W95",
+              "Amlogic s905W X96 Mini",
+              "Amlogic s905W X96W",
+              "Amlogic s905X HG680P",
+              "Amlogic s905X B860H",
+              "Amlogic s905X Nexbox A95X",
+              "Amlogic s905X2",
+              "Amlogic s905X2 KM3",
+              "Amlogic s905X2 X96 Max 2G",
+              "Amlogic s905X3",
+              "Amlogic s905X3 H96 Max",
+              "Amlogic s905X3 HK1",
+              "Amlogic s905X3 X96 Max",
+              "Amlogic s905X4",
+              "Amlogic s912",
+              "Amlogic s912 H96 Pro Plus",
+              "Amlogic s912 X92",
+              "Allwinner H5 Orange Pi Zero Plus2",
+              "Allwinner H5 Orange Pi Zero Plus",
+              "Allwinner H5 Orange Pi Prime",
+              "Allwinner H5 Orange Pi PC2",
+              "Allwinner H6 Orange Pi Lite2",
+              "Allwinner H6 Orange Pi 1 Plus",
+              "Allwinner H6 Orange Pi 3",
+              "Allwinner H6 Orange Pi 3 LTS",
+              "Allwinner H616 Orange Pi Zero2",
+              "Allwinner H618 Orange Pi Zero2W",
+              "Allwinner H618 Orange Pi Zero3",
+              "Rockchip rk3318 H96-MAX",
+              "Rockchip rk3566 Orange Pi 3B",
+              "Rockchip rk3588s Orange Pi 5"
+            ]
+          }
+          EOJ
+          )
+
+          if [ "${{ github.event.inputs.target }}" == "all-device" ]; then
+            echo "target=$(echo "$TARGET_JSON" | jq -c '.target')" >> $GITHUB_OUTPUT
+          else
+            echo "target=$(jq -nc --arg d "${{ github.event.inputs.target }}" '[$d]')" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Release Environment
+        id: setupenv
+        run: |
+          sudo timedatectl set-timezone "${{ env.TZ }}"
+
+          echo "BASE=$BASE" >> $GITHUB_OUTPUT
+          echo "BRANCH=$BRANCH" >> $GITHUB_OUTPUT
+
+          DATE=$(date +'%d%m%Y')
+          DATETIME=$(date +'%d.%m.%Y-%H:%M:%S')
+          DATEMONTH=$(date +"%B-%Y" | awk '{print tolower($0)}')
+
+          echo "DATE=$DATE" >> $GITHUB_OUTPUT
+          echo "DATETIME=$DATETIME" >> $GITHUB_OUTPUT
+          echo "DATEMONTH=$DATEMONTH" >> $GITHUB_OUTPUT
+
+          if [ "${BASE}" == "openwrt" ]; then
+            RELEASE_NAME="RTA-WRT-OpenWRT-${BRANCH}-${DATE}"
+            RELEASE_TAG="rtawrt-openwrt-${BRANCH}-${DATE}"
+            echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_OUTPUT
+            echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_OUTPUT
+          elif [ "${BASE}" == "immortalwrt" ]; then
+            RELEASE_NAME="RTA-WRT-ImmortalWRT-${BRANCH}-${DATE}"
+            RELEASE_TAG="rtawrt-immortalwrt-${BRANCH}-${DATE}"
+            echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_OUTPUT
+            echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_OUTPUT
+          fi
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: steps.setupenv.outputs.status == 'success'
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.setupenv.outputs.release_tag }}
+          name: ${{ steps.setupenv.outputs.release_name }}
+          prerelease: ${{ github.ref_name == 'dev' }}
+          body: |
+            # 🚀 RTA-WRT - Release Information
+          generate_release_notes: true
+
+  build-firmware:
+    name: Build ${{ matrix.target }} Firmware
+    needs: prebuild
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    env:
+      BASE: ${{ needs.prebuild.outputs.base }}
+      BRANCH: ${{ needs.prebuild.outputs.branch }}
+      DATE: ${{ needs.prebuild.outputs.date }}
+      DATETIME: ${{ needs.prebuild.outputs.datetime }}
+      DATEMONTH: ${{ needs.prebuild.outputs.datemonth }}
+      RELEASE_NAME: ${{ needs.prebuild.outputs.release_name }}
+      RELEASE_TAG: ${{ needs.prebuild.outputs.release_tag }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.prebuild.outputs.target) }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Initialization environment
+        id: init
+        run: |
+          sudo -E apt-get -y update
+          sudo -E apt-get -y install $(curl -fsSL https://tinyurl.com/ubuntu2204-make-openwrt)
+          sudo timedatectl set-timezone "${{ env.TZ }}"
+          echo "status=success" >> ${GITHUB_OUTPUT}
 
-    - name: Free up disk space
-      run: |
-        echo "Free space before cleanup:"
-        df -h
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /usr/local/lib/android
-        sudo rm -rf /opt/ghc
-        sudo rm -rf /opt/hostedtoolcache/CodeQL
-        sudo rm -rf /usr/local/share/powershell
-        sudo rm -rf /usr/share/swift
-        sudo rm -rf /usr/local/.ghcup
-        sudo apt-get remove -y --purge \
-          firefox \
-          google-chrome-stable \
-          microsoft-edge-stable \
-          hhvm \
-          dotnet-sdk-* \
-          aspnetcore-* \
-          mono-* \
-          mysql-* \
-          postgresql-* \
-          2>/dev/null || true
-        sudo apt-get autoremove -y
-        sudo apt-get clean
-        echo "Free space after cleanup:"
-        df -h
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: origin
+          fetch-depth: 1
 
-    - name: Initialize environment
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        sudo rm -rf /etc/apt/sources.list.d/* || true
-        sudo apt-get update -qq
-        sudo apt-get install -y --no-install-recommends \
-          build-essential clang flex bison g++ gawk \
-          gcc-multilib g++-multilib gettext git \
-          libncurses5-dev libncursesw5-dev libssl-dev \
-          python3-setuptools python3-dev python3-distutils python3-pyelftools \
-          rsync swig unzip zlib1g-dev file wget zstd shfmt jq curl \
-          subversion qemu-utils ccache
-        python3 -m pip install --upgrade pip setuptools wheel
-        sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -p /workdir
-        sudo chown $USER:$GROUPS /workdir
+      - name: Setup Build Variables
+        id: variables
+        run: |
+          . ./scripts/0-includes.sh
 
-    - name: Clone source code
-      working-directory: /workdir
-      run: |
-        df -hT $PWD
-        case "${{ github.event.inputs.source }}" in
-          "openwrt")
-            REPO_URL=$REPO_URL_OPENWRT
-            ;;
-          "lede")
-            REPO_URL=$REPO_URL_LEDE
-            ;;
-          "immortalwrt")
-            REPO_URL=$REPO_URL_IMMORTALWRT
-            ;;
-          *)
-            echo "Unknown source: ${{ github.event.inputs.source }}"
-            exit 1
-            ;;
-        esac
-        
-        echo "Cloning $REPO_URL branch ${{ github.event.inputs.branch }}"
-        git clone --depth=1 $REPO_URL -b ${{ github.event.inputs.branch }} openwrt
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+          MATRIXTARGET="${{ matrix.target }}"
+          echo "MATRIXTARGET=$MATRIXTARGET" >> $GITHUB_ENV
 
-    - name: Cache feeds
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.ccache
-          /workdir/openwrt/feeds
-        key: ${{ runner.os }}-feeds-${{ github.event.inputs.source }}-${{ github.event.inputs.branch }}-${{ hashFiles('feeds.conf.default') }}
-        restore-keys: |
-          ${{ runner.os }}-feeds-${{ github.event.inputs.source }}-${{ github.event.inputs.branch }}-
-          ${{ runner.os }}-feeds-${{ github.event.inputs.source }}-
-          ${{ runner.os }}-feeds-
+          # Common configuration function
+          configure_target() {
+            local profile=$1
+            local target_system=$2
+            local target_name=$3
+            local arch1=$4
+            local arch2=$5
+            local arch3=$6
+            local type=$7
+            echo "PROFILE=$profile" >> $GITHUB_ENV
+            echo "TARGET_SYSTEM=$target_system" >> $GITHUB_ENV
+            echo "TARGET_NAME=$target_name" >> $GITHUB_ENV
+            echo "ARCH_1=$arch1" >> $GITHUB_ENV
+            echo "ARCH_2=$arch2" >> $GITHUB_ENV
+            echo "ARCH_3=$arch3" >> $GITHUB_ENV
+            echo "TYPE=$type" >> $GITHUB_ENV
+          }
 
-    - name: Load custom feeds
-      run: |
-        if [ -e "$FEEDS_CONF" ]; then
-          cp "$FEEDS_CONF" openwrt/feeds.conf.default
-        fi
-        if [ -e "$DIY_P1_SH" ]; then
-          chmod +x "$DIY_P1_SH"
-          cd openwrt
-          "$GITHUB_WORKSPACE/$DIY_P1_SH" "${{ github.event.inputs.target }}"
-        fi
+          echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Update feeds
-      run: |
-        cd openwrt
-        ./scripts/feeds update -a
+      - name: Download Image Builder
+        id: download
+        if: steps.variables.outputs.status == 'success'
+        run: |
+          cd origin
+          bash scripts/1-download_image.sh
 
-    - name: Install feeds
-      run: |
-        cd openwrt
-        ./scripts/feeds install -a
+          echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Load custom configuration
-      run: |
-        if [ -e files ]; then
-          cp -r files openwrt/
-        fi
-        if [ -e "$CONFIG_FILE" ]; then
-          cp "$CONFIG_FILE" openwrt/.config
-        else
-          echo "Warning: Config file $CONFIG_FILE not found!"
-          touch openwrt/.config
-        fi
-        if [ -e configs/universal.config ]; then
-          cat configs/universal.config >> openwrt/.config
-        fi
-        if [ -e "$DIY_P2_SH" ]; then
-          chmod +x "$DIY_P2_SH"
-          cd openwrt
-          "$GITHUB_WORKSPACE/$DIY_P2_SH" "${{ github.event.inputs.target }}"
-        fi
+      - name: Download Packages
+        id: packages
+        if: steps.download.outputs.status == 'success'
+        run: |
+          cd ${WORK_DIR}
+          chmod +x scripts/PACKAGES.sh
+          ./scripts/PACKAGES.sh
 
-    - name: Generate default config
-      run: |
-        cd openwrt
-        make defconfig
-        cat .config
+          echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Download packages
-      id: package
-      run: |
-        cd openwrt
-        make download -j8
-        find dl -size -1024c -exec ls -l {} \;
-        find dl -size -1024c -exec rm -f {} \;
+      - name: Apply Patches and Misc
+        id: customize
+        if: steps.packages.outputs.status == 'success'
+        run: |
+          cd ${WORK_DIR}
 
-    - name: Compile firmware
-      id: compile
-      run: |
-        cd openwrt
-        echo -e "$(nproc) thread compile"
-        make -j$(nproc) || make -j1 || make -j1 V=s
-        echo "status=success" >> $GITHUB_OUTPUT
-        
-        # Extract device name
-        if grep -q '^CONFIG_TARGET.*DEVICE.*=y' .config; then
-          grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
-          [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
-        else
-          echo "DEVICE_NAME=_${{ github.event.inputs.target }}" >> $GITHUB_ENV
-        fi
-        
-        echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+          # Apply patches
+          chmod +x scripts/PATCH.sh
+          ./scripts/PATCH.sh
 
-    - name: Check space usage
-      if: (!cancelled())
-      run: df -hT
+          # Apply miscellaneous changes
+          chmod +x scripts/MISC.sh
+          ./scripts/MISC.sh
 
-    - name: Upload bin directory
-      uses: actions/upload-artifact@v4
-      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
-      with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-        path: openwrt/bin
-        retention-days: 7
+          # Configure tunnel apps
+          chmod +x scripts/TUNNEL.sh
+          ./scripts/TUNNEL.sh
 
-    - name: Organize files
-      id: organize
-      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
-      run: |
-        cd openwrt/bin/targets/*/*
-        rm -rf packages
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "status=success" >> $GITHUB_OUTPUT
+          df -hT ${PWD}
+          echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware directory
-      uses: actions/upload-artifact@v4
-      if: steps.organize.outputs.status == 'success' && !cancelled()
-      with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-        path: ${{ env.FIRMWARE }}
-        retention-days: 30
+      - name: Build OpenWrt Images
+        id: build
+        if: steps.customize.outputs.status == 'success'
+        run: |
+          cd ${WORK_DIR}
+          mkdir -p compiled_images
+          chmod +x make-image.sh
 
-    - name: Generate release tag
-      id: tag
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      run: |
-        echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
-        
-        # Create release notes
-        cat > release.txt << EOF
-        ## OpenWrt Build Information
-        
-        **Target**: ${{ github.event.inputs.target }}
-        **Source**: ${{ github.event.inputs.source }}
-        **Branch**: ${{ github.event.inputs.branch }}
-        **Build Date**: $(date)
-        **Commit**: $(cd openwrt && git rev-parse HEAD)
-        
-        ### Files in this release:
-        $(cd ${{ env.FIRMWARE }} && ls -la)
-        EOF
-        
-        echo "status=success" >> $GITHUB_OUTPUT
+          # Clean if requested
+          if [ "${CLEAN}" == "true" ]; then
+            make clean
+          fi
+            
+          # Build image
+          time ./make-image.sh ${PROFILE}
+            
+          # Move and rename output files
+          if [[ "$TYPE" =~ ^(OPHUB|ULO)$ ]]; then
+              for file in bin/targets/"${TARGET_SYSTEM}"/*-rootfs.tar.gz; do
+                if [ -f "$file" ]; then
+                  new_name="RTA-WRT_$(basename "$file" -rootfs.tar.gz)-rootfs.tar.gz"
+                  mv "$file" compiled_images/$new_name
+                fi
+              done
+          else
+              for file in bin/targets/"${TARGET_SYSTEM}"/*.img.gz; do
+                if [ -f "$file" ]; then
+                  new_name="RTA-WRT_$(basename "$file" .img.gz).img.gz"
+                  mv "$file" compiled_images/$new_name
+                fi
+              done
+          fi
 
-    - name: Upload firmware to release
-      uses: softprops/action-gh-release@v2
-      if: steps.tag.outputs.status == 'success' && !cancelled()
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag.outputs.release_tag }}
-        body_path: release.txt
-        files: ${{ env.FIRMWARE }}/*
-        draft: false
-        prerelease: false
 
-    - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@main
-      with:
-        retain_days: 1
-        keep_minimum_runs: 3
+          echo "Images built successfully:"
+          ls -la compiled_images/
+          echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Remove old releases
-      uses: dev-drprasad/delete-older-releases@v0.3.4
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      with:
-        keep_latest: 3
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Repack OpenWrt
+        id: repack
+        if: steps.build.outputs.status == 'success'
+        run: |
+          cd ${WORKING_DIR}
+          chmod +x scripts/REPACKWRT.sh
+          echo "Repacking OpenWrt images ${TYPE}..."
+          if [[ "$TYPE" =~ ^(OPHUB|ULO)$ ]]; then
+            ./scripts/REPACKWRT.sh "$TYPE" "$TARGET_BUILD" "$KERNEL"
+          fi
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Rename OpenWrt
+        id: rename
+        if: steps.modsdcard.outputs.status == 'success'
+        run: |
+          cd ${{ env.WORKING_DIR }}
+          chmod +x scripts/RENAMEFW.sh
+          ./scripts/RENAMEFW.sh
+          echo "status=success" >> "$GITHUB_OUTPUT"
+
+      - name: Create Release
+        if: steps.rename.outputs.status == 'success'
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_NAME }}
+          files: ${{ env.WORKING_DIR }}/compiled_images/*.img.gz
+          prerelease: ${{ github.ref_name == 'dev' }}
+
+      - name: Upload file links as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-links-${{ matrix.target }}
+          path: /home/runner/work/RTA-WRT/RTA-WRT/imagebuilder/compiled_images//artifacts.txt
+
+      - name: Clean Storage
+        run: |
+          sudo rm -rf ${{ env.WORKING_DIR }}
