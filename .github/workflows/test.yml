@@ -1,0 +1,368 @@
+name: TEST
+
+# Add permissions for the workflow
+permissions:
+  contents: write    # Required for creating releases and uploading assets
+  packages: read     # If you need to access GitHub packages
+  issues: write      # If you need to create/modify issues
+  pull-requests: write  # If you need to create/modify PRs
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Select the Base Build"
+        required: true
+        default: "openwrt"
+        type: choice
+        options:
+          - openwrt
+          - immortalwrt
+      branch:
+        description: "Select the Branch Build"
+        required: true
+        default: "stable"
+        type: choice
+        options:
+          - stable
+          - snapshot
+          - old-stable
+      target:
+        description: "Select device board"
+        required: false
+        default: "all-device"
+        type: choice
+        options:
+          - all-device
+          - Raspberry Pi 3
+          - Raspberry Pi 4
+          - x86-64
+          - Amlogic s905
+          - Amlogic s905 Beelink Mini
+          - Amlogic s905 MXQ Pro Plus
+          - Amlogic s905W
+          - Amlogic s905W W95
+          - Amlogic s905W X96 Mini
+          - Amlogic s905W X96W
+          - Amlogic s905X HG680P
+          - Amlogic s905X B860H
+          - Amlogic s905X Nexbox A95X
+          - Amlogic s905X2
+          - Amlogic s905X2 KM3
+          - Amlogic s905X2 X96 Max 2G
+          - Amlogic s905X3
+          - Amlogic s905X3 H96 Max
+          - Amlogic s905X3 HK1
+          - Amlogic s905X3 X96 Max
+          - Amlogic s905X4
+          - Amlogic s912
+          - Amlogic s912 H96 Pro Plus
+          - Amlogic s912 X92
+          - Allwinner H5 Orange Pi Zero Plus2
+          - Allwinner H5 Orange Pi Zero Plus
+          - Allwinner H5 Orange Pi Prime
+          - Allwinner H5 Orange Pi PC2
+          - Allwinner H6 Orange Pi Lite2
+          - Allwinner H6 Orange Pi 1 Plus
+          - Allwinner H6 Orange Pi 3
+          - Allwinner H6 Orange Pi 3 LTS
+          - Allwinner H616 Orange Pi Zero2
+          - Allwinner H618 Orange Pi Zero2W
+          - Allwinner H618 Orange Pi Zero3
+          - Rockchip rk3318 H96-MAX
+          - Rockchip rk3566 Orange Pi 3B
+          - Rockchip rk3588s Orange Pi 5
+      clean:
+        description: "Do 'make clean' for each run"
+        required: false
+        default: true
+        type: boolean
+
+env:
+  TZ: Asia/Jakarta
+  DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  prebuild:
+    runs-on: ubuntu-22.04
+    name: Preparation
+    outputs:
+      target: ${{ steps.set-matrix.outputs.target }}
+      base: ${{ steps.setupenv.outputs.base }}
+      branch: ${{ steps.setupenv.outputs.branch }}
+      date: ${{ steps.setupenv.outputs.date }}
+      datetime: ${{ steps.setupenv.outputs.datetime }}
+      datemonth: ${{ steps.setupenv.outputs.datemonth }}
+      release_name: ${{ steps.setupenv.outputs.release_name }}
+      release_tag: ${{ steps.setupenv.outputs.release_tag }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 1
+
+      - name: Set Matrix Run
+        id: set-matrix
+        run: |
+          echo "Selected target option: [ ${{ github.event.inputs.target }} ]"
+          
+          # Define targets in a more maintainable way
+          ALL_TARGETS='[
+            "Raspberry Pi 3",
+            "Raspberry Pi 4", 
+            "x86-64",
+            "Amlogic s905",
+            "Amlogic s905 Beelink Mini",
+            "Amlogic s905 MXQ Pro Plus",
+            "Amlogic s905W",
+            "Amlogic s905W W95",
+            "Amlogic s905W X96 Mini",
+            "Amlogic s905W X96W",
+            "Amlogic s905X HG680P",
+            "Amlogic s905X B860H",
+            "Amlogic s905X Nexbox A95X",
+            "Amlogic s905X2",
+            "Amlogic s905X2 KM3",
+            "Amlogic s905X2 X96 Max 2G",
+            "Amlogic s905X3",
+            "Amlogic s905X3 H96 Max",
+            "Amlogic s905X3 HK1",
+            "Amlogic s905X3 X96 Max",
+            "Amlogic s905X4",
+            "Amlogic s912",
+            "Amlogic s912 H96 Pro Plus",
+            "Amlogic s912 X92",
+            "Allwinner H5 Orange Pi Zero Plus2",
+            "Allwinner H5 Orange Pi Zero Plus",
+            "Allwinner H5 Orange Pi Prime",
+            "Allwinner H5 Orange Pi PC2",
+            "Allwinner H6 Orange Pi Lite2",
+            "Allwinner H6 Orange Pi 1 Plus",
+            "Allwinner H6 Orange Pi 3",
+            "Allwinner H6 Orange Pi 3 LTS",
+            "Allwinner H616 Orange Pi Zero2",
+            "Allwinner H618 Orange Pi Zero2W",
+            "Allwinner H618 Orange Pi Zero3",
+            "Rockchip rk3318 H96-MAX",
+            "Rockchip rk3566 Orange Pi 3B",
+            "Rockchip rk3588s Orange Pi 5"
+          ]'
+
+          if [ "${{ github.event.inputs.target }}" == "all-device" ]; then
+            echo "target=$(echo "$ALL_TARGETS" | jq -c '.')" >> $GITHUB_OUTPUT
+          else
+            echo "target=$(jq -nc --arg d "${{ github.event.inputs.target }}" '[$d]')" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Release Environment
+        id: setupenv
+        run: |
+          sudo timedatectl set-timezone "${{ env.TZ }}"
+
+          BASE="${{ github.event.inputs.base }}"
+          BRANCH="${{ github.event.inputs.branch }}"
+          
+          echo "base=$BASE" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+          DATE=$(date +'%d%m%Y')
+          DATETIME=$(date +'%d.%m.%Y-%H:%M:%S')
+          DATEMONTH=$(date +"%B-%Y" | awk '{print tolower($0)}')
+
+          echo "date=$DATE" >> $GITHUB_OUTPUT
+          echo "datetime=$DATETIME" >> $GITHUB_OUTPUT
+          echo "datemonth=$DATEMONTH" >> $GITHUB_OUTPUT
+
+          # Create release name and tag based on base
+          case "${BASE}" in
+            "openwrt")
+              RELEASE_NAME="RTA-WRT-OpenWRT-${BRANCH}-${DATE}"
+              RELEASE_TAG="rtawrt-openwrt-${BRANCH}-${DATE}"
+              ;;
+            "immortalwrt")
+              RELEASE_NAME="RTA-WRT-ImmortalWRT-${BRANCH}-${DATE}"
+              RELEASE_TAG="rtawrt-immortalwrt-${BRANCH}-${DATE}"
+              ;;
+            *)
+              echo "::error::Unknown base: ${BASE}"
+              exit 1
+              ;;
+          esac
+
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: steps.setupenv.outputs.status == 'success'
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.setupenv.outputs.release_tag }}
+          name: ${{ steps.setupenv.outputs.release_name }}
+          prerelease: ${{ github.ref_name == 'dev' }}
+          body: |
+            # 🚀 RTA-WRT - Release Information
+            
+            **Base:** ${{ github.event.inputs.base }}
+            **Branch:** ${{ github.event.inputs.branch }}
+            **Target:** ${{ github.event.inputs.target }}
+            **Build Date:** ${{ steps.setupenv.outputs.datetime }}
+            **Clean Build:** ${{ github.event.inputs.clean }}
+            
+            This is an automated build of RTA-WRT firmware.
+          generate_release_notes: true
+
+  build-firmware:
+    name: Build ${{ matrix.target }}
+    needs: prebuild
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    env:
+      BASE: ${{ needs.prebuild.outputs.base }}
+      BRANCH: ${{ needs.prebuild.outputs.branch }}
+      DATE: ${{ needs.prebuild.outputs.date }}
+      DATETIME: ${{ needs.prebuild.outputs.datetime }}
+      DATEMONTH: ${{ needs.prebuild.outputs.datemonth }}
+      RELEASE_NAME: ${{ needs.prebuild.outputs.release_name }}
+      RELEASE_TAG: ${{ needs.prebuild.outputs.release_tag }}
+      TARGET: ${{ github.event.inputs.target }}
+      CLEAN: ${{ github.event.inputs.clean }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.prebuild.outputs.target) }}
+
+    steps:
+      # - name: Free Disk Space
+      #   run: |
+      #     echo "Before cleanup:"
+      #     df -hT
+          
+      #     # Remove unnecessary packages and files
+      #     sudo apt-get autoremove -y
+      #     sudo apt-get autoclean -y
+      #     sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      #     sudo docker image prune -af
+          
+      #     echo "After cleanup:"
+      #     df -hT
+
+      - name: Initialize Environment
+        id: init
+        run: |
+          set -e
+          
+          echo "::group::Update packages"
+          sudo -E apt-get -y update
+          echo "::endgroup::"
+          
+          echo "::group::Install dependencies"
+          PACKAGES=$(curl -fsSL https://tinyurl.com/ubuntu2204-make-openwrt || echo "ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison btrfs-progs build-essential bzip2 ca-certificates ccache cmake coreutils cpio curl device-tree-compiler fastjar flex g++-multilib gawk gcc-multilib gettext git git-core gperf gzip haveged help2man intltool jq libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool libz-dev lrzsz mkisofs msmtp nano ninja-build p7zip p7zip-full patch pigz pkgconf python2.7 python3 python3-pip python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools swig tar texinfo uglifyjs unzip upx upx-ucl vim wget xmlto xsltproc xxd xz-utils yasm zip zlib1g-dev zstd")
+          sudo -E apt-get -y install $PACKAGES
+          echo "::endgroup::"
+          
+          sudo timedatectl set-timezone "${{ env.TZ }}"
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 1
+
+      - name: Build Firmware
+        id: build
+        if: steps.variables.outputs.status == 'success'
+        run: |
+          set -e
+
+
+          chmod +x ./test.sh
+          chmod +x ./scripts/0-includes.sh
+          . ./scripts/0-includes.sh
+
+
+          echo "::group::Build Firmware"
+          build(){
+            local base branch target_system target_name profile arch packages_include packages_exclude
+
+            base=${env.BASE}
+            branch=$(firmware_id "TAG" "${env.BRANCH}" "${base}") && echo "$branch"
+            target_system=$(devices_name "TARGET_SYSTEM" "${matrix.target}") && echo "$target_system"
+            target_name=$(devices_name "TARGET_NAME" "${matrix.target}") && echo "$target_name"
+            profile=$(devices_name "PROFILE" "${matrix.target}") && echo "$profile"
+            arch=$(devices_name "ARCH" "${matrix.target}") && echo "$arch"
+            packages_include=""
+            packages_exclude=""
+
+            ./test.sh "$base" "$branch" "$target_system" "$target_name" "$profile" "$arch" \
+              "${{ github.event.inputs.packages_include }}" "${{ github.event.inputs.packages_exclude }}"
+          }
+          build || {
+            echo "::error::Build failed"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          }
+          echo "::endgroup::"
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Upload Firmware to Release
+        if: steps.build.outputs.status == 'success'
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_NAME }}
+          files: |
+            ${{ env.BUILD_DIR }}/compiled_images/*.img.gz
+            ${{ env.BUILD_DIR }}/compiled_images/*.img
+            ${{ env.BUILD_DIR }}/compiled_images/*.bin
+          prerelease: ${{ github.ref_name == 'dev' }}
+          fail_on_unmatched_files: false
+
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.target }}
+          path: |
+            ${{ env.BUILD_DIR }}/compiled_images/
+            ${{ env.BUILD_DIR }}/logs/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload Release Links
+        if: steps.rename.outputs.status == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-links-${{ matrix.target }}
+          path: ${{ env.BUILD_DIR }}/compiled_images/artifacts.txt
+          if-no-files-found: warn
+
+      - name: Build Summary
+        if: always()
+        run: |
+          echo "## Build Summary for ${{ matrix.target }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ${{ steps.rename.outputs.status == 'success' && '✅ Success' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Base:** ${{ env.BASE }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ env.BRANCH }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target:** ${{ matrix.target }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Clean Build:** ${{ env.CLEAN }}" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -d "${{ env.BUILD_DIR }}/compiled_images" ]; then
+            echo "- **Images Built:** $(ls -1 ${{ env.BUILD_DIR }}/compiled_images/ | wc -l)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Generated Files:" >> $GITHUB_STEP_SUMMARY
+            ls -la ${{ env.BUILD_DIR }}/compiled_images/ >> $GITHUB_STEP_SUMMARY || echo "No files found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Clean Storage
+        if: always()
+        run: |
+          # Clean up to save space
+          sudo rm -rf "${{ env.BUILD_DIR }}" || true
+          docker system prune -af || true
