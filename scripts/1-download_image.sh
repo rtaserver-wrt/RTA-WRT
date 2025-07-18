@@ -123,8 +123,6 @@ download_image() {
     rm -f "$WORK_DIR/$filename"
 }
 
-trap cleanup EXIT INT TERM
-
 # Validate inputs
 validate_inputs() {
     # Validate source
