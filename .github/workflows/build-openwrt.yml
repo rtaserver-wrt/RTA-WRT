@@ -295,9 +295,9 @@ jobs:
           fi
 
           # Set working directory
-          WORK_DIR="${GITHUB_WORKSPACE}/imagebuilder"
-          echo "WORK_DIR=$WORK_DIR" >> $GITHUB_ENV
-          mkdir -p "$WORK_DIR"
+          BUILD_DIR="${GITHUB_WORKSPACE}/imagebuilder"
+          echo "BUILD_DIR=$BUILD_DIR" >> $GITHUB_ENV
+          mkdir -p "$BUILD_DIR"
 
           echo "status=success" >> $GITHUB_OUTPUT
 
@@ -460,9 +460,9 @@ jobs:
           tag_name: ${{ env.RELEASE_TAG }}
           name: ${{ env.RELEASE_NAME }}
           files: |
-            ${{ env.WORK_DIR }}/compiled_images/*.img.gz
-            ${{ env.WORK_DIR }}/compiled_images/*.img
-            ${{ env.WORK_DIR }}/compiled_images/*.bin
+            ${{ env.BUILD_DIR }}/compiled_images/*.img.gz
+            ${{ env.BUILD_DIR }}/compiled_images/*.img
+            ${{ env.BUILD_DIR }}/compiled_images/*.bin
           prerelease: ${{ github.ref_name == 'dev' }}
           fail_on_unmatched_files: false
 
@@ -472,8 +472,8 @@ jobs:
         with:
           name: build-artifacts-${{ matrix.target }}
           path: |
-            ${{ env.WORK_DIR }}/compiled_images/
-            ${{ env.WORK_DIR }}/logs/
+            ${{ env.BUILD_DIR }}/compiled_images/
+            ${{ env.BUILD_DIR }}/logs/
           retention-days: 30
           if-no-files-found: warn
 
@@ -482,7 +482,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-links-${{ matrix.target }}
-          path: ${{ env.WORK_DIR }}/compiled_images/artifacts.txt
+          path: ${{ env.BUILD_DIR }}/compiled_images/artifacts.txt
           if-no-files-found: warn
 
       - name: Build Summary
@@ -495,16 +495,16 @@ jobs:
           echo "- **Target:** ${{ matrix.target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Clean Build:** ${{ env.CLEAN }}" >> $GITHUB_STEP_SUMMARY
           
-          if [ -d "${{ env.WORK_DIR }}/compiled_images" ]; then
-            echo "- **Images Built:** $(ls -1 ${{ env.WORK_DIR }}/compiled_images/ | wc -l)" >> $GITHUB_STEP_SUMMARY
+          if [ -d "${{ env.BUILD_DIR }}/compiled_images" ]; then
+            echo "- **Images Built:** $(ls -1 ${{ env.BUILD_DIR }}/compiled_images/ | wc -l)" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Generated Files:" >> $GITHUB_STEP_SUMMARY
-            ls -la ${{ env.WORK_DIR }}/compiled_images/ >> $GITHUB_STEP_SUMMARY || echo "No files found" >> $GITHUB_STEP_SUMMARY
+            ls -la ${{ env.BUILD_DIR }}/compiled_images/ >> $GITHUB_STEP_SUMMARY || echo "No files found" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Clean Storage
         if: always()
         run: |
           # Clean up to save space
-          sudo rm -rf "${{ env.WORK_DIR }}" || true
+          sudo rm -rf "${{ env.BUILD_DIR }}" || true
           docker system prune -af || true

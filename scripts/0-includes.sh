@@ -4,7 +4,7 @@ set -euo pipefail
 
 # Configuration
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly WORK_DIR="${SCRIPT_DIR}/../work"
+readonly WORK_DIR="${BUILD_DIR}"
 
 # Include
 . "${SCRIPT_DIR}/json_reader.sh"
