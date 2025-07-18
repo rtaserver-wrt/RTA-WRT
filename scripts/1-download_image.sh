@@ -1,4 +1,7 @@
+
 #!/bin/bash
+# Script: 1-download_image.sh
+# Fungsi: Mengunduh image firmware utama sesuai source, target, dan versi.
 
 set -e
 
@@ -39,8 +42,12 @@ if [ -z "$BRANCH" ]; then
     exit 1
 fi
 
-# Create working directory if it doesn't exist
-mkdir -p "$WORK_DIR"
+
+ARCH="$(device_id "ARCH_2" "$TARGET")"
+if [ -z "$ARCH" ]; then
+    log "ERROR" "Could not determine architecture for target: $TARGET"
+    exit 1
+fi
 
 # Download function
 download_image() {
@@ -82,7 +89,6 @@ download_image() {
     esac
 
     log "INFO" "Downloading image from: $url"
-    mkdir -p "$WORK_DIR"
     
     # Use our download_file function from includes
     if ! download_file "$url" "$WORK_DIR"; then
@@ -123,44 +129,8 @@ download_image() {
     rm -f "$WORK_DIR/$filename"
 }
 
-# Validate inputs
-validate_inputs() {
-    # Validate source
-    case "$SOURCE" in
-        "openwrt"|"immortalwrt") ;;
-        *) log "ERROR" "Invalid source: $SOURCE. Must be 'openwrt' or 'immortalwrt'"; return 1 ;;
-    esac
-    
-    # Validate version
-    case "$VERSION" in
-        "stable"|"snapshot"|"old-stable") ;;
-        *) log "ERROR" "Invalid version: $VERSION. Must be 'stable', 'snapshot' or 'old-stable'"; return 1 ;;
-    esac
-    
-    # Validate target exists in devices.json
-    if ! device_id "TARGET_NAME" "$TARGET" >/dev/null; then
-        log "ERROR" "Invalid target: $TARGET. Target not found in devices configuration"
-        return 1
-    fi
-    
-    return 0
-}
-
 # Main function to orchestrate the download process
 main() {
-    # Validate inputs first
-    if ! validate_inputs; then
-        log "ERROR" "Input validation failed"
-        return 1
-    fi
-    
-    # Ensure working directory exists and is writable
-    if ! mkdir -p "$WORK_DIR" 2>/dev/null || ! [ -w "$WORK_DIR" ]; then
-        log "ERROR" "Working directory ($WORK_DIR) is not writable"
-        return 1
-    fi
-
-    
     # Perform the download
     if ! download_image "$@"; then
         log "ERROR" "Failed to download and extract image"

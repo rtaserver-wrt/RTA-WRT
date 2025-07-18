@@ -327,14 +327,14 @@ jobs:
           fi
 
           # Build firmware
-          if [ -f "../build.sh" ]; then
-            chmod +x ./build.sh
+          if [ -f "${GITHUB_WORKSPACE}/build.sh" ]; then
+            chmod +x "${GITHUB_WORKSPACE}/build.sh"
 
             echo "::group::Building firmware"
-            time ../build.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
+            time "${GITHUB_WORKSPACE}/build.sh" "$BASE" "$MATRIX_TARGET" "$BRANCH"
             echo "::endgroup::"
           else
-            echo "::error::Build script not found"
+            echo "::error::Build script not found in root repository"
             exit 1
           fi
 
