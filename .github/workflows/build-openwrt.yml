@@ -306,7 +306,7 @@ jobs:
 
       - name: Build Firmware
         id: build
-        if: steps.customize.outputs.status == 'success'
+        if: steps.variables.outputs.status == 'success'
         run: |
           set -e
           
@@ -342,54 +342,8 @@ jobs:
           ls -la compiled_images/ || echo "No images found in compiled_images/"
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Repack Firmware
-        id: repack
-        if: steps.build.outputs.status == 'success'
-        run: |
-          set -e
-          
-          # Source includes if available
-          if [ -f "./scripts/0-includes.sh" ]; then
-            source ./scripts/0-includes.sh
-          fi
-
-          cd "$BUILD_DIR"
-          
-          if [ -f "../scripts/6-repack_openwrt.sh" ]; then
-            chmod +x ../scripts/6-repack_openwrt.sh
-            ../scripts/6-repack_openwrt.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
-          else
-            echo "::warning::Repack script not found, skipping"
-          fi
-
-          echo "status=success" >> $GITHUB_OUTPUT
-
-      - name: Rename Images
-        id: rename
-        if: steps.repack.outputs.status == 'success'
-        run: |
-          set -e
-          
-          # Source includes if available
-          if [ -f "./scripts/0-includes.sh" ]; then
-            source ./scripts/0-includes.sh
-          fi
-
-          cd "$BUILD_DIR"
-          
-          if [ -f "../scripts/7-rename_openwrt.sh" ]; then
-            chmod +x ../scripts/7-rename_openwrt.sh
-            ../scripts/7-rename_openwrt.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
-          else
-            echo "::warning::Rename script not found, skipping"
-          fi
-
-          echo "Final images:"
-          ls -la compiled_images/
-          echo "status=success" >> $GITHUB_OUTPUT
-
       - name: Upload Firmware to Release
-        if: steps.rename.outputs.status == 'success'
+        if: steps.build.outputs.status == 'success'
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
