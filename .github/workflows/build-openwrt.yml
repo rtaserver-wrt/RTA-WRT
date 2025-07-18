@@ -95,6 +95,9 @@ jobs:
       datemonth: ${{ steps.setupenv.outputs.datemonth }}
       release_name: ${{ steps.setupenv.outputs.release_name }}
       release_tag: ${{ steps.setupenv.outputs.release_tag }}
+    env:
+      BASE: ${{ github.event.inputs.base }}
+      BRANCH: ${{ github.event.inputs.branch }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -318,6 +321,9 @@ jobs:
             chmod +x ../scripts/1-download_image.sh
             ../scripts/1-download_image.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
           else
+            echo "Error: Download script not found!"
+            exit 1
+          fi
             echo "::error::Download script not found"
             exit 1
           fi

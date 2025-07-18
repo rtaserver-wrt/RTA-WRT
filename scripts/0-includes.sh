@@ -14,6 +14,12 @@ MAX_RETRIES=3
 RETRY_DELAY=2
 TIMEOUT=30
 USER_AGENT="Mozilla/5.0 (Linux; x86_64) AppleWebKit/537.36"
+LOG_FILE="${SCRIPT_DIR}/../logs/build.log"
+CACHE_DIR="${SCRIPT_DIR}/../.cache"
+DEBUG=${DEBUG:-0}
+
+# Create necessary directories
+mkdir -p "$(dirname "$LOG_FILE")" "$CACHE_DIR"
 
 # Colors
 RED='\033[0;31m'
@@ -31,9 +37,13 @@ log() {
         "INFO")  echo -e "${GREEN}[INFO]${NC} $message" ;;
         "WARN")  echo -e "${YELLOW}[WARN]${NC} $message" ;;
         "ERROR") echo -e "${RED}[ERROR]${NC} $message" ;;
+        *) echo -e "[${level}] $message" ;;
     esac
     
-    echo "[$timestamp] [$level] $message"
+    # Log to file if LOG_FILE is set
+    if [[ -n "${LOG_FILE:-}" ]]; then
+        echo "[$timestamp] [$level] $message" >> "$LOG_FILE"
+    fi
 }
 
 # Download function
@@ -66,6 +76,8 @@ download_file() {
             --user-agent="$USER_AGENT" \
             --allow-overwrite=true \
             --console-log-level=error \
+            --max-overall-download-limit=0 \
+            --min-split-size=1M \
             "$url" 2>/dev/null; then
             
             log "INFO" "Downloaded: $filename"
@@ -178,6 +190,23 @@ parallel_download() {
 get_github_assets() {
     local api_url="$1"
     local temp_file=$(mktemp)
+    
+    # Check GitHub API rate limit
+    local rate_limit_check=$(curl -sI \
+        -H "Accept: application/vnd.github.v3+json" \
+        -H "User-Agent: $USER_AGENT" \
+        "https://api.github.com/rate_limit")
+    
+    if echo "$rate_limit_check" | grep -q "X-RateLimit-Remaining: 0"; then
+        local reset_time=$(echo "$rate_limit_check" | grep "X-RateLimit-Reset" | cut -d' ' -f2 | tr -d '\r')
+        local current_time=$(date +%s)
+        local wait_time=$((reset_time - current_time))
+        
+        if [ $wait_time -gt 0 ]; then
+            log "WARN" "GitHub API rate limit exceeded. Waiting ${wait_time}s for reset..."
+            sleep $wait_time
+        fi
+    fi
     
     if curl -sL \
         --max-time $TIMEOUT \
