@@ -304,100 +304,6 @@ jobs:
 
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Download Image Builder
-        id: download
-        if: steps.variables.outputs.status == 'success'
-        run: |
-          set -e
-          
-          # Source includes if available
-          if [ -f "./scripts/0-includes.sh" ]; then
-            source ./scripts/0-includes.sh
-          fi
-
-          cd "$BUILD_DIR"
-          
-          if [ -f "../scripts/1-download_image.sh" ]; then
-            chmod +x ../scripts/1-download_image.sh
-            ../scripts/1-download_image.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
-          else
-            echo "Error: Download script not found!"
-            exit 1
-          fi
-            echo "::error::Download script not found"
-            exit 1
-          fi
-
-          echo "status=success" >> $GITHUB_OUTPUT
-
-      - name: Download Packages
-        id: packages
-        if: steps.download.outputs.status == 'success'
-        run: |
-          set -e
-          
-          # Source includes if available
-          if [ -f "./scripts/0-includes.sh" ]; then
-            source ./scripts/0-includes.sh
-          fi
-
-          cd "$BUILD_DIR"
-          
-          if [ -f "../scripts/2-download_packages.sh" ]; then
-            chmod +x ../scripts/2-download_packages.sh
-            ../scripts/2-download_packages.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
-          else
-            echo "::warning::Package download script not found, skipping"
-          fi
-
-          echo "status=success" >> $GITHUB_OUTPUT
-
-      - name: Apply Patches
-        id: patches
-        if: steps.packages.outputs.status == 'success'
-        run: |
-          set -e
-          
-          # Source includes if available
-          if [ -f "./scripts/0-includes.sh" ]; then
-            source ./scripts/0-includes.sh
-          fi
-
-          cd "$BUILD_DIR"
-          
-          if [ -f "../scripts/3-diy1_patch.sh" ]; then
-            chmod +x ../scripts/3-diy1_patch.sh
-            ../scripts/3-diy1_patch.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
-          else
-            echo "::warning::Patch script not found, skipping"
-          fi
-
-          echo "status=success" >> $GITHUB_OUTPUT
-
-      - name: Apply Customizations
-        id: customize
-        if: steps.patches.outputs.status == 'success'
-        run: |
-          set -e
-          
-          # Source includes if available
-          if [ -f "./scripts/0-includes.sh" ]; then
-            source ./scripts/0-includes.sh
-          fi
-
-          cd "$BUILD_DIR"
-          
-          if [ -f "../scripts/4-diy2_misc.sh" ]; then
-            chmod +x ../scripts/4-diy2_misc.sh
-            ../scripts/4-diy2_misc.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
-          else
-            echo "::warning::Customization script not found, skipping"
-          fi
-
-          echo "Disk usage after customization:"
-          df -hT "$PWD"
-          echo "status=success" >> $GITHUB_OUTPUT
-
       - name: Build Firmware
         id: build
         if: steps.customize.outputs.status == 'success'
@@ -421,11 +327,11 @@ jobs:
           fi
           
           # Build firmware
-          if [ -f "../scripts/5-build_image.sh" ]; then
-            chmod +x ../scripts/5-build_image.sh
+          if [ -f "../build.sh" ]; then
+            chmod +x ../build.sh
             
             echo "::group::Building firmware"
-            time ../scripts/5-build_image.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
+            time ../build.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
             echo "::endgroup::"
           else
             echo "::error::Build script not found"
