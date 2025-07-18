@@ -1,5 +1,12 @@
 name: Generate RTA-WRT All Firmware
 
+# Add permissions for the workflow
+permissions:
+  contents: write    # Required for creating releases and uploading assets
+  packages: read     # If you need to access GitHub packages
+  issues: write      # If you need to create/modify issues
+  pull-requests: write  # If you need to create/modify PRs
+
 on:
   workflow_dispatch:
     inputs:
