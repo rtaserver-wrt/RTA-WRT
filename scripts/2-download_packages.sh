@@ -11,6 +11,9 @@ VERSION="${3:-stable}"
 TAG="$(firmware_id "TAG" "${VERSION}" "${SOURCE}")"
 BRANCH="$(echo "${TAG}" | awk -F. '{print $1"."$2}')"
 
+
+ARCH="$(device_id "ARCH_2" "$TARGET")"
+
 # Main function
 main() {
     log "INFO" "Starting package downloader with precise filtering"
@@ -18,15 +21,15 @@ main() {
     
     local OpenWrt_URL ImmortalWrt_URL GSPOTX2F_URL
     if [[ "${VERSION}" == "snapshot" ]]; then
-        OpenWrt_URL="https://downloads.openwrt.org/snapshots/packages/${TARGET}"
-        ImmortalWrt_URL="https://downloads.immortalwrt.org/snapshots/packages/${TARGET}"
+        OpenWrt_URL="https://downloads.openwrt.org/snapshots/packages/${ARCH}"
+        ImmortalWrt_URL="https://downloads.immortalwrt.org/snapshots/packages/${ARCH}"
         GSPOTX2F_URL="https://github.com/gSpotx2f/packages-openwrt/tree/refs/heads/master/snapshot"
-        RTA_PACKAGES_URL="https://github.com/rizkikotet-dev/RTA-WRT_Packages/tree/releases/packages/SNAPSHOT/${TARGET}"
+        RTA_PACKAGES_URL="https://github.com/rizkikotet-dev/RTA-WRT_Packages/tree/releases/packages/SNAPSHOT/${ARCH}"
     else
-        OpenWrt_URL="https://downloads.openwrt.org/releases/packages-${BRANCH}/${TARGET}"
-        ImmortalWrt_URL="https://downloads.immortalwrt.org/releases/packages-${BRANCH}/${TARGET}"
+        OpenWrt_URL="https://downloads.openwrt.org/releases/packages-${BRANCH}/${ARCH}"
+        ImmortalWrt_URL="https://downloads.immortalwrt.org/releases/packages-${BRANCH}/${ARCH}"
         GSPOTX2F_URL="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/current"
-        RTA_PACKAGES_URL="https://github.com/rizkikotet-dev/RTA-WRT_Packages/tree/releases/packages/${BRANCH}/${TARGET}"
+        RTA_PACKAGES_URL="https://github.com/rizkikotet-dev/RTA-WRT_Packages/tree/releases/packages/${BRANCH}/${ARCH}"
     fi
     
     # Package definitions
