@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       base:
-        description: "Select the Base Build:"
+        description: "Select the Base Build"
         required: true
         default: "openwrt"
         type: choice
@@ -12,7 +12,7 @@ on:
           - openwrt
           - immortalwrt
       branch:
-        description: "Select the Branch Build:"
+        description: "Select the Branch Build"
         required: true
         default: "stable"
         type: choice
@@ -74,15 +74,11 @@ on:
 env:
   TZ: Asia/Jakarta
   DEBIAN_FRONTEND: noninteractive
-  BASE: ${{ github.event.inputs.base }}
-  BRANCH: ${{ github.event.inputs.branch }}
-  TARGET: ${{ github.event.inputs.target }}
-  CLEAN: ${{ github.event.inputs.clean }}
 
 jobs:
   prebuild:
     runs-on: ubuntu-22.04
-    name: ${{ github.event.inputs.release_branch }}
+    name: Preparation
     outputs:
       target: ${{ steps.set-matrix.outputs.target }}
       base: ${{ steps.setupenv.outputs.base }}
@@ -97,59 +93,57 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
+          fetch-depth: 1
 
       - name: Set Matrix Run
         id: set-matrix
         run: |
           echo "Selected target option: [ ${{ github.event.inputs.target }} ]"
-          TARGET_JSON=$(cat << 'EOJ'
-          {
-            "target": [
-              "Raspberry Pi 3",
-              "Raspberry Pi 4",
-              "x86-64",
-              "Amlogic s905",
-              "Amlogic s905 Beelink Mini",
-              "Amlogic s905 MXQ Pro Plus",
-              "Amlogic s905W",
-              "Amlogic s905W W95",
-              "Amlogic s905W X96 Mini",
-              "Amlogic s905W X96W",
-              "Amlogic s905X HG680P",
-              "Amlogic s905X B860H",
-              "Amlogic s905X Nexbox A95X",
-              "Amlogic s905X2",
-              "Amlogic s905X2 KM3",
-              "Amlogic s905X2 X96 Max 2G",
-              "Amlogic s905X3",
-              "Amlogic s905X3 H96 Max",
-              "Amlogic s905X3 HK1",
-              "Amlogic s905X3 X96 Max",
-              "Amlogic s905X4",
-              "Amlogic s912",
-              "Amlogic s912 H96 Pro Plus",
-              "Amlogic s912 X92",
-              "Allwinner H5 Orange Pi Zero Plus2",
-              "Allwinner H5 Orange Pi Zero Plus",
-              "Allwinner H5 Orange Pi Prime",
-              "Allwinner H5 Orange Pi PC2",
-              "Allwinner H6 Orange Pi Lite2",
-              "Allwinner H6 Orange Pi 1 Plus",
-              "Allwinner H6 Orange Pi 3",
-              "Allwinner H6 Orange Pi 3 LTS",
-              "Allwinner H616 Orange Pi Zero2",
-              "Allwinner H618 Orange Pi Zero2W",
-              "Allwinner H618 Orange Pi Zero3",
-              "Rockchip rk3318 H96-MAX",
-              "Rockchip rk3566 Orange Pi 3B",
-              "Rockchip rk3588s Orange Pi 5"
-            ]
-          }
-          EOJ
-          )
+          
+          # Define targets in a more maintainable way
+          ALL_TARGETS='[
+            "Raspberry Pi 3",
+            "Raspberry Pi 4", 
+            "x86-64",
+            "Amlogic s905",
+            "Amlogic s905 Beelink Mini",
+            "Amlogic s905 MXQ Pro Plus",
+            "Amlogic s905W",
+            "Amlogic s905W W95",
+            "Amlogic s905W X96 Mini",
+            "Amlogic s905W X96W",
+            "Amlogic s905X HG680P",
+            "Amlogic s905X B860H",
+            "Amlogic s905X Nexbox A95X",
+            "Amlogic s905X2",
+            "Amlogic s905X2 KM3",
+            "Amlogic s905X2 X96 Max 2G",
+            "Amlogic s905X3",
+            "Amlogic s905X3 H96 Max",
+            "Amlogic s905X3 HK1",
+            "Amlogic s905X3 X96 Max",
+            "Amlogic s905X4",
+            "Amlogic s912",
+            "Amlogic s912 H96 Pro Plus",
+            "Amlogic s912 X92",
+            "Allwinner H5 Orange Pi Zero Plus2",
+            "Allwinner H5 Orange Pi Zero Plus",
+            "Allwinner H5 Orange Pi Prime",
+            "Allwinner H5 Orange Pi PC2",
+            "Allwinner H6 Orange Pi Lite2",
+            "Allwinner H6 Orange Pi 1 Plus",
+            "Allwinner H6 Orange Pi 3",
+            "Allwinner H6 Orange Pi 3 LTS",
+            "Allwinner H616 Orange Pi Zero2",
+            "Allwinner H618 Orange Pi Zero2W",
+            "Allwinner H618 Orange Pi Zero3",
+            "Rockchip rk3318 H96-MAX",
+            "Rockchip rk3566 Orange Pi 3B",
+            "Rockchip rk3588s Orange Pi 5"
+          ]'
 
           if [ "${{ github.event.inputs.target }}" == "all-device" ]; then
-            echo "target=$(echo "$TARGET_JSON" | jq -c '.target')" >> $GITHUB_OUTPUT
+            echo "target=$(echo "$ALL_TARGETS" | jq -c '.')" >> $GITHUB_OUTPUT
           else
             echo "target=$(jq -nc --arg d "${{ github.event.inputs.target }}" '[$d]')" >> $GITHUB_OUTPUT
           fi
@@ -159,28 +153,38 @@ jobs:
         run: |
           sudo timedatectl set-timezone "${{ env.TZ }}"
 
-          echo "BASE=$BASE" >> $GITHUB_OUTPUT
-          echo "BRANCH=$BRANCH" >> $GITHUB_OUTPUT
+          BASE="${{ github.event.inputs.base }}"
+          BRANCH="${{ github.event.inputs.branch }}"
+          
+          echo "base=$BASE" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
           DATE=$(date +'%d%m%Y')
           DATETIME=$(date +'%d.%m.%Y-%H:%M:%S')
           DATEMONTH=$(date +"%B-%Y" | awk '{print tolower($0)}')
 
-          echo "DATE=$DATE" >> $GITHUB_OUTPUT
-          echo "DATETIME=$DATETIME" >> $GITHUB_OUTPUT
-          echo "DATEMONTH=$DATEMONTH" >> $GITHUB_OUTPUT
+          echo "date=$DATE" >> $GITHUB_OUTPUT
+          echo "datetime=$DATETIME" >> $GITHUB_OUTPUT
+          echo "datemonth=$DATEMONTH" >> $GITHUB_OUTPUT
 
-          if [ "${BASE}" == "openwrt" ]; then
-            RELEASE_NAME="RTA-WRT-OpenWRT-${BRANCH}-${DATE}"
-            RELEASE_TAG="rtawrt-openwrt-${BRANCH}-${DATE}"
-            echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_OUTPUT
-            echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_OUTPUT
-          elif [ "${BASE}" == "immortalwrt" ]; then
-            RELEASE_NAME="RTA-WRT-ImmortalWRT-${BRANCH}-${DATE}"
-            RELEASE_TAG="rtawrt-immortalwrt-${BRANCH}-${DATE}"
-            echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_OUTPUT
-            echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_OUTPUT
-          fi
+          # Create release name and tag based on base
+          case "${BASE}" in
+            "openwrt")
+              RELEASE_NAME="RTA-WRT-OpenWRT-${BRANCH}-${DATE}"
+              RELEASE_TAG="rtawrt-openwrt-${BRANCH}-${DATE}"
+              ;;
+            "immortalwrt")
+              RELEASE_NAME="RTA-WRT-ImmortalWRT-${BRANCH}-${DATE}"
+              RELEASE_TAG="rtawrt-immortalwrt-${BRANCH}-${DATE}"
+              ;;
+            *)
+              echo "::error::Unknown base: ${BASE}"
+              exit 1
+              ;;
+          esac
+
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Create Release
@@ -194,10 +198,18 @@ jobs:
           prerelease: ${{ github.ref_name == 'dev' }}
           body: |
             # 🚀 RTA-WRT - Release Information
+            
+            **Base:** ${{ github.event.inputs.base }}
+            **Branch:** ${{ github.event.inputs.branch }}
+            **Target:** ${{ github.event.inputs.target }}
+            **Build Date:** ${{ steps.setupenv.outputs.datetime }}
+            **Clean Build:** ${{ github.event.inputs.clean }}
+            
+            This is an automated build of RTA-WRT firmware.
           generate_release_notes: true
 
   build-firmware:
-    name: Build ${{ matrix.target }} Firmware
+    name: Build ${{ matrix.target }}
     needs: prebuild
     runs-on: ubuntu-22.04
     continue-on-error: true
@@ -209,19 +221,44 @@ jobs:
       DATEMONTH: ${{ needs.prebuild.outputs.datemonth }}
       RELEASE_NAME: ${{ needs.prebuild.outputs.release_name }}
       RELEASE_TAG: ${{ needs.prebuild.outputs.release_tag }}
+      TARGET: ${{ github.event.inputs.target }}
+      CLEAN: ${{ github.event.inputs.clean }}
     strategy:
       fail-fast: false
       matrix:
         target: ${{ fromJSON(needs.prebuild.outputs.target) }}
 
     steps:
-      - name: Initialization environment
+      - name: Free Disk Space
+        run: |
+          echo "Before cleanup:"
+          df -hT
+          
+          # Remove unnecessary packages and files
+          sudo apt-get autoremove -y
+          sudo apt-get autoclean -y
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo docker image prune -af
+          
+          echo "After cleanup:"
+          df -hT
+
+      - name: Initialize Environment
         id: init
         run: |
+          set -e
+          
+          echo "::group::Update packages"
           sudo -E apt-get -y update
-          sudo -E apt-get -y install $(curl -fsSL https://tinyurl.com/ubuntu2204-make-openwrt)
+          echo "::endgroup::"
+          
+          echo "::group::Install dependencies"
+          PACKAGES=$(curl -fsSL https://tinyurl.com/ubuntu2204-make-openwrt || echo "build-essential libncurses5-dev libncursesw5-dev zlib1g-dev gawk git gettext libssl-dev xsltproc rsync wget unzip python3 python3-pip")
+          sudo -E apt-get -y install $PACKAGES
+          echo "::endgroup::"
+          
           sudo timedatectl set-timezone "${{ env.TZ }}"
-          echo "status=success" >> ${GITHUB_OUTPUT}
+          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -232,37 +269,57 @@ jobs:
       - name: Setup Build Variables
         id: variables
         run: |
-          . ./scripts/0-includes.sh
+          set -e
+          
+          # Source includes if available
+          if [ -f "./scripts/0-includes.sh" ]; then
+            source ./scripts/0-includes.sh
+          fi
 
-          MATRIXTARGET="${{ matrix.target }}"
-          echo "MATRIXTARGET=$MATRIXTARGET" >> $GITHUB_ENV
+          MATRIX_TARGET="${{ matrix.target }}"
+          echo "MATRIX_TARGET=$MATRIX_TARGET" >> $GITHUB_ENV
 
-          # Common configuration function
-          configure_target() {
-            local profile=$1
-            local target_system=$2
-            local target_name=$3
-            local arch1=$4
-            local arch2=$5
-            local arch3=$6
-            local type=$7
-            echo "PROFILE=$profile" >> $GITHUB_ENV
-            echo "TARGET_SYSTEM=$target_system" >> $GITHUB_ENV
-            echo "TARGET_NAME=$target_name" >> $GITHUB_ENV
-            echo "ARCH_1=$arch1" >> $GITHUB_ENV
-            echo "ARCH_2=$arch2" >> $GITHUB_ENV
-            echo "ARCH_3=$arch3" >> $GITHUB_ENV
-            echo "TYPE=$type" >> $GITHUB_ENV
-          }
+          # Get firmware version info
+          if command -v firmware_id &> /dev/null; then
+            TAG="$(firmware_id "TAG" "${BRANCH}" "${BASE}")"
+            BRANCH_VER="$(echo "${TAG}" | awk -F. '{print $1"."$2}')"
+            echo "TAG=$TAG" >> $GITHUB_ENV
+            echo "BRANCH_VER=$BRANCH_VER" >> $GITHUB_ENV
+          fi
+
+          # Set working directory
+          WORK_DIR="${GITHUB_WORKSPACE}/imagebuilder"
+          echo "WORK_DIR=$WORK_DIR" >> $GITHUB_ENV
+          mkdir -p "$WORK_DIR"
 
           echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Cache Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache
+            imagebuilder/dl
+          key: ${{ runner.os }}-${{ env.BASE }}-${{ env.BRANCH }}-${{ matrix.target }}-${{ hashFiles('**/Makefile') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.BASE }}-${{ env.BRANCH }}-
+            ${{ runner.os }}-${{ env.BASE }}-
 
       - name: Download Image Builder
         id: download
         if: steps.variables.outputs.status == 'success'
         run: |
-          cd origin
-          bash scripts/1-download_image.sh
+          set -e
+          
+          cd "$WORK_DIR"
+          
+          if [ -f "../scripts/1-download_image.sh" ]; then
+            chmod +x ../scripts/1-download_image.sh
+            ../scripts/1-download_image.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
+          else
+            echo "::error::Download script not found"
+            exit 1
+          fi
 
           echo "status=success" >> $GITHUB_OUTPUT
 
@@ -270,93 +327,124 @@ jobs:
         id: packages
         if: steps.download.outputs.status == 'success'
         run: |
-          cd ${WORK_DIR}
-          chmod +x scripts/PACKAGES.sh
-          ./scripts/PACKAGES.sh
+          set -e
+          
+          cd "$WORK_DIR"
+          
+          if [ -f "../scripts/2-download_packages.sh" ]; then
+            chmod +x ../scripts/2-download_packages.sh
+            ../scripts/2-download_packages.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
+          else
+            echo "::warning::Package download script not found, skipping"
+          fi
 
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Apply Patches and Misc
-        id: customize
+      - name: Apply Patches
+        id: patches
         if: steps.packages.outputs.status == 'success'
         run: |
-          cd ${WORK_DIR}
+          set -e
+          
+          cd "$WORK_DIR"
+          
+          if [ -f "../scripts/3-diy1_patch.sh" ]; then
+            chmod +x ../scripts/3-diy1_patch.sh
+            ../scripts/3-diy1_patch.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
+          else
+            echo "::warning::Patch script not found, skipping"
+          fi
 
-          # Apply patches
-          chmod +x scripts/PATCH.sh
-          ./scripts/PATCH.sh
-
-          # Apply miscellaneous changes
-          chmod +x scripts/MISC.sh
-          ./scripts/MISC.sh
-
-          # Configure tunnel apps
-          chmod +x scripts/TUNNEL.sh
-          ./scripts/TUNNEL.sh
-
-          df -hT ${PWD}
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Build OpenWrt Images
+      - name: Apply Customizations
+        id: customize
+        if: steps.patches.outputs.status == 'success'
+        run: |
+          set -e
+          
+          cd "$WORK_DIR"
+          
+          if [ -f "../scripts/4-diy2_misc.sh" ]; then
+            chmod +x ../scripts/4-diy2_misc.sh
+            ../scripts/4-diy2_misc.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
+          else
+            echo "::warning::Customization script not found, skipping"
+          fi
+
+          echo "Disk usage after customization:"
+          df -hT "$PWD"
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Build Firmware
         id: build
         if: steps.customize.outputs.status == 'success'
         run: |
-          cd ${WORK_DIR}
+          set -e
+          
+          cd "$WORK_DIR"
           mkdir -p compiled_images
-          chmod +x make-image.sh
-
-          # Clean if requested
-          if [ "${CLEAN}" == "true" ]; then
-            make clean
+          
+          # Clean build if requested
+          if [ "$CLEAN" == "true" ]; then
+            echo "::group::Cleaning build environment"
+            make clean || true
+            echo "::endgroup::"
           fi
+          
+          # Build firmware
+          if [ -f "../scripts/5-build_image.sh" ]; then
+            chmod +x ../scripts/5-build_image.sh
             
-          # Build image
-          time ./make-image.sh ${PROFILE}
-            
-          # Move and rename output files
-          if [[ "$TYPE" =~ ^(OPHUB|ULO)$ ]]; then
-              for file in bin/targets/"${TARGET_SYSTEM}"/*-rootfs.tar.gz; do
-                if [ -f "$file" ]; then
-                  new_name="RTA-WRT_$(basename "$file" -rootfs.tar.gz)-rootfs.tar.gz"
-                  mv "$file" compiled_images/$new_name
-                fi
-              done
+            echo "::group::Building firmware"
+            time ../scripts/5-build_image.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
+            echo "::endgroup::"
           else
-              for file in bin/targets/"${TARGET_SYSTEM}"/*.img.gz; do
-                if [ -f "$file" ]; then
-                  new_name="RTA-WRT_$(basename "$file" .img.gz).img.gz"
-                  mv "$file" compiled_images/$new_name
-                fi
-              done
+            echo "::error::Build script not found"
+            exit 1
           fi
-
 
           echo "Images built successfully:"
-          ls -la compiled_images/
+          ls -la compiled_images/ || echo "No images found in compiled_images/"
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Repack OpenWrt
+      - name: Repack Firmware
         id: repack
         if: steps.build.outputs.status == 'success'
         run: |
-          cd ${WORKING_DIR}
-          chmod +x scripts/REPACKWRT.sh
-          echo "Repacking OpenWrt images ${TYPE}..."
-          if [[ "$TYPE" =~ ^(OPHUB|ULO)$ ]]; then
-            ./scripts/REPACKWRT.sh "$TYPE" "$TARGET_BUILD" "$KERNEL"
+          set -e
+          
+          cd "$WORK_DIR"
+          
+          if [ -f "../scripts/6-repack_openwrt.sh" ]; then
+            chmod +x ../scripts/6-repack_openwrt.sh
+            ../scripts/6-repack_openwrt.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
+          else
+            echo "::warning::Repack script not found, skipping"
           fi
+
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Rename OpenWrt
+      - name: Rename Images
         id: rename
-        if: steps.modsdcard.outputs.status == 'success'
+        if: steps.repack.outputs.status == 'success'
         run: |
-          cd ${{ env.WORKING_DIR }}
-          chmod +x scripts/RENAMEFW.sh
-          ./scripts/RENAMEFW.sh
-          echo "status=success" >> "$GITHUB_OUTPUT"
+          set -e
+          
+          cd "$WORK_DIR"
+          
+          if [ -f "../scripts/7-rename_openwrt.sh" ]; then
+            chmod +x ../scripts/7-rename_openwrt.sh
+            ../scripts/7-rename_openwrt.sh "$BASE" "$MATRIX_TARGET" "$BRANCH"
+          else
+            echo "::warning::Rename script not found, skipping"
+          fi
 
-      - name: Create Release
+          echo "Final images:"
+          ls -la compiled_images/
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Upload Firmware to Release
         if: steps.rename.outputs.status == 'success'
         uses: softprops/action-gh-release@v2
         env:
@@ -364,15 +452,52 @@ jobs:
         with:
           tag_name: ${{ env.RELEASE_TAG }}
           name: ${{ env.RELEASE_NAME }}
-          files: ${{ env.WORKING_DIR }}/compiled_images/*.img.gz
+          files: |
+            ${{ env.WORK_DIR }}/compiled_images/*.img.gz
+            ${{ env.WORK_DIR }}/compiled_images/*.img
+            ${{ env.WORK_DIR }}/compiled_images/*.bin
           prerelease: ${{ github.ref_name == 'dev' }}
+          fail_on_unmatched_files: false
 
-      - name: Upload file links as artifact
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.target }}
+          path: |
+            ${{ env.WORK_DIR }}/compiled_images/
+            ${{ env.WORK_DIR }}/logs/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload Release Links
+        if: steps.rename.outputs.status == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: release-links-${{ matrix.target }}
-          path: /home/runner/work/RTA-WRT/RTA-WRT/imagebuilder/compiled_images//artifacts.txt
+          path: ${{ env.WORK_DIR }}/compiled_images/artifacts.txt
+          if-no-files-found: warn
+
+      - name: Build Summary
+        if: always()
+        run: |
+          echo "## Build Summary for ${{ matrix.target }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ${{ steps.rename.outputs.status == 'success' && '✅ Success' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Base:** ${{ env.BASE }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ env.BRANCH }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target:** ${{ matrix.target }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Clean Build:** ${{ env.CLEAN }}" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -d "${{ env.WORK_DIR }}/compiled_images" ]; then
+            echo "- **Images Built:** $(ls -1 ${{ env.WORK_DIR }}/compiled_images/ | wc -l)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Generated Files:" >> $GITHUB_STEP_SUMMARY
+            ls -la ${{ env.WORK_DIR }}/compiled_images/ >> $GITHUB_STEP_SUMMARY || echo "No files found" >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Clean Storage
+        if: always()
         run: |
-          sudo rm -rf ${{ env.WORKING_DIR }}
+          # Clean up to save space
+          sudo rm -rf "${{ env.WORK_DIR }}" || true
+          docker system prune -af || true
