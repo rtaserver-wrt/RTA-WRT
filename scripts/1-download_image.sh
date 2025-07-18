@@ -1,16 +1,46 @@
 #!/bin/bash
 
-. ../scripts/0-includes.sh
+set -e
 
+# Determine script directory and include paths
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INCLUDES_PATH="${SCRIPT_DIR}/0-includes.sh"
+
+if [ ! -f "$INCLUDES_PATH" ]; then
+    echo "ERROR: Required includes file not found: $INCLUDES_PATH"
+    exit 1
+fi
+
+# Source includes
+. "$INCLUDES_PATH"
+
+# Setup working directory
 WORK_DIR="${WORK_DIR:-$PWD}"
-cd "${WORK_DIR}" || exit 1
+if ! cd "$WORK_DIR" 2>/dev/null; then
+    log "ERROR" "Cannot change to working directory: $WORK_DIR"
+    exit 1
+fi
 
+# Initialize variables
 SOURCE="${1:-openwrt}"
 TARGET="${2:-x86-64}"
 VERSION="${3:-stable}"
-TAG="$(firmware_id "TAG" "${VERSION}" "${SOURCE}")"
-BRANCH="$(echo "${TAG}" | awk -F. '{print $1"."$2}')"
 
+# Get firmware information
+TAG="$(firmware_id "TAG" "${VERSION}" "${SOURCE}")"
+if [ -z "$TAG" ]; then
+    log "ERROR" "Could not determine firmware TAG"
+    exit 1
+fi
+
+BRANCH="$(echo "${TAG}" | awk -F. '{print $1"."$2}')"
+if [ -z "$BRANCH" ]; then
+    log "ERROR" "Could not determine BRANCH from TAG: $TAG"
+    exit 1
+fi
+
+# Create working directory if it doesn't exist
+mkdir -p "$WORK_DIR"
 
 # Download function
 download_image() {
@@ -118,6 +148,31 @@ validate_inputs() {
     return 0
 }
 
+# Main function to orchestrate the download process
+main() {
+    # Validate inputs first
+    if ! validate_inputs; then
+        log "ERROR" "Input validation failed"
+        return 1
+    fi
+    
+    # Ensure working directory exists and is writable
+    if ! mkdir -p "$WORK_DIR" 2>/dev/null || ! [ -w "$WORK_DIR" ]; then
+        log "ERROR" "Working directory ($WORK_DIR) is not writable"
+        return 1
+    fi
+
+    
+    # Perform the download
+    if ! download_image "$@"; then
+        log "ERROR" "Failed to download and extract image"
+        return 1
+    fi
+    
+    log "INFO" "Image download and extraction completed successfully"
+    return 0
+}
+
 # Run if executed directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     if [[ $# -lt 3 ]]; then
@@ -125,14 +180,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
         exit 1
     fi
     
-    if ! validate_inputs; then
+    if ! main "$@"; then
         exit 1
     fi
-    
-    if ! download_image "$@"; then
-        log "ERROR" "Failed to download and extract image"
-        exit 1
-    fi
-    
-    log "INFO" "Image download and extraction completed successfully"
 fi
