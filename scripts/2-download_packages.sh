@@ -19,17 +19,17 @@ main() {
     log "INFO" "Starting package downloader with precise filtering"
     
     
-    local OpenWrt_URL ImmortalWrt_URL GSPOTX2F_URL
+    local OpenWrt_URL ImmortalWrt_URL GSPOTX2F_URL RTA_PACKAGES_URL
     if [[ "${VERSION}" == "snapshot" ]]; then
         OpenWrt_URL="https://downloads.openwrt.org/snapshots/packages/${ARCH}"
         ImmortalWrt_URL="https://downloads.immortalwrt.org/snapshots/packages/${ARCH}"
-        GSPOTX2F_URL="https://github.com/gSpotx2f/packages-openwrt/tree/refs/heads/master/snapshot"
-        RTA_PACKAGES_URL="https://github.com/rizkikotet-dev/RTA-WRT_Packages/tree/releases/packages/SNAPSHOT/${ARCH}"
+        GSPOTX2F_URL="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/snapshot"
+        RTA_PACKAGES_URL="https://github.com/rizkikotet-dev/RTA-WRT_Packages/raw/releases/packages/SNAPSHOT/${ARCH}"
     else
-        OpenWrt_URL="https://downloads.openwrt.org/releases/packages-${BRANCH}/${ARCH}"
-        ImmortalWrt_URL="https://downloads.immortalwrt.org/releases/packages-${BRANCH}/${ARCH}"
+        OpenWrt_URL="https://downloads.openwrt.org/releases/${TAG}/packages/${ARCH}"
+        ImmortalWrt_URL="https://downloads.immortalwrt.org/releases/${TAG}/packages/${ARCH}"
         GSPOTX2F_URL="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/current"
-        RTA_PACKAGES_URL="https://github.com/rizkikotet-dev/RTA-WRT_Packages/tree/releases/packages/${BRANCH}/${ARCH}"
+        RTA_PACKAGES_URL="https://github.com/rizkikotet-dev/RTA-WRT_Packages/raw/releases/packages/${TAG}/${ARCH}"
     fi
     
     # Package definitions

@@ -70,14 +70,13 @@ configure_config() {
             sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config
             ;;
         *)
-            log "INFO" "Non-Amlogic system type detected: ${type}, skipping Amlogic config"
+            log "INFO" "Skipping Config"
             ;;
     esac
 }
 
 # Main execution flow
 main() {
-    init_environment
     apply_distro_patches
     patch_signature_check
     patch_makefile
