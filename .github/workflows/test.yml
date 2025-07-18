@@ -275,7 +275,6 @@ jobs:
 
       - name: Build Firmware
         id: build
-        if: steps.variables.outputs.status == 'success'
         run: |
           set -e
 
