@@ -1,7 +1,8 @@
 #!/bin/bash
 
-. ./scripts/0-includes.sh.sh
+. ./scripts/0-includes.sh
 
+WORK_DIR="${WORK_DIR:-$PWD}"
 cd "${WORK_DIR}" || exit 1
 
 SOURCE="${1:-openwrt}"

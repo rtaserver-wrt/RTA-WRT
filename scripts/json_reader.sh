@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly DEVICES_LIST_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../congigs/devices.json"
+readonly DEVICES_LIST_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../configs/devices.json"
 readonly FIRMWARE_LIST_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../configs/firmware.json"
 
 # Fungsi yang diperbaiki untuk mendapatkan field device dengan inheritance dari parent

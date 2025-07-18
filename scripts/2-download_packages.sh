@@ -1,7 +1,8 @@
 #!/bin/bash
 
-. ./scripts/0-includes.sh.sh
+. ./scripts/0-includes.sh
 
+WORK_DIR="${WORK_DIR:-$PWD}"
 cd "${WORK_DIR}" || exit 1
 
 SOURCE="${1:-openwrt}"
@@ -85,8 +86,8 @@ trap cleanup EXIT INT TERM
 
 # Run if executed directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    if [[ $# -lt 1 ]]; then
-        echo "Usage: $0 <package_list_file>"
+    if [[ $# -lt 3 ]]; then
+        echo "Usage: $0 <source> <target> <version>"
         exit 1
     fi
     main "$@"
