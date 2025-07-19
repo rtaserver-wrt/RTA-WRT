@@ -293,12 +293,11 @@ jobs:
             target_system=$(device_name "TARGET_SYSTEM" "${{ matrix.target }}") && echo "TARGET_SYSTEM: $target_system"
             target_name=$(device_name "TARGET_NAME" "${{ matrix.target }}") && echo "TARGET_NAME: $target_name"
             profile=$(device_name "PROFILE" "${{ matrix.target }}") && echo "PROFILE: $profile"
-            arch=$(device_name "ARCH2" "${{ matrix.target }}") && echo "ARCH: $arch"
+            arch=$(device_name "ARCH_2" "${{ matrix.target }}") && echo "ARCH: $arch"
             packages_include=""
             packages_exclude=""
 
-            ./test.sh "$base" "$branch" "$target_system" "$target_name" "$profile" "$arch" \
-              "${{ github.event.inputs.packages_include }}" "${{ github.event.inputs.packages_exclude }}"
+            ./test.sh "$base" "$branch" "$target_system" "$target_name" "$profile" "$arch" "$packages_include" "$packages_exclude" || return 1
           }
           build || {
             echo "::error::Build failed"
