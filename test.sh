@@ -95,38 +95,6 @@ print_header() {
     echo -e "${BLUE}╚════════════════════════════════════════════════════════════════╝${NC}"
 }
 
-# Enhanced prerequisites check
-check_prerequisites() {
-    log "INFO" "Checking prerequisites..."
-    
-    # Check disk space (minimum 4GB for safety)
-    local available_space
-    available_space=$(df "$PWD" | tail -1 | awk '{print $4}')
-    local min_space=4194304  # 4GB in KB
-    
-    if [[ "$available_space" -lt "$min_space" ]]; then
-        log "ERROR" "Insufficient disk space. Available: $((available_space/1024/1024))GB, Required: 4GB"
-        exit 1
-    fi
-    
-    # Check memory
-    local available_memory
-    available_memory=$(free -k | grep '^Mem:' | awk '{print $2}')
-    local min_memory=1048576  # 1GB in KB
-    
-    if [[ "$available_memory" -lt "$min_memory" ]]; then
-        log "WARN" "Low memory detected. Available: $((available_memory/1024))MB. Build may be slow."
-    fi
-    
-    # Check internet connectivity
-    if ! ping -c 1 -W 5 google.com &> /dev/null; then
-        log "ERROR" "No internet connectivity. Unable to download Image Builder."
-        exit 1
-    fi
-    
-    log "SUCCESS" "Prerequisites check completed"
-}
-
 # Enhanced environment setup
 setup_environment() {
     log "INFO" "Setting up build environment..."
@@ -437,7 +405,6 @@ main() {
     # Main build process
     print_header
     
-    check_prerequisites
     setup_environment
     get_image_builder
     prepare_custom_files
