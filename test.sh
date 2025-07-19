@@ -33,7 +33,6 @@ readonly CUSTOM_FILES_DIR="files"
 readonly LOG_FILE="${WORK_DIR}/build.log"
 
 # Advanced configuration options
-ROOTFS_SIZE="1024" # Default rootfs size in MB
 MAKE_JOBS=$(nproc)
 
 
