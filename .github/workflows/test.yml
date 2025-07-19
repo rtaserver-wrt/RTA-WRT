@@ -290,10 +290,10 @@ jobs:
 
             base=${{ env.BASE }} && echo "$base"
             branch=$(firmware_id "TAG" "${{ env.BRANCH }}" "${base}") && echo "$branch"
-            target_system=$(devices_name "TARGET_SYSTEM" "${{ matrix.target }}") && echo "$target_system"
-            target_name=$(devices_name "TARGET_NAME" "${{ matrix.target }}") && echo "$target_name"
-            profile=$(devices_name "PROFILE" "${{ matrix.target }}") && echo "$profile"
-            arch=$(devices_name "ARCH" "${{ matrix.target }}") && echo "$arch"
+            target_system=$(device_name "TARGET_SYSTEM" "${{ matrix.target }}") && echo "$target_system"
+            target_name=$(device_name "TARGET_NAME" "${{ matrix.target }}") && echo "$target_name"
+            profile=$(device_name "PROFILE" "${{ matrix.target }}") && echo "$profile"
+            arch=$(device_name "ARCH" "${{ matrix.target }}") && echo "$arch"
             packages_include=""
             packages_exclude=""
 
