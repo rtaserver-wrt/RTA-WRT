@@ -263,6 +263,54 @@ validate_packages() {
 # Enhanced firmware patching
 patch_firmware() {
     log "INFO" "Applying firmware patches..."
+
+    case "$BASE" in
+        "openwrt")
+            log "INFO" "Applying OpenWrt patches..."
+            ;;
+        "immortalwrt")
+            log "INFO" "Applying ImmortalWrt patches..."
+            sed -i "/luci-app-cpufreq/d" include/target.mk
+            ;;
+        *)
+            log "ERROR" "Unsupported base '$BASE'. Supported: openwrt, immortalwrt"
+            exit 1
+            ;;
+    esac
+
+    case "$TARGET_NAME" in
+        "armsr-armv8")
+            log "INFO" "Configuring ARM SR ARMv8 target settings"
+            local configs=(
+                CONFIG_TARGET_ROOTFS_CPIOGZ
+                CONFIG_TARGET_ROOTFS_EXT4FS
+                CONFIG_TARGET_ROOTFS_SQUASHFS
+                CONFIG_TARGET_IMAGES_GZIP
+            )
+
+            for config in "${configs[@]}"; do
+                sed -i "s|${config}=.*|# ${config} is not set|" .config
+            done
+            ;;
+        "x86-64")
+            log "INFO" "Configuring x86_64 target settings"
+            sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config
+            sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config
+            ;;
+        *)
+            log "WARN" "Unknown target name: $TARGET_NAME, skipping specific patches"
+            ;;
+    esac
+
+    log "INFO" "Disabling package signature checking in repositories.conf"
+    sed -i '\|option check_signature| s|^|#|' repositories.conf
+
+    log "INFO" "Forcing package overwrite and downgrade during installation"
+    sed -i 's|install \$(BUILD_PACKAGES)|install \$(BUILD_PACKAGES) --force-overwrite --force-downgrade|' Makefile
+
+    log "INFO" "Setting kernel and rootfs partition sizes"
+    sed -i 's|CONFIG_TARGET_KERNEL_PARTSIZE=.*|CONFIG_TARGET_KERNEL_PARTSIZE=128|' .config
+    sed -i 's|CONFIG_TARGET_ROOTFS_PARTSIZE=.*|CONFIG_TARGET_ROOTFS_PARTSIZE=1024|' .config
     
     log "SUCCESS" "Firmware patching completed"
 }
@@ -282,10 +330,6 @@ build_firmware() {
     
     if [[ -d "$CUSTOM_FILES_DIR" ]] && [[ -n "$(ls -A "$CUSTOM_FILES_DIR" 2>/dev/null)" ]]; then
         build_cmd+=" FILES='$CUSTOM_FILES_DIR'"
-    fi
-    
-    if [[ -n "$ROOTFS_SIZE" ]]; then
-        build_cmd+=" EXTRA_IMAGE_NAME='rootfs-$ROOTFS_SIZE'"
     fi
     
     # Add parallel jobs
