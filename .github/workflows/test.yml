@@ -72,11 +72,6 @@ on:
           - Rockchip rk3318 H96-MAX
           - Rockchip rk3566 Orange Pi 3B
           - Rockchip rk3588s Orange Pi 5
-      clean:
-        description: "Do 'make clean' for each run"
-        required: false
-        default: true
-        type: boolean
 
 env:
   TZ: Asia/Jakarta
@@ -210,7 +205,6 @@ jobs:
             **Branch:** ${{ github.event.inputs.branch }}
             **Target:** ${{ github.event.inputs.target }}
             **Build Date:** ${{ steps.setupenv.outputs.datetime }}
-            **Clean Build:** ${{ github.event.inputs.clean }}
             
             This is an automated build of RTA-WRT firmware.
           generate_release_notes: true
@@ -229,7 +223,6 @@ jobs:
       RELEASE_NAME: ${{ needs.prebuild.outputs.release_name }}
       RELEASE_TAG: ${{ needs.prebuild.outputs.release_tag }}
       TARGET: ${{ github.event.inputs.target }}
-      CLEAN: ${{ github.event.inputs.clean }}
     strategy:
       fail-fast: false
       matrix:
@@ -316,29 +309,20 @@ jobs:
           tag_name: ${{ env.RELEASE_TAG }}
           name: ${{ env.RELEASE_NAME }}
           files: |
-            ${{ env.BUILD_DIR }}/compiled_images/*.img.gz
-            ${{ env.BUILD_DIR }}/compiled_images/*.img
-            ${{ env.BUILD_DIR }}/compiled_images/*.bin
+            ${{ github.workspace }}/openwrt-build/bin/targets/*/*/*.img.gz
+            ${{ github.workspace }}/openwrt-build/bin/targets/*/*/*.img
+            ${{ github.workspace }}/openwrt-build/bin/targets/*/*/*.bin
           prerelease: ${{ github.ref_name == 'dev' }}
           fail_on_unmatched_files: false
 
-      - name: Upload Build Artifacts
+      - name: Upload Build Logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-${{ matrix.target }}
           path: |
-            ${{ env.BUILD_DIR }}/compiled_images/
-            ${{ env.BUILD_DIR }}/logs/
+            ${{ github.workspace }}/openwrt-build/build.log
           retention-days: 30
-          if-no-files-found: warn
-
-      - name: Upload Release Links
-        if: steps.rename.outputs.status == 'success'
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-links-${{ matrix.target }}
-          path: ${{ env.BUILD_DIR }}/compiled_images/artifacts.txt
           if-no-files-found: warn
 
       - name: Build Summary
@@ -349,18 +333,10 @@ jobs:
           echo "- **Base:** ${{ env.BASE }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch:** ${{ env.BRANCH }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Target:** ${{ matrix.target }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Clean Build:** ${{ env.CLEAN }}" >> $GITHUB_STEP_SUMMARY
-          
-          if [ -d "${{ env.BUILD_DIR }}/compiled_images" ]; then
-            echo "- **Images Built:** $(ls -1 ${{ env.BUILD_DIR }}/compiled_images/ | wc -l)" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### Generated Files:" >> $GITHUB_STEP_SUMMARY
-            ls -la ${{ env.BUILD_DIR }}/compiled_images/ >> $GITHUB_STEP_SUMMARY || echo "No files found" >> $GITHUB_STEP_SUMMARY
-          fi
 
       - name: Clean Storage
         if: always()
         run: |
           # Clean up to save space
-          sudo rm -rf "${{ env.BUILD_DIR }}" || true
+          sudo rm -rf "${{ github.workspace }}/openwrt-build" || true
           docker system prune -af || true

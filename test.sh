@@ -138,7 +138,7 @@ get_image_builder() {
         local max_retries=3
         
         while [[ $retry_count -lt $max_retries ]]; do
-            if wget --show-progress --timeout=60 --tries=1 "$image_builder_url"; then
+            if wget --timeout=60 --tries=1 "$image_builder_url"; then
                 break
             else
                 ((retry_count++))
@@ -318,11 +318,6 @@ show_results() {
     
     local bin_dir="bin/targets/$TARGET_SYSTEM"
     local images_found=0
-    
-    if [[ ! -d "$bin_dir" ]]; then
-        log "ERROR" "Build directory not found: $bin_dir"
-        return 1
-    fi
     
     echo -e "\n${CYAN}╔════════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${CYAN}║                        BUILD RESULTS                           ║${NC}"
