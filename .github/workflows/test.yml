@@ -288,8 +288,8 @@ jobs:
           build(){
             local base branch target_system target_name profile arch packages_include packages_exclude
 
-            base=${env.BASE}
-            branch=$(firmware_id "TAG" "${env.BRANCH}" "${base}") && echo "$branch"
+            base=${{ env.BASE }} && echo "$base"
+            branch=$(firmware_id "TAG" "${{ env.BRANCH }}" "${base}") && echo "$branch"
             target_system=$(devices_name "TARGET_SYSTEM" "${matrix.target}") && echo "$target_system"
             target_name=$(devices_name "TARGET_NAME" "${matrix.target}") && echo "$target_name"
             profile=$(devices_name "PROFILE" "${matrix.target}") && echo "$profile"
