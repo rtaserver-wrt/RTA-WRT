@@ -1,65 +1,81 @@
 #!/bin/bash
-# Enhanced OpenWrt Image Builder Script
-# Version: 3.0
-# Description: Build custom OpenWrt firmware with enhanced features and improved reliability
-
+# OpenWrt Image Builder Script
+# Version: 4.0 (Enhanced & Robust)
 set -euo pipefail
 
-# Color codes for better output
+# Color output for better visibility
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
 readonly YELLOW='\033[1;33m'
 readonly BLUE='\033[0;34m'
-readonly PURPLE='\033[0;35m'
-readonly CYAN='\033[0;36m'
 readonly NC='\033[0m' # No Color
 
-# Script metadata
-readonly SCRIPT_VERSION="3.0"
-readonly SCRIPT_NAME="OpenWrt Image Builder"
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Logging functions
+log_info() { echo -e "${BLUE}[INFO]${NC} $*"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $*"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-# Configuration with defaults
-readonly WORK_DIR="${PWD}/openwrt-build"
+# Error handler
+error_handler() {
+    local line_no=$1
+    log_error "Script failed at line $line_no"
+    log_error "Working directory: $(pwd)"
+    exit 1
+}
+trap 'error_handler $LINENO' ERR
+
+# Configuration with improved defaults
+readonly WORK_DIR="${OPENWRT_WORK_DIR:-${PWD}/openwrt-build}"
 readonly BASE="${1:-openwrt}"
 readonly BRANCH="${2:-24.10.2}"
 readonly TARGET_SYSTEM="${3:-x86/64}"
 readonly TARGET_NAME="${4:-x86-64}"
 readonly PROFILE="${5:-generic}"
 readonly ARCH="${6:-x86_64}"
-readonly PACKAGES_INCLUDE="${7:-dnsmasq-full luci}"
+readonly PACKAGES_INCLUDE="${7:-dnsmasq-full luci luci-ssl-openssl}"
 readonly PACKAGES_EXCLUDE="${8:--dnsmasq}"
 readonly CUSTOM_FILES_DIR="files"
-readonly LOG_FILE="${WORK_DIR}/build.log"
+readonly JOBS="$(nproc)"
 
-# Advanced configuration options
-MAKE_JOBS=$(nproc)
-
-
-# Enhanced logging function with file output
-log() {
-    local level=$1
-    shift
-    local message="$*"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    local log_entry="[$level] [$timestamp] $message"
-    
-    # Create log directory if it doesn't exist
-    mkdir -p "$(dirname "$LOG_FILE")" 2>/dev/null || true
-    
-    case $level in
-        "INFO") echo -e "${GREEN}[INFO]${NC} [$timestamp] $message" | tee -a "$LOG_FILE" ;;
-        "WARN") echo -e "${YELLOW}[WARN]${NC} [$timestamp] $message" | tee -a "$LOG_FILE" ;;
-        "ERROR") echo -e "${RED}[ERROR]${NC} [$timestamp] $message" | tee -a "$LOG_FILE" ;;
-        "DEBUG") echo "$log_entry" >> "$LOG_FILE" ;;
-        "SUCCESS") echo -e "${CYAN}[SUCCESS]${NC} [$timestamp] $message" | tee -a "$LOG_FILE" ;;
+# Validate parameters
+validate_parameters() {
+    case "$BASE" in
+        openwrt|immortalwrt) ;;
+        *) log_error "Unsupported base: $BASE. Use 'openwrt' or 'immortalwrt'"; exit 1 ;;
     esac
+    
+    if [[ ! "$BRANCH" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+        log_warn "Branch format unusual: $BRANCH (expected format: X.Y.Z)"
+    fi
+    
+    if [[ ! "$TARGET_SYSTEM" =~ ^[a-z0-9_-]+/[a-z0-9_-]+$ ]]; then
+        log_warn "TARGET_SYSTEM format unusual: $TARGET_SYSTEM (expected: arch/subarch)"
+    fi
 }
 
+# Setup working environment
+setup_environment() {
+    log_info "Setting up build environment..."
+    log_info "Working directory: $WORK_DIR"
+    log_info "Base: $BASE, Branch: $BRANCH, Target: $TARGET_SYSTEM"
+    
+    # Create working directory with proper permissions
+    mkdir -p "$WORK_DIR"
+    cd "$WORK_DIR"
+    
+    # Clean previous builds if requested
+    if [[ "${CLEAN_BUILD:-0}" == "1" ]]; then
+        log_info "Cleaning previous build artifacts..."
+        rm -rf ./*
+    fi
+}
 
-# Determine Image Builder URL with improved error handling
-get_image_builder_url() {
+# Download and extract Image Builder
+download_imagebuilder() {
     local url
+    local ib_file
+    
     case "$BASE" in
         "openwrt")
             url="https://downloads.openwrt.org/releases/$BRANCH/targets/$TARGET_SYSTEM/openwrt-imagebuilder-$BRANCH-$TARGET_NAME.Linux-x86_64.tar.zst"
@@ -67,392 +83,187 @@ get_image_builder_url() {
         "immortalwrt")
             url="https://downloads.immortalwrt.org/releases/$BRANCH/targets/$TARGET_SYSTEM/immortalwrt-imagebuilder-$BRANCH-$TARGET_NAME.Linux-x86_64.tar.zst"
             ;;
-        *)
-            log "ERROR" "Unsupported base '$BASE'. Supported: openwrt, immortalwrt"
-            exit 1
-            ;;
-    esac
-    echo "$url"
-}
-
-# Function to display enhanced header
-print_header() {
-    echo -e "${BLUE}╔════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${BLUE}║                   $SCRIPT_NAME v$SCRIPT_VERSION                    ║${NC}"
-    echo -e "${BLUE}╠════════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${BLUE}║${NC} ${GREEN}Build Started:${NC} $(date)"
-    echo -e "${BLUE}║${NC} ${GREEN}Base System:${NC} $BASE ($BRANCH)"
-    echo -e "${BLUE}║${NC} ${GREEN}Target:${NC} $TARGET_SYSTEM ($TARGET_NAME)"
-    echo -e "${BLUE}║${NC} ${GREEN}Profile:${NC} $PROFILE"
-    echo -e "${BLUE}║${NC} ${GREEN}Architecture:${NC} $ARCH"
-    echo -e "${BLUE}║${NC} ${GREEN}Packages (+):${NC} $PACKAGES_INCLUDE"
-    echo -e "${BLUE}║${NC} ${GREEN}Packages (-):${NC} ${PACKAGES_EXCLUDE:-none}"
-    echo -e "${BLUE}║${NC} ${GREEN}Custom Files:${NC} $CUSTOM_FILES_DIR"
-    echo -e "${BLUE}║${NC} ${GREEN}Parallel Jobs:${NC} $MAKE_JOBS"
-    echo -e "${BLUE}║${NC} ${GREEN}Work Directory:${NC} $WORK_DIR"
-    echo -e "${BLUE}║${NC} ${GREEN}Log File:${NC} $LOG_FILE"
-    echo -e "${BLUE}╚════════════════════════════════════════════════════════════════╝${NC}"
-}
-
-# Enhanced environment setup
-setup_environment() {
-    log "INFO" "Setting up build environment..."
-    
-    # Handle existing build directory
-    if [[ -d "$WORK_DIR" ]]; then
-        rm -rf "$WORK_DIR"
-    fi
-    
-    # Create work directory structure
-    mkdir -p "$WORK_DIR"/{patches,logs,tmp}
-    cd "$WORK_DIR"
-    
-    # Set build environment variables
-    export FORCE_UNSAFE_CONFIGURE=1
-    export MAKEFLAGS="-j$MAKE_JOBS"
-    
-    log "SUCCESS" "Environment setup completed"
-}
-
-# Enhanced Image Builder download with retry logic
-get_image_builder() {
-    log "INFO" "Downloading Image Builder..."
-    
-    local image_builder_url
-    image_builder_url=$(get_image_builder_url)
-    local ib_file
-    ib_file=$(basename "$image_builder_url")
-    
-    # Check if file already exists and verify integrity
-    if [[ -f "$ib_file" ]]; then
-        log "INFO" "Image Builder file exists: $ib_file"
-        rm -f "$ib_file"
-    fi
-    
-    # Download with retry logic
-    if [[ ! -f "$ib_file" ]]; then
-        log "INFO" "Downloading from: $image_builder_url"
-        
-        local retry_count=0
-        local max_retries=3
-        
-        while [[ $retry_count -lt $max_retries ]]; do
-            if wget --timeout=60 --tries=1 "$image_builder_url"; then
-                break
-            else
-                ((retry_count++))
-                log "WARN" "Download failed, retry $retry_count/$max_retries"
-                sleep 5
-            fi
-        done
-        
-        if [[ $retry_count -eq $max_retries ]]; then
-            log "ERROR" "Failed to download Image Builder after $max_retries attempts"
-            exit 1
-        fi
-    fi
-    
-    # Verify file integrity
-    if [[ ! -s "$ib_file" ]]; then
-        log "ERROR" "Downloaded file is empty or corrupted"
-        exit 1
-    fi
-    
-    # Extract with progress
-    log "INFO" "Extracting Image Builder..."
-    case "$ib_file" in
-        *.tar.xz) tar -xJf "$ib_file" --strip-components=1 ;;
-        *.tar.gz) tar -xzf "$ib_file" --strip-components=1 ;;
-        *.tar.zst) tar -I zstd -xf "$ib_file" --strip-components=1 ;;
-        *) 
-            log "ERROR" "Unsupported archive format: $ib_file"
-            exit 1
-            ;;
     esac
     
-    # Verify extraction
-    if [[ ! -f "Makefile" ]]; then
-        log "ERROR" "Image Builder extraction failed - Makefile not found"
-        exit 1
-    fi
+    ib_file=$(basename "$url")
     
-    log "SUCCESS" "Image Builder extracted successfully"
-}
-
-# Enhanced custom files preparation
-prepare_custom_files() {
-    log "INFO" "Preparing custom files..."
-    
-    local source_files_dir="../$CUSTOM_FILES_DIR"
-    
-    if [[ -d "$source_files_dir" ]]; then
-        log "INFO" "Copying custom files from $source_files_dir"
-        
-        # Create destination directory
-        mkdir -p "$CUSTOM_FILES_DIR"
-        
-        # Copy files with proper permissions
-        find "$source_files_dir" -type f -print0 | while IFS= read -r -d '' file; do
-            local rel_path="${file#$source_files_dir/}"
-            local dest_dir="$CUSTOM_FILES_DIR/$(dirname "$rel_path")"
-            
-            mkdir -p "$dest_dir"
-            cp "$file" "$CUSTOM_FILES_DIR/$rel_path"
-            
-            # Set executable permissions for scripts
-            if [[ "$file" == *.sh ]] || [[ "$file" == */bin/* ]]; then
-                chmod +x "$CUSTOM_FILES_DIR/$rel_path"
-            fi
-        done
-        
-        # Count files
-        local file_count
-        file_count=$(find "$CUSTOM_FILES_DIR" -type f | wc -l)
-        log "INFO" "Copied $file_count custom files"
-        
+    if [[ -f "$ib_file" ]] && [[ "${FORCE_DOWNLOAD:-0}" != "1" ]]; then
+        log_info "Image builder already exists: $ib_file"
     else
-        log "WARN" "Custom files directory not found: $source_files_dir"
-        mkdir -p "$CUSTOM_FILES_DIR"
+        log_info "Downloading Image Builder: $url"
+        if ! wget -q --show-progress "$url"; then
+            log_error "Failed to download Image Builder from: $url"
+            log_error "Please check if the URL is correct and accessible"
+            exit 1
+        fi
     fi
     
-    log "SUCCESS" "Custom files prepared"
-}
-
-# Enhanced package validation
-validate_packages() {
-    log "INFO" "Validating package configuration..."
-    
-    # Check for package conflicts
-    local include_array=($PACKAGES_INCLUDE)
-    local exclude_array=($PACKAGES_EXCLUDE)
-    
-    # Find conflicting packages
-    local conflicts=()
-    for pkg in "${include_array[@]}"; do
-        for excl in "${exclude_array[@]}"; do
-            if [[ "$pkg" == "$excl" ]]; then
-                conflicts+=("$pkg")
-            fi
-        done
-    done
-    
-    if [[ ${#conflicts[@]} -gt 0 ]]; then
-        log "ERROR" "Package conflicts detected: ${conflicts[*]}"
-        log "ERROR" "Package cannot be both included and excluded"
+    # Verify download
+    if [[ ! -f "$ib_file" ]] || [[ ! -s "$ib_file" ]]; then
+        log_error "Downloaded file is missing or empty: $ib_file"
         exit 1
     fi
     
-    # Validate package names (basic check)
-    local invalid_packages=()
-    for pkg in "${include_array[@]}"; do
-        if [[ ! "$pkg" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-            invalid_packages+=("$pkg")
-        fi
-    done
-    
-    if [[ ${#invalid_packages[@]} -gt 0 ]]; then
-        log "WARN" "Potentially invalid package names: ${invalid_packages[*]}"
+    log_info "Extracting Image Builder..."
+    if ! tar -I zstd -xf "$ib_file" --strip-components=1; then
+        log_error "Failed to extract Image Builder. Archive might be corrupted."
+        exit 1
     fi
     
-    log "INFO" "Package validation completed"
-    log "INFO" "Packages to include: ${#include_array[@]}"
-    log "INFO" "Packages to exclude: ${#exclude_array[@]}"
+    log_success "Image Builder extracted successfully"
 }
 
-# Enhanced firmware patching
-patch_firmware() {
-    log "INFO" "Applying firmware patches..."
+# Prepare custom files
+prepare_custom_files() {
+    local source_path="../$CUSTOM_FILES_DIR"
+    
+    if [[ -d "$source_path" ]]; then
+        log_info "Copying custom files from $source_path"
+        cp -r "$source_path" .
+        
+        # Set proper permissions for custom files
+        find "$CUSTOM_FILES_DIR" -type f -exec chmod 644 {} \;
+        find "$CUSTOM_FILES_DIR" -type d -exec chmod 755 {} \;
+        
+        # Make scripts executable
+        find "$CUSTOM_FILES_DIR" -name "*.sh" -exec chmod +x {} \;
+        
+        log_success "Custom files prepared"
+    else
+        log_info "No custom files directory found at $source_path"
+    fi
+}
 
+# Apply firmware-specific patches
+apply_patches() {
+    log_info "Applying firmware patches..."
+    
     case "$BASE" in
-        "openwrt")
-            log "INFO" "Applying OpenWrt patches..."
-            ;;
         "immortalwrt")
-            log "INFO" "Applying ImmortalWrt patches..."
-            sed -i "/luci-app-cpufreq/d" include/target.mk
-            ;;
-        *)
-            log "ERROR" "Unsupported base '$BASE'. Supported: openwrt, immortalwrt"
-            exit 1
+            if [[ -f "include/target.mk" ]]; then
+                sed -i "/luci-app-cpufreq/d" include/target.mk
+                log_info "Applied ImmortalWrt cpufreq patch"
+            fi
             ;;
     esac
-
+    
+    # Target-specific configurations
     case "$TARGET_NAME" in
         "armsr-armv8")
-            log "INFO" "Configuring ARM SR ARMv8 target settings"
-            local configs=(
-                CONFIG_TARGET_ROOTFS_CPIOGZ
-                CONFIG_TARGET_ROOTFS_EXT4FS
-                CONFIG_TARGET_ROOTFS_SQUASHFS
-                CONFIG_TARGET_IMAGES_GZIP
-            )
-
-            for config in "${configs[@]}"; do
-                sed -i "s|${config}=.*|# ${config} is not set|" .config
-            done
+            log_info "Applying ARM64 specific configurations..."
+            {
+                echo "# ARM64 specific settings"
+                echo "# CONFIG_TARGET_ROOTFS_CPIOGZ is not set"
+                echo "# CONFIG_TARGET_ROOTFS_EXT4FS is not set" 
+                echo "# CONFIG_TARGET_ROOTFS_SQUASHFS is not set"
+                echo "# CONFIG_TARGET_IMAGES_GZIP is not set"
+            } >> .config
             ;;
         "x86-64")
-            log "INFO" "Configuring x86_64 target settings"
-            sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config
-            sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config
-            ;;
-        *)
-            log "WARN" "Unknown target name: $TARGET_NAME, skipping specific patches"
+            log_info "Applying x86-64 specific configurations..."
+            sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null || true
+            sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null || true
             ;;
     esac
-
-    log "INFO" "Disabling package signature checking in repositories.conf"
-    sed -i '\|option check_signature| s|^|#|' repositories.conf
-
-    log "INFO" "Forcing package overwrite and downgrade during installation"
-    sed -i 's|install \$(BUILD_PACKAGES)|install \$(BUILD_PACKAGES) --force-overwrite --force-downgrade|' Makefile
-
-    log "INFO" "Setting kernel and rootfs partition sizes"
-    sed -i 's|CONFIG_TARGET_KERNEL_PARTSIZE=.*|CONFIG_TARGET_KERNEL_PARTSIZE=128|' .config
-    sed -i 's|CONFIG_TARGET_ROOTFS_PARTSIZE=.*|CONFIG_TARGET_ROOTFS_PARTSIZE=1024|' .config
     
-    log "SUCCESS" "Firmware patching completed"
+    # Disable signature checking for faster builds
+    if [[ -f "repositories.conf" ]]; then
+        sed -i '\|option check_signature| s|^|#|' repositories.conf
+        log_info "Disabled package signature checking"
+    fi
+    
+    log_success "Patches applied successfully"
 }
 
-# Enhanced build process
+# Build the firmware image
 build_firmware() {
-    log "INFO" "Starting firmware build process..."
+    log_info "Starting firmware build..."
+    log_info "Profile: $PROFILE"
+    log_info "Including packages: $PACKAGES_INCLUDE"
+    log_info "Excluding packages: $PACKAGES_EXCLUDE"
     
-    # Prepare build command
-    local build_cmd="make image"
-    build_cmd+=" PROFILE='$PROFILE'"
-    build_cmd+=" PACKAGES='$PACKAGES_INCLUDE'"
+    local make_cmd="make image"
+    make_cmd+=" PROFILE=\"$PROFILE\""
+    make_cmd+=" PACKAGES=\"$PACKAGES_INCLUDE $PACKAGES_EXCLUDE\""
     
-    if [[ -n "$PACKAGES_EXCLUDE" ]]; then
-        build_cmd+=" PACKAGES+=' $PACKAGES_EXCLUDE'"
+    if [[ -d "$CUSTOM_FILES_DIR" ]]; then
+        make_cmd+=" FILES=\"$CUSTOM_FILES_DIR\""
+        log_info "Including custom files from: $CUSTOM_FILES_DIR"
     fi
     
-    if [[ -d "$CUSTOM_FILES_DIR" ]] && [[ -n "$(ls -A "$CUSTOM_FILES_DIR" 2>/dev/null)" ]]; then
-        build_cmd+=" FILES='$CUSTOM_FILES_DIR'"
-    fi
+    make_cmd+=" -j$JOBS"
     
-    # Add parallel jobs
-    build_cmd+=" -j$MAKE_JOBS"
+    log_info "Build command: $make_cmd"
+    log_info "Using $JOBS parallel jobs"
     
-    log "INFO" "Build command: $build_cmd"
+    # Record build start time
+    local start_time=$(date +%s)
     
-    # Execute build with timing
-    local build_start_time
-    build_start_time=$(date +%s)
-    
-    log "INFO" "Starting build process..."
-    if ! eval "$build_cmd" >>"$LOG_FILE" 2>&1; then
-        tail -n 50 "$LOG_FILE"
-        log "ERROR" "Firmware build failed"
-        log "ERROR" "Check $LOG_FILE for detailed error information"
+    if eval "$make_cmd"; then
+        local end_time=$(date +%s)
+        local duration=$((end_time - start_time))
+        log_success "Build completed in ${duration}s"
+    else
+        log_error "Build failed!"
+        log_error "Check the output above for error details"
         exit 1
     fi
-    
-    local build_end_time
-    build_end_time=$(date +%s)
-    local build_duration=$((build_end_time - build_start_time))
-    
-    log "SUCCESS" "Build completed in $build_duration seconds ($(($build_duration/60))m $(($build_duration%60))s)"
 }
 
-# Enhanced results display
+# Display build results
 show_results() {
-    log "SUCCESS" "Build completed successfully!"
+    log_info "Build Results:"
+    echo "=============================================="
     
-    local bin_dir="bin/targets/$TARGET_SYSTEM"
-    local images_found=0
+    local image_files
+    mapfile -t image_files < <(find bin/targets -type f \( -name "*.img.gz" -o -name "*.bin" -o -name "*.vmdk" -o -name "*.img" \) 2>/dev/null || true)
     
-    echo -e "\n${CYAN}╔════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║                        BUILD RESULTS                           ║${NC}"
-    echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
-    
-    # Find and display firmware images
-    while IFS= read -r -d '' image_file; do
-        local filename
-        filename=$(basename "$image_file")
-        local filesize
-        filesize=$(du -h "$image_file" | cut -f1)
-        local checksum
-        checksum=$(sha256sum "$image_file" | cut -d' ' -f1)
+    if [[ ${#image_files[@]} -eq 0 ]]; then
+        log_warn "No firmware images found in bin/targets"
+        log_info "Checking for any files in bin/targets:"
+        find bin/targets -type f 2>/dev/null || log_warn "bin/targets directory not found"
+    else
+        printf "%-50s %10s %20s\n" "File" "Size" "Modified"
+        printf "%80s\n" | tr ' ' '-'
         
-        echo -e "${GREEN}📦 $filename${NC}"
-        echo -e "   ${BLUE}Size:${NC} $filesize"
-        echo -e "   ${BLUE}SHA256:${NC} $checksum"
-        echo -e "   ${BLUE}Path:${NC} $image_file"
+        for file in "${image_files[@]}"; do
+            local size=$(du -h "$file" | cut -f1)
+            local modified=$(date -r "$file" '+%Y-%m-%d %H:%M:%S')
+            printf "%-50s %10s %20s\n" "$(basename "$file")" "$size" "$modified"
+        done
+        
+        log_success "Found ${#image_files[@]} firmware image(s)"
+        echo "Images location: $(pwd)/bin/targets"
+    fi
+    
+    # Show additional artifacts
+    local other_files
+    mapfile -t other_files < <(find bin/targets -type f \( -name "*.buildinfo" -o -name "*.manifest" \) 2>/dev/null || true)
+    
+    if [[ ${#other_files[@]} -gt 0 ]]; then
         echo ""
-        
-        ((images_found++))
-    done < <(find "$bin_dir" -type f \( -name "*.img.gz" -o -name "*.bin" -o -name "*.vmdk" -o -name "*.img" \) -print0)
-    
-    if [[ $images_found -eq 0 ]]; then
-        log "WARN" "No firmware images found in $bin_dir"
-        log "INFO" "Available files:"
-        ls -la "$bin_dir" || true
-    else
-        log "SUCCESS" "Generated $images_found firmware image(s)"
-    fi
-    
-    # Build summary
-    echo -e "${CYAN}╔════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║                         BUILD SUMMARY                          ║${NC}"
-    echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
-    echo -e "${GREEN}Base System:${NC} $BASE $BRANCH"
-    echo -e "${GREEN}Target:${NC} $TARGET_SYSTEM ($PROFILE)"
-    echo -e "${GREEN}Architecture:${NC} $ARCH"
-    echo -e "${GREEN}Work Directory:${NC} $WORK_DIR"
-    echo -e "${GREEN}Log File:${NC} $LOG_FILE"
-    echo -e "${GREEN}Build Completed:${NC} $(date)"
-    echo -e "${GREEN}Images Found:${NC} $images_found"
-    echo ""
-}
-
-# Enhanced cleanup function
-cleanup() {
-    local exit_code=$?
-    
-    if [[ $exit_code -ne 0 ]]; then
-        log "ERROR" "Build failed with exit code $exit_code"
-        log "INFO" "Check $LOG_FILE for detailed error information"
-    else
-        log "SUCCESS" "Build completed successfully"
-    fi
-    
-    # Optional cleanup of temporary files
-    if [[ "$exit_code" -eq 0 ]] && [[ -d "$WORK_DIR/tmp" ]]; then
-        rm -rf "$WORK_DIR/tmp"
-    fi
-    
-    # Display log file location
-    if [[ -f "$LOG_FILE" ]]; then
-        log "INFO" "Full build log available at: $LOG_FILE"
+        log_info "Additional build artifacts:"
+        for file in "${other_files[@]}"; do
+            echo "  - $(basename "$file")"
+        done
     fi
 }
 
-# Signal handlers
-handle_interrupt() {
-    log "WARN" "Build interrupted by user"
-    exit 130
-}
-
-# Main execution function
+# Main execution
 main() {
-    # Setup signal handlers
-    trap cleanup EXIT
-    trap handle_interrupt INT TERM
+
+    log_info "OpenWrt Image Builder Script v4.0"
+    log_info "========================================="
     
-    # Main build process
-    print_header
-    
+    validate_parameters
     setup_environment
-    get_image_builder
+    download_imagebuilder
     prepare_custom_files
-    validate_packages
-    patch_firmware
+    apply_patches
     build_firmware
     show_results
     
-    log "SUCCESS" "All operations completed successfully!"
+    log_success "Script completed successfully!"
 }
 
-# Execute main function with all arguments
 main "$@"
