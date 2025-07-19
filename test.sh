@@ -33,7 +33,24 @@ readonly TARGET_SYSTEM="${3:-x86/64}"
 readonly TARGET_NAME="${4:-x86-64}"
 readonly PROFILE="${5:-generic}"
 readonly ARCH="${6:-x86_64}"
-readonly PACKAGES_INCLUDE="${7:-dnsmasq-full luci luci-ssl-openssl}"
+readonly PACKAGES_INCLUDE="${7:-dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua \
+luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full \
+cpusage ttyd dmesg kmod-tun luci-lib-ipkg git git-http \
+zram-swap adb parted losetup resize2fs luci luci-ssl block-mount htop bash curl wget-ssl \
+tar unzip unrar gzip jq luci-app-ttyd nano httping screen openssh-sftp-server \
+liblucihttp liblucihttp-lua libubus-lua lua luci-app-firewall luci-app-opkg \
+ca-bundle ca-certificates luci-compat coreutils-sleep fontconfig coreutils-whoami file lolcat \
+luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full \
+luci-mod-network luci-mod-status luci-mod-system luci-proto-ipv6 luci-proto-ppp \
+luci-theme-bootstrap px5g-wolfssl rpcd rpcd-mod-file rpcd-mod-iwinfo rpcd-mod-luci \
+rpcd-mod-rrdns uhttpd uhttpd-mod-ubus coreutils coreutils-base64 coreutils-nohup coreutils-stty libc coreutils-stat coreutils-timeout \
+ip-full libuci-lua microsocks resolveip ipset iptables iptables-legacy \
+iptables-mod-iprange iptables-mod-socket iptables-mod-tproxy kmod-ipt-nat luci-lua-runtime zoneinfo-asia zoneinfo-core \
+perl perlbase-base perlbase-bytes perlbase-class perlbase-config perlbase-cwd perlbase-dynaloader perlbase-errno perlbase-essential perlbase-fcntl perlbase-file \
+perlbase-filehandle perlbase-i18n perlbase-integer perlbase-io perlbase-list perlbase-locale perlbase-params perlbase-posix \
+perlbase-re perlbase-scalar perlbase-selectsaver perlbase-socket perlbase-symbol perlbase-tie perlbase-time perlbase-unicore perlbase-utf8 perlbase-xsloader \
+php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo php8-mod-zip php8-mod-iconv php8-mod-mbstring \
+luci-theme-material}"
 readonly PACKAGES_EXCLUDE="${8:--dnsmasq}"
 readonly CUSTOM_FILES_DIR="files"
 readonly JOBS="$(nproc)"
