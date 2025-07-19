@@ -99,31 +99,6 @@ print_header() {
 check_prerequisites() {
     log "INFO" "Checking prerequisites..."
     
-    # Check required tools with versions
-    local required_tools=("wget" "tar" "make" "gcc" "g++" "awk" "grep" "find")
-    local missing_tools=()
-    local tool_versions=()
-    
-    for tool in "${required_tools[@]}"; do
-        if ! command -v "$tool" &> /dev/null; then
-            missing_tools+=("$tool")
-        else
-            local version
-            case "$tool" in
-                "gcc") version=$(gcc --version | head -n1) ;;
-                "make") version=$(make --version | head -n1) ;;
-                *) version=$(command -v "$tool") ;;
-            esac
-            tool_versions+=("$tool: $version")
-        fi
-    done
-    
-    if [[ ${#missing_tools[@]} -gt 0 ]]; then
-        log "ERROR" "Missing required tools: ${missing_tools[*]}"
-        log "INFO" "Install missing tools with: sudo apt-get install ${missing_tools[*]}"
-        exit 1
-    fi
-    
     # Check disk space (minimum 4GB for safety)
     local available_space
     available_space=$(df "$PWD" | tail -1 | awk '{print $4}')
