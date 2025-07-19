@@ -355,7 +355,8 @@ build_firmware() {
     build_start_time=$(date +%s)
     
     log "INFO" "Starting build process..."
-    if ! eval "$build_cmd" 2>&1 | tee -a "$LOG_FILE"; then
+    if ! eval "$build_cmd" >>"$LOG_FILE" 2>&1; then
+        tail -n 50 "$LOG_FILE"
         log "ERROR" "Firmware build failed"
         log "ERROR" "Check $LOG_FILE for detailed error information"
         exit 1
