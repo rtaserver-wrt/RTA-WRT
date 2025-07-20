@@ -115,7 +115,7 @@ luci-proto-modemmanager libmbim libqmi usbutils luci-proto-mbim luci-proto-ncm \
 kmod-usb-net-huawei-cdc-ncm kmod-usb-net-cdc-ether kmod-usb-net-rndis kmod-usb-net-sierrawireless \
 kmod-usb-ohci kmod-usb-serial-sierrawireless kmod-usb-uhci kmod-usb2 kmod-usb-ehci \
 kmod-usb-net-ipheth usbmuxd libusbmuxd-utils libimobiledevice-utils usb-modeswitch kmod-nls-utf8 \
-mbim-utils xmm-modem kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3 \
+mbim-utils kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3 \
 kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm}"
 
 readonly PACKAGES_EXCLUDE="${8:--dnsmasq}"
@@ -344,7 +344,7 @@ build_firmware() {
     log_step "${ICON_BUILD}Starting firmware build process"
     
     echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${PURPLE}║${NC}                     ${ICON_BUILD}BUILD DETAILS${NC}                        ${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${NC}                     ${ICON_BUILD}BUILD DETAILS${NC}"
     echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════╣${NC}"
     echo -e "${PURPLE}║${NC} Profile:      ${WHITE}$PROFILE${NC}"
     echo -e "${PURPLE}║${NC} Jobs:         ${WHITE}$JOBS parallel${NC}"
@@ -383,20 +383,20 @@ build_firmware() {
         
         echo ""
         echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${GREEN}║${NC}                    ${ICON_SUCCESS}BUILD SUCCESSFUL${NC}                    ${GREEN}║${NC}"
+        echo -e "${GREEN}║${NC}                    ${ICON_SUCCESS}BUILD SUCCESSFUL${NC}"
         echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════╣${NC}"
-        echo -e "${GREEN}║${NC} Build completed in: ${WHITE}${minutes}m ${seconds}s${NC}                      ${GREEN}║${NC}"
-        echo -e "${GREEN}║${NC} Total duration: ${WHITE}${duration} seconds${NC}                        ${GREEN}║${NC}"
+        echo -e "${GREEN}║${NC} Build completed in: ${WHITE}${minutes}m ${seconds}s${NC}"
+        echo -e "${GREEN}║${NC} Total duration: ${WHITE}${duration} seconds${NC}}"
         echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════╝${NC}"
     else
         log_error "Build failed! Check the output above for details"
         echo ""
         echo -e "${RED}╔══════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${RED}║${NC}  Common solutions:                                        ${RED}║${NC}"
-        echo -e "${RED}║${NC}  • Check internet connection                              ${RED}║${NC}"
-        echo -e "${RED}║${NC}  • Verify package names in PACKAGES_INCLUDE              ${RED}║${NC}"
-        echo -e "${RED}║${NC}  • Ensure sufficient disk space                          ${RED}║${NC}"
-        echo -e "${RED}║${NC}  • Try with CLEAN_BUILD=1                               ${RED}║${NC}"
+        echo -e "${RED}║${NC}  Common solutions:"
+        echo -e "${RED}║${NC}  • Check internet connection"
+        echo -e "${RED}║${NC}  • Verify package names in PACKAGES_INCLUDE"
+        echo -e "${RED}║${NC}  • Ensure sufficient disk space"
+        echo -e "${RED}║${NC}  • Try with CLEAN_BUILD=1"
         echo -e "${RED}╚══════════════════════════════════════════════════════════════╝${NC}"
         exit 1
     fi
@@ -469,10 +469,9 @@ main() {
     # Display banner
     echo ""
     echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║${NC}                                                             ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}          ${ICON_ROCKET}${WHITE}OpenWrt Image Builder Script v4.0${NC}          ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}                    ${BLUE}Enhanced & Robust${NC}                    ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}                                                             ${GREEN}║${NC}"
+    echo -e "${GREEN}║${NC}"
+    echo -e "${GREEN}║${NC}          ${ICON_ROCKET}${WHITE}RTA-WRT Image Builder Script${NC}"
+    echo -e "${GREEN}║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     
@@ -488,10 +487,7 @@ main() {
     # Success message
     echo ""
     echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║${NC}                ${ICON_SUCCESS}${WHITE}SCRIPT COMPLETED SUCCESSFULLY!${NC}             ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}                                                             ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}     ${CYAN}Thank you for using OpenWrt Image Builder!${NC}       ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}         ${YELLOW}Your firmware is ready for deployment${NC}          ${GREEN}║${NC}"
+    echo -e "${GREEN}║${NC}                ${ICON_SUCCESS}${WHITE}SCRIPT COMPLETED SUCCESSFULLY!${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════╝${NC}"
     echo ""
 }
