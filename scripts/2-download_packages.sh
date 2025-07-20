@@ -323,14 +323,14 @@ main() {
             ["openwrt"]="https://downloads.openwrt.org/snapshots/packages/${ARCH}"
             ["immortalwrt"]="https://downloads.immortalwrt.org/snapshots/packages/${ARCH}"
             ["gspotx2f"]="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/snapshot"
-            ["rta"]="https://github.com/rizkikotet-dev/RTA-WRT_Packages/raw/releases/packages/SNAPSHOT/${ARCH}"
+            ["rta"]="https://github.com/rizkikotet-dev/RTA-WRT_Packages/raw/refs/heads/releases/packages/SNAPSHOT/${ARCH}"
         )
     else
         repo_urls=(
             ["openwrt"]="https://downloads.openwrt.org/releases/${TAG}/packages/${ARCH}"
             ["immortalwrt"]="https://downloads.immortalwrt.org/releases/${TAG}/packages/${ARCH}"
             ["gspotx2f"]="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/current"
-            ["rta"]="https://github.com/rizkikotet-dev/RTA-WRT_Packages/raw/releases/packages/${TAG}/${ARCH}"
+            ["rta"]="https://github.com/rizkikotet-dev/RTA-WRT_Packages/raw/refs/heads/releases/packages/${TAG}/${ARCH}"
         )
     fi
     
