@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # Script: 2-download_packages.sh
 # Fungsi: Mengunduh paket-paket tambahan dari berbagai repository sesuai konfigurasi.
@@ -42,12 +41,14 @@ if [ -z "$BRANCH" ]; then
     exit 1
 fi
 
-
 ARCH="$(device_id "ARCH_2" "$TARGET")"
 if [ -z "$ARCH" ]; then
     log "ERROR" "Could not determine architecture for target: $TARGET"
     exit 1
 fi
+
+# Global array to track downloaded packages
+declare -a DOWNLOADED_PACKAGES=()
 
 # Validate architecture and dependencies
 validate_environment() {
@@ -74,6 +75,238 @@ validate_environment() {
     return 0
 }
 
+# Enhanced process_packages function with tracking
+process_packages() {
+    local -n pkg_array_ref=$1
+    local download_dir="$2"
+    local success_count=0
+    local fail_count=0
+    
+    # Create download directory if it doesn't exist
+    mkdir -p "$download_dir"
+    
+    for pkg_info in "${pkg_array_ref[@]}"; do
+        local pkg_name=$(echo "$pkg_info" | cut -d'|' -f1)
+        local pkg_url=$(echo "$pkg_info" | cut -d'|' -f2)
+        
+        log "INFO" "Processing package: $pkg_name"
+        
+        if download_package "$pkg_name" "$pkg_url" "$download_dir"; then
+            DOWNLOADED_PACKAGES+=("$pkg_name")
+            ((success_count++))
+            log "INFO" "Successfully downloaded: $pkg_name"
+        else
+            ((fail_count++))
+            log "ERROR" "Failed to download: $pkg_name"
+        fi
+    done
+    
+    log "INFO" "Package group processed: $success_count success, $fail_count failed"
+    return $([ $fail_count -eq 0 ] && echo 0 || echo 1)
+}
+
+# Enhanced download function
+download_package() {
+    local pkg_name="$1"
+    local pkg_url="$2"
+    local download_dir="$3"
+    local max_retries=3
+    local retry_count=0
+    
+    while [ $retry_count -lt $max_retries ]; do
+        if [[ "$pkg_url" == *"api.github.com"* ]]; then
+            # Handle GitHub releases
+            if download_from_github "$pkg_name" "$pkg_url" "$download_dir"; then
+                return 0
+            fi
+        else
+            # Handle direct repository downloads
+            if download_from_repo "$pkg_name" "$pkg_url" "$download_dir"; then
+                return 0
+            fi
+        fi
+        
+        ((retry_count++))
+        log "WARN" "Retry $retry_count/$max_retries for $pkg_name"
+        sleep 2
+    done
+    
+    return 1
+}
+
+# Download from GitHub releases
+download_from_github() {
+    local pkg_name="$1"
+    local api_url="$2"
+    local download_dir="$3"
+    
+    log "INFO" "Fetching GitHub release info for $pkg_name"
+    
+    # Get release information
+    local release_info
+    if ! release_info=$(curl -s "$api_url"); then
+        log "ERROR" "Failed to fetch release info from $api_url"
+        return 1
+    fi
+    
+    # Extract download URLs for IPK files
+    local download_urls
+    download_urls=$(echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.ipk$")) | .browser_download_url')
+    
+    if [ -z "$download_urls" ]; then
+        log "ERROR" "No IPK files found in GitHub release for $pkg_name"
+        return 1
+    fi
+    
+    # Download each IPK file
+    local downloaded=false
+    while IFS= read -r url; do
+        local filename=$(basename "$url")
+        log "INFO" "Downloading $filename from GitHub"
+        
+        if curl -L -o "$download_dir/$filename" "$url"; then
+            log "INFO" "Downloaded $filename"
+            downloaded=true
+        else
+            log "ERROR" "Failed to download $filename"
+        fi
+    done <<< "$download_urls"
+    
+    return $([ "$downloaded" = true ] && echo 0 || echo 1)
+}
+
+# Download from repository
+download_from_repo() {
+    local pkg_name="$1"
+    local repo_url="$2"
+    local download_dir="$3"
+    
+    log "INFO" "Searching for $pkg_name in repository"
+    
+    # Try to find package in different subdirectories
+    local subdirs=("" "base" "luci" "packages" "routing" "telephony")
+    
+    for subdir in "${subdirs[@]}"; do
+        local search_url="$repo_url"
+        [ -n "$subdir" ] && search_url="$repo_url/$subdir"
+        
+        log "INFO" "Checking $search_url for $pkg_name"
+        
+        # Get package list
+        local pkg_list
+        if pkg_list=$(curl -s "$search_url/Packages" 2>/dev/null); then
+            # Search for package in the list
+            local pkg_filename
+            pkg_filename=$(echo "$pkg_list" | awk -v pkg="$pkg_name" '
+                /^Package:/ { current_pkg = $2 }
+                /^Filename:/ && current_pkg == pkg { print $2; exit }
+            ')
+            
+            if [ -n "$pkg_filename" ]; then
+                local download_url="$search_url/$pkg_filename"
+                local local_filename=$(basename "$pkg_filename")
+                
+                log "INFO" "Found $pkg_name at $download_url"
+                
+                if curl -L -o "$download_dir/$local_filename" "$download_url"; then
+                    log "INFO" "Downloaded $local_filename"
+                    return 0
+                else
+                    log "ERROR" "Failed to download $local_filename"
+                fi
+            fi
+        fi
+    done
+    
+    return 1
+}
+
+# Verify downloaded packages
+verify_packages() {
+    log "INFO" "Verifying downloaded packages..."
+    
+    local packages_dir="$SCRIPT_DIR/../packages"
+    local verified_packages=()
+    local missing_packages=()
+    local corrupted_packages=()
+    
+    # Check if packages directory exists
+    if [ ! -d "$packages_dir" ]; then
+        log "ERROR" "Packages directory not found: $packages_dir"
+        return 1
+    fi
+    
+    # Verify each downloaded package
+    for pkg_name in "${DOWNLOADED_PACKAGES[@]}"; do
+        log "INFO" "Verifying package: $pkg_name"
+        
+        # Find IPK files for this package
+        local pkg_files
+        pkg_files=$(find "$packages_dir" -name "*${pkg_name}*.ipk" 2>/dev/null)
+        
+        if [ -z "$pkg_files" ]; then
+            log "WARN" "No IPK files found for package: $pkg_name"
+            missing_packages+=("$pkg_name")
+            continue
+        fi
+        
+        # Verify each IPK file
+        local pkg_verified=false
+        while IFS= read -r pkg_file; do
+            if [ -f "$pkg_file" ] && [ -s "$pkg_file" ]; then
+                # Check if it's a valid IPK (actually a tar.gz file)
+                if tar -tzf "$pkg_file" >/dev/null 2>&1; then
+                    log "INFO" "Verified: $(basename "$pkg_file")"
+                    pkg_verified=true
+                else
+                    log "ERROR" "Corrupted IPK: $(basename "$pkg_file")"
+                    corrupted_packages+=("$(basename "$pkg_file")")
+                fi
+            else
+                log "ERROR" "Invalid file: $(basename "$pkg_file")"
+                corrupted_packages+=("$(basename "$pkg_file")")
+            fi
+        done <<< "$pkg_files"
+        
+        if [ "$pkg_verified" = true ]; then
+            verified_packages+=("$pkg_name")
+        fi
+    done
+    
+    # Generate verification report
+    log "INFO" "Package Verification Report:"
+    log "INFO" "=========================="
+    log "INFO" "Total packages processed: ${#DOWNLOADED_PACKAGES[@]}"
+    log "INFO" "Successfully verified: ${#verified_packages[@]}"
+    log "INFO" "Missing packages: ${#missing_packages[@]}"
+    log "INFO" "Corrupted packages: ${#corrupted_packages[@]}"
+    
+    if [ ${#missing_packages[@]} -gt 0 ]; then
+        log "WARN" "Missing packages: ${missing_packages[*]}"
+    fi
+    
+    if [ ${#corrupted_packages[@]} -gt 0 ]; then
+        log "ERROR" "Corrupted packages: ${corrupted_packages[*]}"
+    fi
+    
+    # Return list of verified packages as requested
+    if [ ${#verified_packages[@]} -gt 0 ]; then
+        echo "${verified_packages[*]}"
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Cleanup function
+cleanup() {
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        log "ERROR" "Script terminated with errors (exit code: $exit_code)"
+    fi
+    return $exit_code
+}
+
 # Main function
 main() {
     log "INFO" "Starting package downloader with precise filtering"
@@ -81,7 +314,6 @@ main() {
     if ! validate_environment; then
         return 1
     fi
-    
     
     # Setup package repository URLs
     declare -A repo_urls
@@ -166,7 +398,6 @@ main() {
     )
     
     # Process downloads by group
-    local all_packages=()
     local failed_groups=()
     
     for group in "${!package_groups[@]}"; do
@@ -175,11 +406,19 @@ main() {
             log "ERROR" "Failed to process $group packages"
             failed_groups+=("$group")
         fi
-        all_packages+=("${package_groups[$group][@]}")
     done
     
+    # Verify all downloaded packages
+    local verified_list
+    if verified_list=$(verify_packages); then
+        log "INFO" "Package verification completed successfully"
+        log "INFO" "Verified packages: $verified_list"
+    else
+        log "ERROR" "Package verification failed"
+    fi
+    
     # Summary
-    local total=${#all_packages[@]}
+    local total=${#DOWNLOADED_PACKAGES[@]}
     local failed=${#failed_groups[@]}
     local success=$((total - failed))
     

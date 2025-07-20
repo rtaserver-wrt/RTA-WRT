@@ -15,11 +15,10 @@ RETRY_DELAY=2
 TIMEOUT=30
 USER_AGENT="Mozilla/5.0 (Linux; x86_64) AppleWebKit/537.36"
 LOG_FILE="${SCRIPT_DIR}/../logs/build.log"
-CACHE_DIR="${SCRIPT_DIR}/../.cache"
 DEBUG=${DEBUG:-0}
 
 # Create necessary directories
-mkdir -p "$(dirname "$LOG_FILE")" "$CACHE_DIR"
+mkdir -p "$(dirname "$LOG_FILE")"
 
 # Colors
 RED='\033[0;31m'
