@@ -239,7 +239,11 @@ download_imagebuilder() {
 prepare_custom_packages() {
     log_step "${ICON_FILE}Preparing custom packages"
     
-    bash scripts/2-download_packages.sh "$BASE" "$TARGET_NAME" "$VERSION"
+    bash ../scripts/2-download_packages.sh "$BASE" "$TARGET_NAME" "$VERSION"
+    cp -r ../packages/* . || {
+        log_error "Failed to copy custom packages"
+        exit 1
+    }
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
