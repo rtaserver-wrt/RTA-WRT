@@ -50,7 +50,14 @@ perl perlbase-base perlbase-bytes perlbase-class perlbase-config perlbase-cwd pe
 perlbase-filehandle perlbase-i18n perlbase-integer perlbase-io perlbase-list perlbase-locale perlbase-params perlbase-posix \
 perlbase-re perlbase-scalar perlbase-selectsaver perlbase-socket perlbase-symbol perlbase-tie perlbase-time perlbase-unicore perlbase-utf8 perlbase-xsloader \
 php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo php8-mod-zip php8-mod-iconv php8-mod-mbstring \
-luci-theme-material}"
+luci-theme-material kmod-usb-net-rtl8150 kmod-usb-net-rtl8152 kmod-usb-net-asix kmod-usb-net-asix-ax88179 \
+ kmod-mii kmod-usb-net kmod-usb-wdm kmod-usb-net-qmi-wwan kmod-wwan uqmi luci-proto-qmi \
+kmod-usb-net-cdc-ether kmod-usb-serial-option kmod-usb-serial kmod-usb-serial-wwan qmi-utils \
+kmod-usb-serial-qualcomm kmod-usb-acm kmod-usb-net-cdc-ncm kmod-usb-net-cdc-mbim umbim \
+modemmanager  modemmanager-rpcd luci-proto-modemmanager libmbim libqmi usbutils luci-proto-mbim luci-proto-ncm \
+kmod-usb-net-huawei-cdc-ncm kmod-usb-net-cdc-ether kmod-usb-net-rndis kmod-usb-net-sierrawireless kmod-usb-ohci kmod-usb-serial-sierrawireless \
+kmod-usb-uhci kmod-usb2 kmod-usb-ehci kmod-usb-net-ipheth usbmuxd libusbmuxd-utils libimobiledevice-utils usb-modeswitch kmod-nls-utf8 mbim-utils xmm-modem \
+kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3 kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm}"
 readonly PACKAGES_EXCLUDE="${8:--dnsmasq}"
 readonly CUSTOM_FILES_DIR="files"
 readonly JOBS="$(nproc)"
@@ -135,15 +142,29 @@ prepare_custom_files() {
     local source_path="../$CUSTOM_FILES_DIR"
     
     if [[ -d "$source_path" ]]; then
-        log_info "Copying custom files from $source_path"
-        cp -r "$source_path" .
+    
+        log_info "Preparing custom files from $source_path"
+        local scripts=(
+            "https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/sbin/sync_time.sh|files/sbin"
+            "https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/usr/bin/clock|files/usr/bin"
+            "https://raw.githubusercontent.com/frizkyiman/fix-read-only/main/install2.sh|files/root"
+        )
+
+        for script in "${scripts[@]}"; do
+            IFS='|' read -r url path <<< "$script"
+            mkdir -p "$path"
+            wget --no-check-certificate -nv -P "$path" "$url" || error "Failed to download: $url"
+        done
         
         # Set proper permissions for custom files
-        find "$CUSTOM_FILES_DIR" -type f -exec chmod 644 {} \;
-        find "$CUSTOM_FILES_DIR" -type d -exec chmod 755 {} \;
+        find "$source_path" -type f -exec chmod 644 {} \;
+        find "$source_path" -type d -exec chmod 755 {} \;
         
         # Make scripts executable
-        find "$CUSTOM_FILES_DIR" -name "*.sh" -exec chmod +x {} \;
+        find "$source_path" -name "*.sh" -exec chmod +x {} \;
+
+        log_info "Copying custom files from $source_path"
+        cp -r "$source_path" .
         
         log_success "Custom files prepared"
     else
@@ -154,8 +175,17 @@ prepare_custom_files() {
 # Apply firmware-specific patches
 apply_patches() {
     log_info "Applying firmware patches..."
+
+    #sed -i "s/Ouc3kNF6/${DATE}/g" files/etc/uci-defaults/99-init-settings.sh
+
+    sed -i 's|CONFIG_TARGET_KERNEL_PARTSIZE=.*|CONFIG_TARGET_KERNEL_PARTSIZE=128|' .config
+    sed -i 's|CONFIG_TARGET_ROOTFS_PARTSIZE=.*|CONFIG_TARGET_ROOTFS_PARTSIZE=1024|' .config
     
     case "$BASE" in
+        "openwrt")
+            log_info "Applied OpenWrt cpufreq patch"
+            #sed -i '/# setup misc settings/ a\mv \/www\/luci-static\/resources\/view\/status\/include\/29_temp.js \/www\/luci-static\/resources\/view\/status\/include\/17_temp.js' files/etc/uci-defaults/99-init-settings.sh
+            ;;
         "immortalwrt")
             if [[ -f "include/target.mk" ]]; then
                 sed -i "/luci-app-cpufreq/d" include/target.mk
@@ -168,18 +198,24 @@ apply_patches() {
     case "$TARGET_NAME" in
         "armsr-armv8")
             log_info "Applying ARM64 specific configurations..."
-            {
-                echo "# ARM64 specific settings"
-                echo "# CONFIG_TARGET_ROOTFS_CPIOGZ is not set"
-                echo "# CONFIG_TARGET_ROOTFS_EXT4FS is not set" 
-                echo "# CONFIG_TARGET_ROOTFS_SQUASHFS is not set"
-                echo "# CONFIG_TARGET_IMAGES_GZIP is not set"
-            } >> .config
+            local configs=(
+                CONFIG_TARGET_ROOTFS_CPIOGZ
+                CONFIG_TARGET_ROOTFS_EXT4FS
+                CONFIG_TARGET_ROOTFS_SQUASHFS
+                CONFIG_TARGET_IMAGES_GZIP
+            )
+
+            for config in "${configs[@]}"; do
+                sed -i "s|${config}=.*|# ${config} is not set|" .config 2>/dev/null
+            done
+            # rm -f files/etc/uci-defaults/70-rootpt-resize
+            # rm -f files/etc/uci-defaults/80-rootfs-resize
+            # rm -f files/etc/sysupgrade.conf
             ;;
         "x86-64")
             log_info "Applying x86-64 specific configurations..."
-            sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null || true
-            sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null || true
+            sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null
+            sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null
             ;;
     esac
     
@@ -233,7 +269,7 @@ show_results() {
     echo "=============================================="
     
     local image_files
-    mapfile -t image_files < <(find bin/targets -type f \( -name "*.img.gz" -o -name "*.bin" -o -name "*.vmdk" -o -name "*.img" \) 2>/dev/null || true)
+    mapfile -t image_files < <(find bin/targets -type f \( -name "*.img.gz" -o -name "*.bin" -o -name "*.vmdk" -o -name "*.img" \) 2>/dev/null)
     
     if [[ ${#image_files[@]} -eq 0 ]]; then
         log_warn "No firmware images found in bin/targets"
@@ -255,7 +291,7 @@ show_results() {
     
     # Show additional artifacts
     local other_files
-    mapfile -t other_files < <(find bin/targets -type f \( -name "*.buildinfo" -o -name "*.manifest" \) 2>/dev/null || true)
+    mapfile -t other_files < <(find bin/targets -type f \( -name "*.buildinfo" -o -name "*.manifest" \) 2>/dev/null)
     
     if [[ ${#other_files[@]} -gt 0 ]]; then
         echo ""
