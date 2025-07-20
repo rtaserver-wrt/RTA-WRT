@@ -330,7 +330,7 @@ main() {
             ["openwrt"]="https://downloads.openwrt.org/releases/${TAG}/packages/${ARCH}"
             ["immortalwrt"]="https://downloads.immortalwrt.org/releases/${TAG}/packages/${ARCH}"
             ["gspotx2f"]="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/current"
-            ["rta"]="https://github.com/rizkikotet-dev/RTA-WRT_Packages/raw/refs/heads/releases/packages/${TAG}/${ARCH}"
+            ["rta"]="https://dl.openwrt.ai/releases/${TAG}/packages/${ARCH}/kiddin9"
         )
     fi
     
