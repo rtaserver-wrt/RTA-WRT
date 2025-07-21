@@ -222,8 +222,9 @@ prepare_custom_packages() {
         ["IMMORTALWRT"]="https://downloads.immortalwrt.org/releases/packages-${ver_op}/${ARCH}"
         ["OPENWRT"]="https://downloads.openwrt.org/releases/packages-${ver_op}/${ARCH}"
         ["GSPOTX2F"]="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/current"
-        ["FANTASTIC"]="https://fantastic-packages.github.io/packages/releases/${VEROP}/packages/mipsel_24kc"
+        ["FANTASTIC"]="https://fantastic-packages.github.io/packages/releases/${ver_op}/packages/mipsel_24kc"
     )
+    
     declare -A custom_packages=(
         ["luci-app-advanced-reboot"]="https://downloads.openwrt.org/releases/packages-${ver_op}/${ARCH}/luci"
         ["luci-app-netmonitor"]="https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
@@ -284,7 +285,6 @@ prepare_custom_packages() {
 
         # FANTASTIC packages
         ["luci-app-netspeedtest"]="${REPOS[FANTASTIC]}/luci"
-
     )
 
     for pkg_name in "${!custom_packages[@]}"; do
@@ -292,17 +292,48 @@ prepare_custom_packages() {
         log_info "Processing package: $pkg_name"
 
         local version_type="ipk"
+        local original_pkg_name="$pkg_name"
         [[ "$pkg_name" == *"-apk" ]] && version_type="apk" && pkg_name="${pkg_name%-apk}"
 
-        local download_url
+        local download_url=""
+        
         if [[ "$pkg_url" == *"github.com"*"releases"* ]]; then
-            download_url=$(curl -s "$pkg_url" | jq -r ".assets[] | select(.name | contains(\"${pkg_name}_\") and endswith(\".${version_type}\")) | .browser_download_url" | head -1)
-            [[ -z "$download_url" || "$download_url" == "null" ]] && download_url=$(curl -s "$pkg_url" | grep -oP "browser_download_url.*${pkg_name}_.*\.${version_type}" | cut -d '"' -f 4 | head -1)
+            # GitHub releases API handling
+            local release_data
+            if ! release_data=$(curl -s --fail "$pkg_url"); then
+                log_error "Failed to fetch release data for $pkg_name from GitHub API"
+                continue
+            fi
+            
+            # Try with jq first, fall back to grep if jq is not available
+            if command -v jq >/dev/null 2>&1; then
+                download_url=$(echo "$release_data" | jq -r ".assets[] | select(.name | contains(\"${pkg_name}_\") and endswith(\".${version_type}\")) | .browser_download_url" | head -1)
+            else
+                download_url=$(echo "$release_data" | grep -oP '"browser_download_url":\s*"\K[^"]*' | grep "${pkg_name}_.*\.${version_type}" | head -1)
+            fi
+            
+            [[ -z "$download_url" || "$download_url" == "null" ]] && {
+                log_warn "No matching asset found for $pkg_name, trying alternative pattern matching"
+                if command -v jq >/dev/null 2>&1; then
+                    download_url=$(echo "$release_data" | jq -r ".assets[] | select(.name | endswith(\".${version_type}\")) | .browser_download_url" | head -1)
+                else
+                    download_url=$(echo "$release_data" | grep -oP '"browser_download_url":\s*"\K[^"]*' | grep "\.${version_type}$" | head -1)
+                fi
+            }
         else
+            # Package repository handling
             local index_url="${pkg_url}/Packages"
-            local package_index=$(curl -s "$index_url") || { log_error "Cannot download package index from $index_url"; continue; }
-            local package_filename=$(echo "$package_index" | grep -oP "${pkg_name}_.*\.${version_type}" | head -1)
-            download_url="${pkg_url}/${package_filename}"
+            local package_index
+            
+            if ! package_index=$(curl -s --fail "$index_url"); then
+                log_error "Cannot download package index from $index_url"
+                continue
+            fi
+            
+            local package_filename=$(echo "$package_index" | grep -oP "^Filename: \K${pkg_name}_.*\.${version_type}$" | head -1)
+            [[ -z "$package_filename" ]] && package_filename=$(echo "$package_index" | grep -oP "${pkg_name}_[^[:space:]]*\.${version_type}" | head -1)
+            
+            [[ -n "$package_filename" ]] && download_url="${pkg_url}/${package_filename}"
         fi
 
         if [[ -z "$download_url" || "$download_url" == "null" ]]; then
@@ -310,26 +341,83 @@ prepare_custom_packages() {
             continue
         fi
 
-        log_info "Downloading package: $pkg_name from $download_url"
-        if ! wget --no-check-certificate -nv -P packages/ "$download_url"; then
-            log_error "Failed to download package: $pkg_name"
+        # Validate URL format
+        if [[ ! "$download_url" =~ ^https?:// ]]; then
+            log_error "Invalid download URL format for $pkg_name: $download_url"
             continue
         fi
-        log_success "Package downloaded: $pkg_name"
+
+        log_info "Downloading package: $pkg_name from $download_url"
+        
+        # Use original package name for filename to avoid conflicts
+        local filename="${original_pkg_name}.${version_type}"
+        
+        # Download with better error handling and retry logic
+        local max_retries=3
+        local retry_count=0
+        local download_success=false
+        
+        while [[ $retry_count -lt $max_retries ]] && [[ "$download_success" == false ]]; do
+            if wget --no-check-certificate --timeout=30 --tries=1 -nv -O "packages/${filename}" "$download_url"; then
+                download_success=true
+                log_success "Package downloaded: $pkg_name"
+            else
+                ((retry_count++))
+                log_warn "Download attempt $retry_count failed for $pkg_name"
+                [[ $retry_count -lt $max_retries ]] && sleep 2
+            fi
+        done
+        
+        if [[ "$download_success" == false ]]; then
+            log_error "Failed to download package after $max_retries attempts: $pkg_name"
+            continue
+        fi
+        
+        # Verify downloaded file is not empty and appears to be a valid package
+        if [[ ! -s "packages/${filename}" ]]; then
+            log_error "Downloaded package file is empty: $pkg_name"
+            rm -f "packages/${filename}"
+            continue
+        fi
     done
 
-    # Copy external packages
+    # Copy external packages with better error handling
     if [[ -d "../packages" ]]; then
         log_info "Copying external packages"
-        cp -f ../packages/* packages/ 2>/dev/null || log_warn "Some external packages failed to copy"
+        local copied_count=0
+        local failed_count=0
+        
+        for ext_pkg in ../packages/*; do
+            [[ -f "$ext_pkg" ]] || continue
+            
+            if cp "$ext_pkg" packages/ 2>/dev/null; then
+                ((copied_count++))
+            else
+                ((failed_count++))
+            fi
+        done
+        
+        [[ $copied_count -gt 0 ]] && log_success "Copied $copied_count external packages"
+        [[ $failed_count -gt 0 ]] && log_warn "$failed_count external packages failed to copy"
     fi
 
     # Add custom packages to include list
+    local added_count=0
     for list_pkg in "${!custom_packages[@]}"; do
-        PACKAGES_INCLUDE="${PACKAGES_INCLUDE} ${list_pkg}"
-        log_info "Added custom package to include list: $list_pkg"
+        # Only add if the package was actually downloaded
+        local expected_file="packages/${list_pkg}.ipk"
+        [[ "$list_pkg" == *"-apk" ]] && expected_file="packages/${list_pkg}.apk"
+        
+        if [[ -f "$expected_file" ]] || [[ -f "packages/${list_pkg}"* ]]; then
+            PACKAGES_INCLUDE="${PACKAGES_INCLUDE} ${list_pkg}"
+            log_info "Added custom package to include list: $list_pkg"
+            ((added_count++))
+        else
+            log_warn "Package file not found, skipping from include list: $list_pkg"
+        fi
     done
-    log_success "Custom packages preparation completed"
+    
+    log_success "Custom packages preparation completed - $added_count packages added to include list"
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
