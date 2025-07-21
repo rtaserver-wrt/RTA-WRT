@@ -352,10 +352,13 @@ prepare_custom_packages() {
     # Copy external packages if they exist
     if [[ -d "../packages" ]]; then
         log_info "Copying external packages"
-        cp -r ../packages/* packages/ || {
+        cp -f ../packages/* packages/ || {
             log_warn "Some external packages failed to copy"
         }
     fi
+
+
+    PACKAGES_INCLUDE+=" luci-app-advanced-reboot luci-app-netmonitor"
     
     log_success "Custom packages preparation completed"
 }
