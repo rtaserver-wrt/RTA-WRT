@@ -473,3 +473,139 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
         exit 1
     fi
 fi
+
+
+
+# #!/bin/bash
+
+# # Konfigurasi
+# declare -a packages=(
+#     "luci-app-amlogic|https://api.github.com/repos/ophub/luci-app-amlogic/releases/latest"
+#     "luci-app-netmonitor|https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
+#     "luci-app-adblock-fast|https://downloads.openwrt.org/releases/packages-24.10/x86_64/luci"
+#     "luci-app-adblock|https://downloads.openwrt.org/releases/packages-24.10/x86_64/luci"
+#     "luci-app-advanced-reboot|https://downloads.openwrt.org/releases/packages-24.10/x86_64/luci"
+#     "luci-app-antiblock|https://downloads.openwrt.org/releases/packages-24.10/x86_64/luci"
+#     "luci-app-aria2|https://downloads.openwrt.org/releases/packages-24.10/x86_64/luci"
+#     "atinout|https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9"
+#     "internet-detector|https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/current"
+# )
+
+# # Pilihan versi OpenWrt
+# echo "Pilih versi OpenWrt:"
+# echo "1) OpenWrt 24.10 (ipk)"
+# echo "2) OpenWrt SNAPSHOT (apk)"
+# read -p "Masukkan pilihan (1/2): " version_choice
+
+# # Direktori output
+# output_dir="openwrt_packages"
+# mkdir -p "$output_dir"
+
+# # Fungsi untuk mendapatkan URL download dari GitHub API
+# get_github_download_url() {
+#     local api_url=$1
+#     local package_name=$2
+#     local version_type=$3
+    
+#     local download_url
+#     if [ "$version_type" == "ipk" ]; then
+#         download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}_.*\.ipk" | cut -d '"' -f 4 | head -1)
+#     else
+#         download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}-.*\.apk" | cut -d '"' -f 4 | head -1)
+#     fi
+    
+#     if [ -z "$download_url" ]; then
+#         echo "Error: Tidak dapat menemukan URL download untuk $package_name" >&2
+#         return 1
+#     fi
+    
+#     echo "$download_url"
+# }
+
+# # Fungsi untuk mendapatkan URL download dari direktori OpenWrt
+# get_openwrt_download_url() {
+#     local base_url=$1
+#     local package_name=$2
+#     local version_type=$3
+    
+#     local index_url
+#     if [ "$version_type" == "ipk" ]; then
+#         index_url="${base_url}/Packages"
+#         package_pattern="${package_name}_.*\.ipk"
+#     else
+#         index_url="${base_url}/Packages"
+#         package_pattern="${package_name}-.*\.apk"
+#     fi
+    
+#     # Cek jika URL adalah GitHub raw
+#     if [[ "$base_url" == *"github.com"* ]]; then
+#         # Format khusus untuk GitHub raw
+#         local download_url="${base_url}/${package_name}_*"
+#         if [ "$version_type" == "apk" ]; then
+#             download_url="${base_url}/${package_name}-*"
+#         fi
+        
+#         # Dapatkan nama file yang tepat
+#         local file_info=$(curl -s -I "$download_url" | grep -i "location:" | tail -1)
+#         if [ -n "$file_info" ]; then
+#             download_url=$(echo "$file_info" | awk '{print $2}' | tr -d '\r')
+#             echo "$download_url"
+#             return 0
+#         fi
+#     else
+#         # Untuk URL OpenWrt biasa
+#         local package_index=$(curl -s "$index_url")
+#         if [ -z "$package_index" ]; then
+#             echo "Error: Tidak dapat mengunduh indeks paket dari $index_url" >&2
+#             return 1
+#         fi
+        
+#         local package_filename=$(echo "$package_index" | grep -oP "$package_pattern" | head -1)
+#         if [ -z "$package_filename" ]; then
+#             echo "Error: Tidak dapat menemukan nama file paket untuk $package_name" >&2
+#             return 1
+#         fi
+        
+#         local download_url="${base_url}/${package_filename}"
+#         echo "$download_url"
+#         return 0
+#     fi
+    
+#     echo "Error: Gagal mendapatkan URL download untuk $package_name" >&2
+#     return 1
+# }
+
+# # Proses download
+# for pkg in "${packages[@]}"; do
+#     IFS='|' read -r package_name source_url <<< "$pkg"
+#     echo "Memproses $package_name..."
+    
+#     if [ "$version_choice" -eq 1 ]; then
+#         version_type="ipk"
+#     else
+#         version_type="apk"
+#     fi
+    
+#     # Tentukan URL download berdasarkan sumber
+#     if [[ "$source_url" == *"github.com"*"releases"* ]]; then
+#         download_url=$(get_github_download_url "$source_url" "$package_name" "$version_type")
+#     else
+#         download_url=$(get_openwrt_download_url "$source_url" "$package_name" "$version_type")
+#     fi
+    
+#     if [ -z "$download_url" ]; then
+#         echo "Gagal mendapatkan URL download untuk $package_name, melanjutkan ke paket berikutnya..."
+#         continue
+#     fi
+    
+#     echo "Mengunduh dari: $download_url"
+    
+#     # Download paket
+#     if ! wget -q --show-progress -O "$output_dir/$(basename "$download_url")" "$download_url"; then
+#         echo "Gagal mengunduh $package_name"
+#     else
+#         echo "Berhasil mengunduh $package_name"
+#     fi
+# done
+
+# echo "Proses download selesai. Paket disimpan di direktori: $output_dir"

@@ -239,7 +239,126 @@ download_imagebuilder() {
 prepare_custom_packages() {
     log_step "${ICON_FILE}Preparing custom packages"
     
-    bash ../scripts/2-download_packages.sh "$BASE" "$TARGET_NAME" "$VERSION"
+    local VEROP="$(echo "${BRANCH}" | awk -F. '{print $1"."$2}')"
+    declare -a custom_packages=(
+        "luci-app-advanced-reboot|https://downloads.openwrt.org/releases/packages-${VEROP}/${ARCH}/luci"
+        "luci-app-netmonitor|https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
+    )
+
+    # Fungsi untuk mendapatkan URL download dari GitHub API
+    get_github_download_url() {
+        local api_url=$1
+        local package_name=$2
+        local version_type=$3
+        
+        local download_url
+        if [ "$version_type" == "ipk" ]; then
+            download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}_.*\.ipk" | cut -d '"' -f 4 | head -1)
+        else
+            download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}-.*\.apk" | cut -d '"' -f 4 | head -1)
+        fi
+        
+        if [ -z "$download_url" ]; then
+            echo "Error: Tidak dapat menemukan URL download untuk $package_name" >&2
+            return 1
+        fi
+        
+        echo "$download_url"
+    }
+
+    # Fungsi untuk mendapatkan URL download dari direktori OpenWrt
+    get_openwrt_download_url() {
+        local base_url=$1
+        local package_name=$2
+        local version_type=$3
+        
+        local index_url
+        if [ "$version_type" == "ipk" ]; then
+            index_url="${base_url}/Packages"
+            package_pattern="${package_name}_.*\.ipk"
+        else
+            index_url="${base_url}/Packages"
+            package_pattern="${package_name}-.*\.apk"
+        fi
+        
+        # Cek jika URL adalah GitHub raw
+        if [[ "$base_url" == *"github.com"* ]]; then
+            # Format khusus untuk GitHub raw
+            local download_url="${base_url}/${package_name}_*"
+            if [ "$version_type" == "apk" ]; then
+                download_url="${base_url}/${package_name}-*"
+            fi
+            
+            # Dapatkan nama file yang tepat
+            local file_info=$(curl -s -I "$download_url" | grep -i "location:" | tail -1)
+            if [ -n "$file_info" ]; then
+                download_url=$(echo "$file_info" | awk '{print $2}' | tr -d '\r')
+                echo "$download_url"
+                return 0
+            fi
+        else
+            # Untuk URL OpenWrt biasa
+            local package_index=$(curl -s "$index_url")
+            if [ -z "$package_index" ]; then
+                echo "Error: Tidak dapat mengunduh indeks paket dari $index_url" >&2
+                return 1
+            fi
+            
+            local package_filename=$(echo "$package_index" | grep -oP "$package_pattern" | head -1)
+            if [ -z "$package_filename" ]; then
+                echo "Error: Tidak dapat menemukan nama file paket untuk $package_name" >&2
+                return 1
+            fi
+            
+            local download_url="${base_url}/${package_filename}"
+            echo "$download_url"
+            return 0
+        fi
+        
+        echo "Error: Gagal mendapatkan URL download untuk $package_name" >&2
+        return 1
+    }
+
+    for PKG in "${custom_packages[@]}"; do
+        IFS='|' read -r pkg_name pkg_url <<< "$PKG"
+        
+        if [[ -z "$pkg_name" || -z "$pkg_url" ]]; then
+            log_error "Invalid package entry: $PKG"
+            continue
+        fi
+        
+        log_info "Processing package: ${GREEN}$pkg_name${NC}"
+        
+        # Determine version type based on package name
+        local version_type="ipk"
+        if [[ "$pkg_name" == *"-apk" ]]; then
+            version_type="apk"
+            pkg_name="${pkg_name%-apk}"
+        fi
+        
+        # Get download URL from GitHub or OpenWrt
+        local download_url
+        if [[ "$pkg_url" == *"github.com"* ]]; then
+            download_url=$(get_github_download_url "$pkg_url" "$pkg_name" "$version_type")
+        else
+            download_url=$(get_openwrt_download_url "$pkg_url" "$pkg_name" "$version_type")
+        fi
+        
+        if [[ -z "$download_url" ]]; then
+            log_error "Failed to get download URL for $pkg_name"
+            continue
+        fi
+        
+        log_info "Downloading package: ${GREEN}$pkg_name${NC} from ${BLUE}$download_url${NC}"
+        
+        if ! wget --no-check-certificate -nv -P packages/ "$download_url"; then
+            log_error "Failed to download package: $pkg_name"
+            continue
+        fi
+        
+        log_success "Package downloaded: $pkg_name"
+    done
+
     cp -r ../packages/* . || {
         log_error "Failed to copy custom packages"
         exit 1
