@@ -73,23 +73,23 @@ trap 'error_handler $LINENO' ERR
 # ═══════════════════════════════════════════════════════════════════════════════
 # ⚙️  CONFIGURATION VARIABLES
 # ═══════════════════════════════════════════════════════════════════════════════
-readonly WORK_DIR="${OPENWRT_WORK_DIR:-${PWD}/openwrt-build}"
-readonly BASE="${1:-openwrt}"
-readonly BRANCH="${2:-24.10.2}"
-readonly TARGET_SYSTEM="${3:-x86/64}"
-readonly TARGET_NAME="${4:-x86-64}"
-readonly PROFILE="${5:-generic}"
-readonly ARCH="${6:-x86_64}"
+WORK_DIR="${OPENWRT_WORK_DIR:-${PWD}/openwrt-build}"
+BASE="${1:-openwrt}"
+BRANCH="${2:-24.10.2}"
+TARGET_SYSTEM="${3:-x86/64}"
+TARGET_NAME="${4:-x86-64}"
+PROFILE="${5:-generic}"
+ARCH="${6:-x86_64}"
 
 # 📦 Package configuration - Fixed variable assignment
 PACKAGES_INCLUDE="${7:-}"
-readonly PACKAGES_EXCLUDE="${8:-}"
-readonly CUSTOM_FILES_DIR="files"
-readonly JOBS="$(nproc)"
-readonly CLEAN_BUILD="${9:-0}"
-readonly VERSION="${10:-stable}"
+PACKAGES_EXCLUDE="${8:-}"
+CUSTOM_FILES_DIR="files"
+JOBS="$(nproc)"
+CLEAN_BUILD="${9:-0}"
+VERSION="${10:-stable}"
 
-readonly DEFAULT_PACKAGES="dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua \
+DEFAULT_PACKAGES="dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua \
 luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full \
 cpusage ttyd dmesg kmod-tun luci-lib-ipkg git git-http \
 zram-swap adb parted losetup resize2fs luci luci-ssl block-mount htop bash curl wget-ssl \
@@ -120,7 +120,7 @@ kmod-usb-net-ipheth usbmuxd libusbmuxd-utils libimobiledevice-utils usb-modeswit
 mbim-utils kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3 \
 kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm"
 
-readonly DEFAULT_REMOVED_PACKAGES="-dnsmasq"
+DEFAULT_REMOVED_PACKAGES="-dnsmasq"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🔍 PARAMETER VALIDATION
