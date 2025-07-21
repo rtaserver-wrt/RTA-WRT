@@ -82,7 +82,7 @@ readonly PROFILE="${5:-generic}"
 readonly ARCH="${6:-x86_64}"
 
 # 📦 Package configuration - Fixed variable assignment
-readonly PACKAGES_INCLUDE="${7:-}"
+PACKAGES_INCLUDE="${7:-}"
 readonly PACKAGES_EXCLUDE="${8:-}"
 readonly CUSTOM_FILES_DIR="files"
 readonly JOBS="$(nproc)"
