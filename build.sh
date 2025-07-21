@@ -14,7 +14,7 @@ readonly CYAN='\033[0;36m'
 readonly WHITE='\033[1;37m'
 readonly NC='\033[0m' # No Color
 
-# Unicode icons for enhanced visual appeal
+# Unicode icons for visual feedback
 readonly ICON_INFO="ℹ️ "
 readonly ICON_SUCCESS="✅"
 readonly ICON_WARN="⚠️ "
@@ -30,49 +30,34 @@ readonly ICON_CLEAN="🧹"
 # ═══════════════════════════════════════════════════════════════════════════════
 # 📝 LOGGING FUNCTIONS
 # ═══════════════════════════════════════════════════════════════════════════════
-log_info() { 
-    echo -e "${BLUE}${ICON_INFO}[INFO]${NC} $*"
+log() {
+    local level=$1 color=$2 icon=$3
+    shift 3
+    echo -e "${color}${icon}[$level]${NC} $*" >&2
 }
 
-log_success() { 
-    echo -e "${GREEN}${ICON_SUCCESS}[SUCCESS]${NC} $*"
-}
-
-log_warn() { 
-    echo -e "${YELLOW}${ICON_WARN}[WARN]${NC} $*"
-}
-
-log_error() { 
-    echo -e "${RED}${ICON_ERROR}[ERROR]${NC} $*" >&2
-}
-
-log_build() {
-    echo -e "${PURPLE}${ICON_BUILD}[BUILD]${NC} $*"
-}
-
-log_step() {
-    echo -e "${CYAN}${ICON_GEAR}[STEP]${NC} $*"
-}
+log_info() { log "INFO" "$BLUE" "$ICON_INFO" "$@"; }
+log_success() { log "SUCCESS" "$GREEN" "$ICON_SUCCESS" "$@"; }
+log_warn() { log "WARN" "$YELLOW" "$ICON_WARN" "$@"; }
+log_error() { log "ERROR" "$RED" "$ICON_ERROR" "$@"; }
+log_build() { log "BUILD" "$PURPLE" "$ICON_BUILD" "$@"; }
+log_step() { log "STEP" "$CYAN" "$ICON_GEAR" "$@"; }
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛡️  ERROR HANDLING
+# 🛡️ ERROR HANDLING
 # ═══════════════════════════════════════════════════════════════════════════════
 error_handler() {
     local line_no=$1
-    echo ""
-    echo -e "${RED}╔══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${RED}║${NC}                    ${ICON_ERROR}BUILD FAILED${NC}                        ${RED}║${NC}"
-    echo -e "${RED}╠══════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${RED}║${NC} Script failed at line: ${WHITE}$line_no${NC}                          ${RED}║${NC}"
-    echo -e "${RED}║${NC} Working directory: ${WHITE}$(pwd)${NC}           ${RED}║${NC}"
-    echo -e "${RED}╚══════════════════════════════════════════════════════════════╝${NC}"
+    log_error "Build failed at line: $line_no"
+    log_error "Working directory: $(pwd)"
     exit 1
 }
 trap 'error_handler $LINENO' ERR
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ⚙️  CONFIGURATION VARIABLES
+# ⚙️ CONFIGURATION VARIABLES
 # ═══════════════════════════════════════════════════════════════════════════════
+# Default configuration
 WORK_DIR="${OPENWRT_WORK_DIR:-${PWD}/openwrt-build}"
 BASE="${1:-openwrt}"
 BRANCH="${2:-24.10.2}"
@@ -80,106 +65,109 @@ TARGET_SYSTEM="${3:-x86/64}"
 TARGET_NAME="${4:-x86-64}"
 PROFILE="${5:-generic}"
 ARCH="${6:-x86_64}"
-
-# 📦 Package configuration - Fixed variable assignment
 PACKAGES_INCLUDE="${7:-}"
 PACKAGES_EXCLUDE="${8:-}"
-CUSTOM_FILES_DIR="files"
-JOBS="$(nproc)"
 CLEAN_BUILD="${9:-0}"
 VERSION="${10:-stable}"
+CUSTOM_FILES_DIR="files"
+JOBS="$(nproc)"
 
-DEFAULT_PACKAGES="dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua \
-luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full \
-cpusage ttyd dmesg kmod-tun luci-lib-ipkg git git-http \
-zram-swap adb parted losetup resize2fs luci luci-ssl block-mount htop bash curl wget-ssl \
-tar unzip unrar gzip jq luci-app-ttyd nano httping screen openssh-sftp-server \
-liblucihttp liblucihttp-lua libubus-lua lua luci-app-firewall luci-app-opkg \
-ca-bundle ca-certificates luci-compat coreutils-sleep fontconfig coreutils-whoami file lolcat \
-luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full \
-luci-mod-network luci-mod-status luci-mod-system luci-proto-ipv6 luci-proto-ppp \
-luci-theme-bootstrap rpcd rpcd-mod-file rpcd-mod-iwinfo rpcd-mod-luci \
-rpcd-mod-rrdns uhttpd uhttpd-mod-ubus coreutils coreutils-base64 coreutils-nohup coreutils-stty \
-libc coreutils-stat coreutils-timeout ip-full libuci-lua microsocks resolveip ipset iptables \
-iptables-legacy iptables-mod-iprange iptables-mod-socket iptables-mod-tproxy kmod-ipt-nat \
-luci-lua-runtime zoneinfo-asia zoneinfo-core perl perlbase-base perlbase-bytes perlbase-class \
-perlbase-config perlbase-cwd perlbase-dynaloader perlbase-errno perlbase-essential perlbase-fcntl \
-perlbase-file perlbase-filehandle perlbase-i18n perlbase-integer perlbase-io perlbase-list \
-perlbase-locale perlbase-params perlbase-posix perlbase-re perlbase-scalar perlbase-selectsaver \
-perlbase-socket perlbase-symbol perlbase-tie perlbase-time perlbase-unicore perlbase-utf8 \
-perlbase-xsloader php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo \
-php8-mod-zip php8-mod-iconv php8-mod-mbstring luci-theme-material kmod-usb-net-rtl8150 \
-kmod-usb-net-rtl8152 kmod-usb-net-asix kmod-usb-net-asix-ax88179 kmod-mii kmod-usb-net \
-kmod-usb-wdm kmod-usb-net-qmi-wwan kmod-wwan uqmi luci-proto-qmi kmod-usb-net-cdc-ether \
-kmod-usb-serial-option kmod-usb-serial kmod-usb-serial-wwan qmi-utils kmod-usb-serial-qualcomm \
-kmod-usb-acm kmod-usb-net-cdc-ncm kmod-usb-net-cdc-mbim umbim modemmanager modemmanager-rpcd \
-luci-proto-modemmanager libmbim libqmi usbutils luci-proto-mbim luci-proto-ncm \
-kmod-usb-net-huawei-cdc-ncm kmod-usb-net-cdc-ether kmod-usb-net-rndis kmod-usb-net-sierrawireless \
-kmod-usb-ohci kmod-usb-serial-sierrawireless kmod-usb-uhci kmod-usb2 kmod-usb-ehci \
-kmod-usb-net-ipheth usbmuxd libusbmuxd-utils libimobiledevice-utils usb-modeswitch kmod-nls-utf8 \
-mbim-utils kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3 \
-kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm"
-
-DEFAULT_REMOVED_PACKAGES="-dnsmasq"
+# Default packages (consolidated to remove duplicates)
+readonly DEFAULT_PACKAGES="
+dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua
+luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full
+cpusage ttyd dmesg kmod-tun luci-lib-ipkg git git-http
+zram-swap adb parted losetup resize2fs luci luci-ssl block-mount htop bash curl wget-ssl
+tar unzip unrar gzip jq luci-app-ttyd nano httping screen openssh-sftp-server
+liblucihttp liblucihttp-lua libubus-lua luci-app-firewall luci-app-opkg
+ca-bundle ca-certificates luci-compat coreutils-sleep fontconfig coreutils-whoami file lolcat
+luci-mod-network luci-mod-status luci-mod-system luci-proto-ipv6 luci-proto-ppp
+luci-theme-bootstrap rpcd rpcd-mod-file rpcd-mod-iwinfo rpcd-mod-luci
+rpcd-mod-rrdns uhttpd uhttpd-mod-ubus coreutils coreutils-base64 coreutils-nohup coreutils-stty
+libc coreutils-stat coreutils-timeout ip-full libuci-lua microsocks resolveip ipset iptables
+iptables-legacy iptables-mod-iprange iptables-mod-socket iptables-mod-tproxy kmod-ipt-nat
+luci-lua-runtime zoneinfo-asia zoneinfo-core perl perlbase-base perlbase-bytes perlbase-class
+perlbase-config perlbase-cwd perlbase-dynaloader perlbase-errno perlbase-essential perlbase-fcntl
+perlbase-file perlbase-filehandle perlbase-i18n perlbase-integer perlbase-io perlbase-list
+perlbase-locale perlbase-params perlbase-posix perlbase-re perlbase-scalar perlbase-selectsaver
+perlbase-socket perlbase-symbol perlbase-tie perlbase-time perlbase-unicore perlbase-utf8
+perlbase-xsloader php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo
+php8-mod-zip php8-mod-iconv php8-mod-mbstring luci-theme-material kmod-usb-net-rtl8150
+kmod-usb-net-rtl8152 kmod-usb-net-asix kmod-usb-net-asix-ax88179 kmod-mii kmod-usb-net
+kmod-usb-wdm kmod-usb-net-qmi-wwan kmod-wwan uqmi luci-proto-qmi kmod-usb-net-cdc-ether
+kmod-usb-serial-option kmod-usb-serial kmod-usb-serial-wwan qmi-utils kmod-usb-serial-qualcomm
+kmod-usb-acm kmod-usb-net-cdc-ncm kmod-usb-net-cdc-mbim umbim modemmanager modemmanager-rpcd
+luci-proto-modemmanager libmbim libqmi usbutils luci-proto-mbim luci-proto-ncm
+kmod-usb-net-huawei-cdc-ncm kmod-usb-net-rndis kmod-usb-net-sierrawireless
+kmod-usb-ohci kmod-usb-serial-sierrawireless kmod-usb-uhci kmod-usb2 kmod-usb-ehci
+kmod-usb-net-ipheth usbmuxd libusbmuxd-utils libimobiledevice-utils usb-modeswitch kmod-nls-utf8
+mbim-utils kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3
+kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm
+"
+readonly DEFAULT_REMOVED_PACKAGES="-dnsmasq"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🔍 PARAMETER VALIDATION
 # ═══════════════════════════════════════════════════════════════════════════════
 validate_parameters() {
     log_step "Validating build parameters"
-    
-    case "$BASE" in
-        openwrt|immortalwrt) 
-            log_info "Base firmware: ${GREEN}$BASE${NC}"
-            ;;
-        *) 
-            log_error "Unsupported base: $BASE. Use 'openwrt' or 'immortalwrt'"
-            exit 1
-            ;;
-    esac
-    
+
+    # Validate base firmware
+    if [[ ! "$BASE" =~ ^(openwrt|immortalwrt)$ ]]; then
+        log_error "Unsupported base: $BASE. Use 'openwrt' or 'immortalwrt'"
+        exit 1
+    fi
+    log_info "Base firmware: $BASE"
+
+    # Validate branch format
     if [[ ! "$BRANCH" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
         log_warn "Branch format unusual: $BRANCH (expected format: X.Y.Z)"
     fi
-    
+
+    # Validate target system format
     if [[ ! "$TARGET_SYSTEM" =~ ^[a-z0-9_-]+/[a-z0-9_-]+$ ]]; then
         log_warn "TARGET_SYSTEM format unusual: $TARGET_SYSTEM (expected: arch/subarch)"
     fi
-    
+
+    # Validate architecture
+    if [[ ! "$ARCH" =~ ^[a-z0-9_]+$ ]]; then
+        log_warn "Invalid architecture format: $ARCH"
+    fi
+
     log_success "Parameters validated"
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🏗️  ENVIRONMENT SETUP
+# 🏗️ ENVIRONMENT SETUP
 # ═══════════════════════════════════════════════════════════════════════════════
 setup_environment() {
     log_step "Setting up build environment"
-    
-    echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║${NC}                    ${ICON_GEAR}BUILD CONFIGURATION${NC}                    ${CYAN}║${NC}"
-    echo -e "${CYAN}╠═══════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${CYAN}║${NC} Working Directory: ${WHITE}$WORK_DIR${NC}"
-    echo -e "${CYAN}║${NC} Base Firmware:     ${WHITE}$BASE${NC}"
-    echo -e "${CYAN}║${NC} Version Branch:    ${WHITE}$BRANCH${NC}"
-    echo -e "${CYAN}║${NC} Target System:     ${WHITE}$TARGET_SYSTEM${NC}"
-    echo -e "${CYAN}║${NC} Target Name:       ${WHITE}$TARGET_NAME${NC}"
-    echo -e "${CYAN}║${NC} Profile:           ${WHITE}$PROFILE${NC}"
-    echo -e "${CYAN}║${NC} Architecture:      ${WHITE}$ARCH${NC}"
-    echo -e "${CYAN}║${NC} Parallel Jobs:     ${WHITE}$JOBS${NC}"
-    echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════╝${NC}"
-    
-    # Create working directory with proper permissions
-    log_info "Creating working directory: ${WORK_DIR}"
+
+    # Display configuration
+    log_info "Configuration:"
+    log_info "  Working Directory: $WORK_DIR"
+    log_info "  Base Firmware: $BASE"
+    log_info "  Version Branch: $BRANCH"
+    log_info "  Target System: $TARGET_SYSTEM"
+    log_info "  Target Name: $TARGET_NAME"
+    log_info "  Profile: $PROFILE"
+    log_info "  Architecture: $ARCH"
+    log_info "  Parallel Jobs: $JOBS"
+
+    # Create and enter working directory
     mkdir -p "$WORK_DIR"
-    cd "$WORK_DIR"
-    
-    # Clean previous builds if requested
-    if [[ "${CLEAN_BUILD}" == "1" ]]; then
+    cd "$WORK_DIR" || {
+        log_error "Failed to change to working directory: $WORK_DIR"
+        exit 1
+    }
+
+    # Clean build directory if requested
+    if [[ "$CLEAN_BUILD" == "1" ]]; then
         log_info "${ICON_CLEAN}Cleaning previous build artifacts"
-        rm -rf ./*
+        rm -rf ./* 2>/dev/null || true
         log_success "Build directory cleaned"
     fi
-    
+
     log_success "Environment setup completed"
 }
 
@@ -188,46 +176,35 @@ setup_environment() {
 # ═══════════════════════════════════════════════════════════════════════════════
 download_imagebuilder() {
     log_step "${ICON_DOWNLOAD}Downloading Image Builder"
-    
-    local url
-    local ib_file
-    
-    case "$BASE" in
-        "openwrt")
-            url="https://downloads.openwrt.org/releases/$BRANCH/targets/$TARGET_SYSTEM/openwrt-imagebuilder-$BRANCH-$TARGET_NAME.Linux-x86_64.tar.zst"
-            ;;
-        "immortalwrt")
-            url="https://downloads.immortalwrt.org/releases/$BRANCH/targets/$TARGET_SYSTEM/immortalwrt-imagebuilder-$BRANCH-$TARGET_NAME.Linux-x86_64.tar.zst"
-            ;;
-    esac
-    
-    ib_file=$(basename "$url")
-    
-    if [[ -f "$ib_file" ]] && [[ "${FORCE_DOWNLOAD:-0}" != "1" ]]; then
-        log_info "Image builder already exists: ${GREEN}$ib_file${NC}"
+
+    local url="https://downloads.${BASE}.org/releases/$BRANCH/targets/$TARGET_SYSTEM/${BASE}-imagebuilder-$BRANCH-$TARGET_NAME.Linux-x86_64.tar.zst"
+    local ib_file=$(basename "$url")
+
+    # Check if file exists and force download is not set
+    if [[ -f "$ib_file" && "${FORCE_DOWNLOAD:-0}" != "1" ]]; then
+        log_info "Image builder already exists: $ib_file"
     else
-        log_info "Downloading from: ${BLUE}$url${NC}"
+        log_info "Downloading from: $url"
         if ! wget -q --show-progress "$url"; then
-            log_error "Failed to download Image Builder"
-            log_error "URL: $url"
-            log_error "Please verify the URL is accessible and correct"
+            log_error "Failed to download Image Builder from: $url"
             exit 1
         fi
         log_success "Download completed: $ib_file"
     fi
-    
-    # Verify download integrity
-    if [[ ! -f "$ib_file" ]] || [[ ! -s "$ib_file" ]]; then
-        log_error "Downloaded file is missing or corrupted: $ib_file"
+
+    # Verify file integrity
+    if [[ ! -s "$ib_file" ]]; then
+        log_error "Downloaded file is empty or corrupted: $ib_file"
         exit 1
     fi
-    
+
+    # Extract archive
     log_info "${ICON_FILE}Extracting Image Builder archive"
     if ! tar -I zstd -xf "$ib_file" --strip-components=1; then
-        log_error "Failed to extract Image Builder. Archive might be corrupted"
+        log_error "Failed to extract Image Builder archive: $ib_file"
         exit 1
     fi
-    
+
     log_success "Image Builder extracted and ready"
 }
 
@@ -236,130 +213,53 @@ download_imagebuilder() {
 # ═══════════════════════════════════════════════════════════════════════════════
 prepare_custom_packages() {
     log_step "${ICON_FILE}Preparing custom packages"
-    
-    # Create packages directory if it doesn't exist
+
     mkdir -p packages
-    
-    local VEROP="$(echo "${BRANCH}" | awk -F. '{print $1"."$2}')"
-    declare -a custom_packages=(
-        "luci-app-advanced-reboot|https://downloads.openwrt.org/releases/packages-${VEROP}/${ARCH}/luci"
-        "luci-app-netmonitor|https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
+
+    local ver_op=$(echo "$BRANCH" | awk -F. '{print $1"."$2}')
+    declare -A custom_packages=(
+        ["luci-app-advanced-reboot"]="https://downloads.openwrt.org/releases/packages-${ver_op}/${ARCH}/luci"
+        ["luci-app-netmonitor"]="https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
     )
 
-    # Function to get GitHub download URL
-    get_github_download_url() {
-        local api_url=$1
-        local package_name=$2
-        local version_type=$3
-        
-        local download_url
-        if [ "$version_type" == "ipk" ]; then
-            download_url=$(curl -s "$api_url" | jq -r ".assets[] | select(.name | contains(\"${package_name}_\") and endswith(\".ipk\")) | .browser_download_url" | head -1)
-        else
-            download_url=$(curl -s "$api_url" | jq -r ".assets[] | select(.name | contains(\"${package_name}-\") and endswith(\".apk\")) | .browser_download_url" | head -1)
-        fi
-        
-        if [ -z "$download_url" ] || [ "$download_url" == "null" ]; then
-            # Fallback to grep/awk if jq fails
-            if [ "$version_type" == "ipk" ]; then
-                download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}_.*\.ipk" | cut -d '"' -f 4 | head -1)
-            else
-                download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}-.*\.apk" | cut -d '"' -f 4 | head -1)
-            fi
-        fi
-        
-        if [ -z "$download_url" ] || [ "$download_url" == "null" ]; then
-            echo "Error: Cannot find download URL for $package_name" >&2
-            return 1
-        fi
-        
-        echo "$download_url"
-    }
+    for pkg_name in "${!custom_packages[@]}"; do
+        local pkg_url=${custom_packages[$pkg_name]}
+        log_info "Processing package: $pkg_name"
 
-    # Function to get OpenWrt download URL
-    get_openwrt_download_url() {
-        local base_url=$1
-        local package_name=$2
-        local version_type=$3
-        
-        local index_url="${base_url}/Packages"
-        local package_pattern
-        
-        if [ "$version_type" == "ipk" ]; then
-            package_pattern="${package_name}_.*\.ipk"
-        else
-            package_pattern="${package_name}-.*\.apk"
-        fi
-        
-        # For OpenWrt directory
-        local package_index=$(curl -s "$index_url")
-        if [ -z "$package_index" ]; then
-            echo "Error: Cannot download package index from $index_url" >&2
-            return 1
-        fi
-        
-        local package_filename=$(echo "$package_index" | grep -oP "$package_pattern" | head -1)
-        if [ -z "$package_filename" ]; then
-            echo "Error: Cannot find package filename for $package_name" >&2
-            return 1
-        fi
-        
-        local download_url="${base_url}/${package_filename}"
-        echo "$download_url"
-        return 0
-    }
-
-    for PKG in "${custom_packages[@]}"; do
-        IFS='|' read -r pkg_name pkg_url <<< "$PKG"
-        
-        if [[ -z "$pkg_name" || -z "$pkg_url" ]]; then
-            log_error "Invalid package entry: $PKG"
-            continue
-        fi
-        
-        log_info "Processing package: ${GREEN}$pkg_name${NC}"
-        
-        # Determine version type based on package name
         local version_type="ipk"
-        if [[ "$pkg_name" == *"-apk" ]]; then
-            version_type="apk"
-            pkg_name="${pkg_name%-apk}"
-        fi
-        
-        # Get download URL
+        [[ "$pkg_name" == *"-apk" ]] && version_type="apk" && pkg_name="${pkg_name%-apk}"
+
         local download_url
         if [[ "$pkg_url" == *"github.com"*"releases"* ]]; then
-            download_url=$(get_github_download_url "$pkg_url" "$pkg_name" "$version_type")
+            download_url=$(curl -s "$pkg_url" | jq -r ".assets[] | select(.name | contains(\"${pkg_name}_\") and endswith(\".${version_type}\")) | .browser_download_url" | head -1)
+            [[ -z "$download_url" || "$download_url" == "null" ]] && download_url=$(curl -s "$pkg_url" | grep -oP "browser_download_url.*${pkg_name}_.*\.${version_type}" | cut -d '"' -f 4 | head -1)
         else
-            download_url=$(get_openwrt_download_url "$pkg_url" "$pkg_name" "$version_type")
+            local index_url="${pkg_url}/Packages"
+            local package_index=$(curl -s "$index_url") || { log_error "Cannot download package index from $index_url"; continue; }
+            local package_filename=$(echo "$package_index" | grep -oP "${pkg_name}_.*\.${version_type}" | head -1)
+            download_url="${pkg_url}/${package_filename}"
         fi
-        
-        if [[ -z "$download_url" ]] || [[ "$download_url" == "null" ]]; then
+
+        if [[ -z "$download_url" || "$download_url" == "null" ]]; then
             log_error "Failed to get download URL for $pkg_name"
             continue
         fi
-        
-        log_info "Downloading package: ${GREEN}$pkg_name${NC} from ${BLUE}$download_url${NC}"
-        
+
+        log_info "Downloading package: $pkg_name from $download_url"
         if ! wget --no-check-certificate -nv -P packages/ "$download_url"; then
             log_error "Failed to download package: $pkg_name"
             continue
         fi
-        
         log_success "Package downloaded: $pkg_name"
     done
 
-    # Copy external packages if they exist
+    # Copy external packages
     if [[ -d "../packages" ]]; then
         log_info "Copying external packages"
-        cp -f ../packages/* packages/ || {
-            log_warn "Some external packages failed to copy"
-        }
+        cp -f ../packages/* packages/ 2>/dev/null || log_warn "Some external packages failed to copy"
     fi
 
-
-    PACKAGES_INCLUDE+=" luci-app-advanced-reboot luci-app-netmonitor"
-    
+    PACKAGES_INCLUDE="${PACKAGES_INCLUDE} luci-app-advanced-reboot luci-app-netmonitor"
     log_success "Custom packages preparation completed"
 }
 
@@ -368,48 +268,36 @@ prepare_custom_packages() {
 # ═══════════════════════════════════════════════════════════════════════════════
 prepare_custom_files() {
     log_step "${ICON_FILE}Preparing custom files"
-    
+
     local source_path="../$CUSTOM_FILES_DIR"
-    
-    # Download additional scripts
-    log_info "Downloading additional scripts"
     local scripts=(
         "https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/sbin/sync_time.sh|files/sbin"
         "https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/usr/bin/clock|files/usr/bin"
         "https://raw.githubusercontent.com/frizkyiman/fix-read-only/main/install2.sh|files/root"
     )
 
+    # Download scripts
     for script in "${scripts[@]}"; do
         IFS='|' read -r url path <<< "$script"
         log_info "Downloading: $(basename "$url")"
         mkdir -p "$path"
-        if ! wget --no-check-certificate -nv -P "$path" "$url"; then
-            log_warn "Failed to download: $url (continuing...)"
-        fi
+        wget --no-check-certificate -nv -P "$path" "$url" || log_warn "Failed to download: $url"
     done
-    
-    if [[ -d "$source_path" ]]; then
-        log_info "Found custom files directory: ${GREEN}$source_path${NC}"
-        
-        # Set proper permissions
-        log_info "Setting file permissions"
-        find "$source_path" -type f -exec chmod 644 {} \; 2>/dev/null || true
-        find "$source_path" -type d -exec chmod 755 {} \; 2>/dev/null || true
-        find "$source_path" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
-        log_info "Copying custom files"
-        cp -r "$source_path" . || {
-            log_warn "Some custom files failed to copy"
-        }
-        
+    # Copy custom files
+    if [[ -d "$source_path" ]]; then
+        log_info "Copying custom files from: $source_path"
+        cp -r "$source_path" . || log_warn "Some custom files failed to copy"
+
+        # Set permissions
+        log_info "Setting file permissions"
+        find "$CUSTOM_FILES_DIR" -type f -exec chmod 644 {} \; 2>/dev/null
+        find "$CUSTOM_FILES_DIR" -type d -exec chmod 755 {} \; 2>/dev/null
+        find "$CUSTOM_FILES_DIR" -name "*.sh" -exec chmod +x {} \; 2>/dev/null
         log_success "Custom files prepared successfully"
     else
         log_info "No custom files directory found at: $source_path"
-        log_info "Using downloaded scripts only"
     fi
-    
-    # Set permissions for downloaded scripts
-    find files -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -417,20 +305,17 @@ prepare_custom_files() {
 # ═══════════════════════════════════════════════════════════════════════════════
 apply_patches() {
     log_step "${ICON_GEAR}Applying firmware patches"
-    
-    # Apply kernel and rootfs size patches if .config exists
+
+    # Configure partition sizes
     if [[ -f ".config" ]]; then
         log_info "Configuring partition sizes"
         sed -i 's|CONFIG_TARGET_KERNEL_PARTSIZE=.*|CONFIG_TARGET_KERNEL_PARTSIZE=128|' .config
         sed -i 's|CONFIG_TARGET_ROOTFS_PARTSIZE=.*|CONFIG_TARGET_ROOTFS_PARTSIZE=1024|' .config
         log_success "Partition sizes configured (Kernel: 128MB, RootFS: 1024MB)"
     fi
-    
+
     # Base-specific patches
     case "$BASE" in
-        "openwrt")
-            log_info "Applying OpenWrt specific patches"
-            ;;
         "immortalwrt")
             if [[ -f "include/target.mk" ]]; then
                 sed -i "/luci-app-cpufreq/d" include/target.mk
@@ -438,9 +323,8 @@ apply_patches() {
             fi
             ;;
     esac
-    
+
     # Target-specific configurations
-    log_info "Applying target-specific configurations for: ${GREEN}$TARGET_NAME${NC}"
     case "$TARGET_NAME" in
         "armsr-armv8")
             if [[ -f ".config" ]]; then
@@ -451,9 +335,8 @@ apply_patches() {
                     CONFIG_TARGET_ROOTFS_SQUASHFS
                     CONFIG_TARGET_IMAGES_GZIP
                 )
-
                 for config in "${configs[@]}"; do
-                    sed -i "s|${config}=.*|# ${config} is not set|" .config 2>/dev/null || true
+                    sed -i "s|${config}=.*|# ${config} is not set|" .config 2>/dev/null
                 done
                 log_success "ARM64 configurations applied"
             fi
@@ -461,20 +344,20 @@ apply_patches() {
         "x86-64")
             if [[ -f ".config" ]]; then
                 log_info "Configuring x86-64 specific settings"
-                sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null || true
-                sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null || true
+                sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null
+                sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null
                 log_success "x86-64 configurations applied"
             fi
             ;;
     esac
-    
+
     # Optimize build process
     if [[ -f "repositories.conf" ]]; then
-        log_info "Optimizing build process (disabling signature checks)"
+        log_info "Disabling package signature checks for faster builds"
         sed -i '\|option check_signature| s|^|#|' repositories.conf
-        log_success "Package signature checking disabled for faster builds"
+        log_success "Package signature checking disabled"
     fi
-    
+
     log_success "All patches applied successfully"
 }
 
@@ -483,157 +366,84 @@ apply_patches() {
 # ═══════════════════════════════════════════════════════════════════════════════
 build_firmware() {
     log_step "${ICON_BUILD}Starting firmware build process"
-    
-    echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${PURPLE}║${NC}                     ${ICON_BUILD}BUILD DETAILS${NC}                       ${PURPLE}║${NC}"
-    echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${PURPLE}║${NC} Profile:      ${WHITE}$PROFILE${NC}"
-    echo -e "${PURPLE}║${NC} Jobs:         ${WHITE}$JOBS parallel${NC}"
-    echo -e "${PURPLE}║${NC} Custom Files: ${WHITE}$([ -d "$CUSTOM_FILES_DIR" ] && echo "Yes" || echo "No")${NC}"
-    echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════╝${NC}"
-    
-    # Count packages properly
-    local included_count=0
-    if [[ -n "$PACKAGES_INCLUDE" ]]; then
-        included_count=$(echo "$PACKAGES_INCLUDE" | wc -w)
-    fi
-    
-    log_info "Included packages: ${GREEN}${included_count} packages${NC}"
-    if [[ -n "$PACKAGES_EXCLUDE" ]]; then
-        log_info "Excluded packages: ${RED}$PACKAGES_EXCLUDE${NC}"
-    fi
-    
-    # Build make command with proper quoting
-    local make_cmd="make image PROFILE=\"$PROFILE\""
-    
+
     # Construct package list
-    local package_list="$DEFAULT_PACKAGES $DEFAULT_REMOVED_PACKAGES"
-    if [[ -n "$PACKAGES_INCLUDE" ]]; then
-        package_list="$package_list $PACKAGES_INCLUDE"
-    fi
-    if [[ -n "$PACKAGES_EXCLUDE" ]]; then
-        package_list="$package_list $PACKAGES_EXCLUDE"
-    fi
-    
-    make_cmd+=" PACKAGES=\"$package_list\""
-    
-    if [[ -d "$CUSTOM_FILES_DIR" ]]; then
-        make_cmd+=" FILES=\"$CUSTOM_FILES_DIR\""
-        log_info "Including custom files from: ${GREEN}$CUSTOM_FILES_DIR${NC}"
-    fi
-    
+    local package_list="$DEFAULT_PACKAGES $DEFAULT_REMOVED_PACKAGES $PACKAGES_INCLUDE $PACKAGES_EXCLUDE"
+    local included_count=$(echo "$package_list" | tr ' ' '\n' | grep -v '^-' | wc -l)
+    log_info "Included packages: $included_count packages"
+    [[ -n "$PACKAGES_EXCLUDE" ]] && log_info "Excluded packages: $PACKAGES_EXCLUDE"
+
+    # Build make command
+    local make_cmd="make image PROFILE=\"$PROFILE\" PACKAGES=\"$package_list\""
+    [[ -d "$CUSTOM_FILES_DIR" ]] && make_cmd+=" FILES=\"$CUSTOM_FILES_DIR\""
     make_cmd+=" -j$JOBS"
-    
-    log_build "Build command prepared"
-    log_info "Starting build with ${GREEN}$JOBS${NC} parallel jobs"
-    
-    # Start build timer
+
+    log_build "Executing build command with $JOBS parallel jobs"
     local start_time=$(date +%s)
-    echo ""
-    echo -e "${WHITE}${ICON_TIME}Build started at: $(date '+%Y-%m-%d %H:%M:%S')${NC}"
-    echo -e "${YELLOW}═══════════════════════════════════════════════════════════════${NC}"
-    
-    if eval "$make_cmd"; then
-        local end_time=$(date +%s)
-        local duration=$((end_time - start_time))
-        local minutes=$((duration / 60))
-        local seconds=$((duration % 60))
-        
-        echo ""
-        echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${GREEN}║${NC}                    ${ICON_SUCCESS}BUILD SUCCESSFUL${NC}                       ${GREEN}║${NC}"
-        echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════╣${NC}"
-        echo -e "${GREEN}║${NC} Build completed in: ${WHITE}${minutes}m ${seconds}s${NC}"
-        echo -e "${GREEN}║${NC} Total duration: ${WHITE}${duration} seconds${NC}"
-        echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════╝${NC}"
-    else
-        log_error "Build failed! Check the output above for details"
-        echo ""
-        echo -e "${RED}╔══════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${RED}║${NC}  Common solutions:"
-        echo -e "${RED}║${NC}  • Check internet connection"
-        echo -e "${RED}║${NC}  • Verify package names in PACKAGES_INCLUDE"
-        echo -e "${RED}║${NC}  • Ensure sufficient disk space"
-        echo -e "${RED}║${NC}  • Try with CLEAN_BUILD=1"
-        echo -e "${RED}╚══════════════════════════════════════════════════════════════╝${NC}"
+    log_info "Build started at: $(date '+%Y-%m-%d %H:%M:%S')"
+
+    if ! eval "$make_cmd"; then
+        log_error "Build failed! Check output for details."
+        log_info "Common solutions:"
+        log_info "  • Check internet connection"
+        log_info "  • Verify package names in PACKAGES_INCLUDE"
+        log_info "  • Ensure sufficient disk space"
+        log_info "  • Try with CLEAN_BUILD=1"
         exit 1
     fi
+
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+    log_success "Build completed in $((duration / 60))m $((duration % 60))s"
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 📊 BUILD RESULTS DISPLAY
 # ═══════════════════════════════════════════════════════════════════════════════
 show_results() {
-    log_step "📊 Displaying build results"
-    
-    echo ""
-    echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║${NC}                    ${ICON_ROCKET}BUILD RESULTS${NC}                        ${CYAN}║${NC}"
-    echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════╝${NC}"
-    
+    log_step "Displaying build results"
+
     local image_files
-    mapfile -t image_files < <(find bin/targets -type f \( -name "*.img.gz" -o -name "*.bin" -o -name "*.vmdk" -o -name "*.img" \) 2>/dev/null || true)
-    
+    mapfile -t image_files < <(find bin/targets -type f \( -name "*.img.gz" -o -name "*.bin" -o -name "*.vmdk" -o -name "*.img" \) 2>/dev/null)
+
     if [[ ${#image_files[@]} -eq 0 ]]; then
         log_warn "No firmware images found in bin/targets"
-        log_info "Checking for any files in bin/targets:"
         find bin/targets -type f 2>/dev/null || log_warn "bin/targets directory not found"
     else
-        echo ""
-        echo -e "${WHITE}📱 FIRMWARE IMAGES GENERATED:${NC}"
-        echo -e "${BLUE}═══════════════════════════════════════════════════════════════${NC}"
+        log_info "Firmware images generated:"
         printf "${WHITE}%-50s %10s %20s${NC}\n" "Filename" "Size" "Modified"
         printf "${BLUE}%-80s${NC}\n" | tr ' ' '─'
-        
         for file in "${image_files[@]}"; do
             local size=$(du -h "$file" | cut -f1)
             local modified=$(date -r "$file" '+%Y-%m-%d %H:%M:%S')
             printf "${GREEN}%-50s${NC} ${YELLOW}%10s${NC} ${CYAN}%20s${NC}\n" "$(basename "$file")" "$size" "$modified"
         done
-        
-        echo ""
-        log_success "Generated ${GREEN}${#image_files[@]}${NC} firmware image(s)"
-        log_info "📁 Images location: ${WHITE}$(pwd)/bin/targets${NC}"
+        log_success "Generated ${#image_files[@]} firmware image(s)"
+        log_info "Images location: $(pwd)/bin/targets"
     fi
-    
-    # Show additional artifacts
+
     local other_files
-    mapfile -t other_files < <(find bin/targets -type f \( -name "*.buildinfo" -o -name "*.manifest" \) 2>/dev/null || true)
-    
+    mapfile -t other_files < <(find bin/targets -type f \( -name "*.buildinfo" -o -name "*.manifest" \) 2>/dev/null)
     if [[ ${#other_files[@]} -gt 0 ]]; then
-        echo ""
-        log_info "📄 Additional build artifacts:"
+        log_info "Additional build artifacts:"
         for file in "${other_files[@]}"; do
             echo -e "  ${BLUE}•${NC} $(basename "$file")"
         done
     fi
-    
-    # Show summary statistics
-    echo ""
-    echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${PURPLE}║${NC}                     ${ICON_GEAR}BUILD SUMMARY${NC}                        ${PURPLE}║${NC}"
-    echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${PURPLE}║${NC} Base:             ${WHITE}$BASE $BRANCH${NC}"
-    echo -e "${PURPLE}║${NC} Target:           ${WHITE}$TARGET_SYSTEM ($PROFILE)${NC}"
-    echo -e "${PURPLE}║${NC} Images Generated: ${WHITE}${#image_files[@]}${NC}"
-    echo -e "${PURPLE}║${NC} Build Time:       ${WHITE}$(date '+%Y-%m-%d %H:%M:%S')${NC}"
-    echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════╝${NC}"
+
+    log_info "Build summary:"
+    log_info "  Base: $BASE $BRANCH"
+    log_info "  Target: $TARGET_SYSTEM ($PROFILE)"
+    log_info "  Images Generated: ${#image_files[@]}"
+    log_info "  Build Time: $(date '+%Y-%m-%d %H:%M:%S')"
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🚀 MAIN EXECUTION FUNCTION
 # ═══════════════════════════════════════════════════════════════════════════════
 main() {
-    # Display banner
-    echo ""
-    echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}          ${ICON_ROCKET}${WHITE}RTA-WRT Image Builder Script${NC}"
-    echo -e "${GREEN}║${NC}"
-    echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-    
-    # Execute build steps
+    log_info "RTA-WRT Image Builder Script"
+
     validate_parameters
     setup_environment
     download_imagebuilder
@@ -642,14 +452,8 @@ main() {
     apply_patches
     build_firmware
     show_results
-    
-    # Success message
-    echo ""
-    echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║${NC}                ${ICON_SUCCESS}${WHITE}SCRIPT COMPLETED SUCCESSFULLY!${NC}"
-    echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
+
+    log_success "Script completed successfully!"
 }
 
-# Execute main function with all arguments
 main "$@"
