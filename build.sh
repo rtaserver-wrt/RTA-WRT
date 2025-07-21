@@ -30,10 +30,15 @@ readonly ICON_CLEAN="🧹"
 # ═══════════════════════════════════════════════════════════════════════════════
 # 📝 LOGGING FUNCTIONS
 # ═══════════════════════════════════════════════════════════════════════════════
+init_logging() {
+    readonly LOG_FILE="${WORK_DIR}/build.log"
+    exec > >(tee -a "${LOG_FILE}") 2>&1
+}
+
 log() {
     local level=$1 color=$2 icon=$3
     shift 3
-    echo -e "${color}${icon}[$level]${NC} $*" >&2
+    echo -e "${color}${icon}[$level]$(date '+%Y-%m-%d %H:%M:%S')${NC} $*" >&2
 }
 
 log_info() { log "INFO" "$BLUE" "$ICON_INFO" "$@"; }
@@ -46,13 +51,54 @@ log_step() { log "STEP" "$CYAN" "$ICON_GEAR" "$@"; }
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🛡️ ERROR HANDLING
 # ═══════════════════════════════════════════════════════════════════════════════
+cleanup() {
+    local exit_code=$?
+    if [[ $exit_code -ne 0 ]]; then
+        log_error "Script exited with error (code: $exit_code)"
+        log_error "Check the log file for details: ${LOG_FILE}"
+    fi
+    exit $exit_code
+}
+
 error_handler() {
     local line_no=$1
     log_error "Build failed at line: $line_no"
     log_error "Working directory: $(pwd)"
     exit 1
 }
+
 trap 'error_handler $LINENO' ERR
+trap cleanup EXIT
+trap 'log_error "User interrupted build"; exit 1' SIGINT
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🔍 DEPENDENCY CHECK
+# ═══════════════════════════════════════════════════════════════════════════════
+check_dependencies() {
+    log_step "Checking system dependencies"
+    
+    local missing=()
+    local required=("wget" "curl" "jq" "tar" "make" "find" "grep" "sed")
+    
+    for cmd in "${required[@]}"; do
+        if ! command -v "$cmd" &>/dev/null; then
+            missing+=("$cmd")
+        fi
+    done
+    
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        log_error "Missing required dependencies: ${missing[*]}"
+        exit 1
+    fi
+    
+    # Check for zstd support
+    if ! tar --help | grep -q zstd; then
+        log_error "tar does not support zstd compression. Install zstd or use a newer version of tar."
+        exit 1
+    fi
+    
+    log_success "All dependencies are available"
+}
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ⚙️ CONFIGURATION VARIABLES
@@ -71,39 +117,39 @@ CLEAN_BUILD="${9:-0}"
 VERSION="${10:-stable}"
 CUSTOM_FILES_DIR="files"
 JOBS="$(nproc)"
+FORCE_DOWNLOAD="${FORCE_DOWNLOAD:-0}"
 
 # Default packages (consolidated to remove duplicates)
 readonly DEFAULT_PACKAGES="
-dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua
-luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full
-cpusage ttyd dmesg kmod-tun luci-lib-ipkg git git-http
-zram-swap adb parted losetup resize2fs luci luci-ssl block-mount htop bash curl wget-ssl
-tar unzip unrar gzip jq luci-app-ttyd nano httping screen openssh-sftp-server
-liblucihttp liblucihttp-lua libubus-lua luci-app-firewall luci-app-opkg
-ca-bundle ca-certificates luci-compat coreutils-sleep fontconfig coreutils-whoami file lolcat
-luci-mod-network luci-mod-status luci-mod-system luci-proto-ipv6 luci-proto-ppp
-luci-theme-bootstrap rpcd rpcd-mod-file rpcd-mod-iwinfo rpcd-mod-luci
-rpcd-mod-rrdns uhttpd uhttpd-mod-ubus coreutils coreutils-base64 coreutils-nohup coreutils-stty
-libc coreutils-stat coreutils-timeout ip-full libuci-lua microsocks resolveip ipset iptables
-iptables-legacy iptables-mod-iprange iptables-mod-socket iptables-mod-tproxy kmod-ipt-nat
-luci-lua-runtime zoneinfo-asia zoneinfo-core perl perlbase-base perlbase-bytes perlbase-class
-perlbase-config perlbase-cwd perlbase-dynaloader perlbase-errno perlbase-essential perlbase-fcntl
-perlbase-file perlbase-filehandle perlbase-i18n perlbase-integer perlbase-io perlbase-list
-perlbase-locale perlbase-params perlbase-posix perlbase-re perlbase-scalar perlbase-selectsaver
-perlbase-socket perlbase-symbol perlbase-tie perlbase-time perlbase-unicore perlbase-utf8
-perlbase-xsloader php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo
-php8-mod-zip php8-mod-iconv php8-mod-mbstring luci-theme-material kmod-usb-net-rtl8150
-kmod-usb-net-rtl8152 kmod-usb-net-asix kmod-usb-net-asix-ax88179 kmod-mii kmod-usb-net
-kmod-usb-wdm kmod-usb-net-qmi-wwan kmod-wwan uqmi luci-proto-qmi kmod-usb-net-cdc-ether
-kmod-usb-serial-option kmod-usb-serial kmod-usb-serial-wwan qmi-utils kmod-usb-serial-qualcomm
-kmod-usb-acm kmod-usb-net-cdc-ncm kmod-usb-net-cdc-mbim umbim modemmanager modemmanager-rpcd
-luci-proto-modemmanager libmbim libqmi usbutils luci-proto-mbim luci-proto-ncm
-kmod-usb-net-huawei-cdc-ncm kmod-usb-net-rndis kmod-usb-net-sierrawireless
-kmod-usb-ohci kmod-usb-serial-sierrawireless kmod-usb-uhci kmod-usb2 kmod-usb-ehci
-kmod-usb-net-ipheth usbmuxd libusbmuxd-utils libimobiledevice-utils usb-modeswitch kmod-nls-utf8
-mbim-utils kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3
-kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm sms-tool python3-speedtest-cli
-"
+dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua \
+luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full \
+cpusage ttyd dmesg kmod-tun luci-lib-ipkg git git-http \
+zram-swap adb parted losetup resize2fs luci luci-ssl block-mount htop bash curl wget-ssl \
+tar unzip unrar gzip jq luci-app-ttyd nano httping screen openssh-sftp-server \
+liblucihttp liblucihttp-lua libubus-lua luci-app-firewall luci-app-opkg \
+ca-bundle ca-certificates luci-compat coreutils-sleep fontconfig coreutils-whoami file lolcat \
+luci-mod-network luci-mod-status luci-mod-system luci-proto-ipv6 luci-proto-ppp \
+luci-theme-bootstrap rpcd rpcd-mod-file rpcd-mod-iwinfo rpcd-mod-luci \
+rpcd-mod-rrdns uhttpd uhttpd-mod-ubus coreutils coreutils-base64 coreutils-nohup coreutils-stty \
+libc coreutils-stat coreutils-timeout ip-full libuci-lua microsocks resolveip ipset iptables \
+iptables-legacy iptables-mod-iprange iptables-mod-socket iptables-mod-tproxy kmod-ipt-nat \
+luci-lua-runtime zoneinfo-asia zoneinfo-core perl perlbase-base perlbase-bytes perlbase-class \
+perlbase-config perlbase-cwd perlbase-dynaloader perlbase-errno perlbase-essential perlbase-fcntl \
+perlbase-file perlbase-filehandle perlbase-i18n perlbase-integer perlbase-io perlbase-list \
+perlbase-locale perlbase-params perlbase-posix perlbase-re perlbase-scalar perlbase-selectsaver \
+perlbase-socket perlbase-symbol perlbase-tie perlbase-time perlbase-unicore perlbase-utf8 \
+perlbase-xsloader php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo \
+php8-mod-zip php8-mod-iconv php8-mod-mbstring luci-theme-material kmod-usb-net-rtl8150 \
+kmod-usb-net-rtl8152 kmod-usb-net-asix kmod-usb-net-asix-ax88179 kmod-mii kmod-usb-net \
+kmod-usb-wdm kmod-usb-net-qmi-wwan kmod-wwan uqmi luci-proto-qmi kmod-usb-net-cdc-ether \
+kmod-usb-serial-option kmod-usb-serial kmod-usb-serial-wwan qmi-utils kmod-usb-serial-qualcomm \
+kmod-usb-acm kmod-usb-net-cdc-ncm kmod-usb-net-cdc-mbim umbim modemmanager modemmanager-rpcd \
+luci-proto-modemmanager libmbim libqmi usbutils luci-proto-mbim luci-proto-ncm \
+kmod-usb-net-huawei-cdc-ncm kmod-usb-net-rndis kmod-usb-net-sierrawireless \
+kmod-usb-ohci kmod-usb-serial-sierrawireless kmod-usb-uhci kmod-usb2 kmod-usb-ehci \
+kmod-usb-net-ipheth usbmuxd libusbmuxd-utils libimobiledevice-utils usb-modeswitch kmod-nls-utf8 \
+mbim-utils kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3 \
+kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm sms-tool python3-speedtest-cli"
 readonly DEFAULT_REMOVED_PACKAGES="-dnsmasq"
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -134,6 +180,12 @@ validate_parameters() {
         log_warn "Invalid architecture format: $ARCH"
     fi
 
+    # Validate working directory
+    if ! mkdir -p "$WORK_DIR" 2>/dev/null; then
+        log_error "Cannot create or write to working directory: $WORK_DIR"
+        exit 1
+    fi
+
     log_success "Parameters validated"
 }
 
@@ -153,6 +205,7 @@ setup_environment() {
     log_info "  Profile: $PROFILE"
     log_info "  Architecture: $ARCH"
     log_info "  Parallel Jobs: $JOBS"
+    log_info "  Log File: $LOG_FILE"
 
     # Create and enter working directory
     mkdir -p "$WORK_DIR"
@@ -181,13 +234,25 @@ download_imagebuilder() {
     local ib_file=$(basename "$url")
 
     # Check if file exists and force download is not set
-    if [[ -f "$ib_file" && "${FORCE_DOWNLOAD:-0}" != "1" ]]; then
+    if [[ -f "$ib_file" && "$FORCE_DOWNLOAD" != "1" ]]; then
         log_info "Image builder already exists: $ib_file"
     else
         log_info "Downloading from: $url"
-        if ! wget -q --show-progress "$url"; then
-            log_error "Failed to download Image Builder from: $url"
-            exit 1
+        
+        # Use aria2c if available, otherwise fallback to wget
+        if command -v aria2c &>/dev/null; then
+            if ! aria2c -x16 -s16 -c "$url"; then
+                log_error "Failed to download with aria2c, trying wget..."
+                if ! wget -q --show-progress "$url"; then
+                    log_error "Failed to download Image Builder from: $url"
+                    exit 1
+                fi
+            fi
+        else
+            if ! wget -q --show-progress "$url"; then
+                log_error "Failed to download Image Builder from: $url"
+                exit 1
+            fi
         fi
         log_success "Download completed: $ib_file"
     fi
@@ -284,7 +349,6 @@ prepare_custom_packages() {
 
         # FANTASTIC packages
         ["luci-app-netspeedtest"]="${REPOS[FANTASTIC]}/luci"
-
     )
 
     for pkg_name in "${!custom_packages[@]}"; do
@@ -338,19 +402,20 @@ prepare_custom_packages() {
         [[ $failed_count -gt 0 ]] && log_warn "$failed_count external packages failed to copy"
     fi
 
-    # Add custom packages to include list
+    # Add custom packages to the include list
     local added_count=0
     for list_pkg in "${!custom_packages[@]}"; do
-        # Only add if the package was actually downloaded
-        local expected_file="packages/${list_pkg}.ipk"
-        [[ "$list_pkg" == *"-apk" ]] && expected_file="packages/${list_pkg}.apk"
-        
-        if [[ -f "$expected_file" ]] || [[ -f "packages/${list_pkg}"* ]]; then
+        # Determine expected file pattern based on package type
+        local expected_file="packages/${list_pkg}*.ipk"
+        [[ "$list_pkg" == *".apk" ]] && expected_file="packages/${list_pkg}*.apk"
+
+        # Use globbing to check if any matching files exist
+        if compgen -G "$expected_file" > /dev/null; then
             PACKAGES_INCLUDE="${PACKAGES_INCLUDE} ${list_pkg}"
             log_info "Added custom package to include list: $list_pkg"
             ((added_count++))
         else
-            log_warn "Package file not found, skipping from include list: $list_pkg"
+            log_warn "No matching package file found, skipping: $list_pkg"
         fi
     done
     
@@ -375,19 +440,23 @@ prepare_custom_files() {
         IFS='|' read -r url path <<< "$script"
         log_info "Downloading: $(basename "$url")"
         mkdir -p "$path"
-        wget --no-check-certificate -nv -P "$path" "$url" || log_warn "Failed to download: $url"
+        if ! wget --no-check-certificate -nv -O "${path}/$(basename "$url")" "$url"; then
+            log_warn "Failed to download: $url"
+        fi
     done
 
     # Copy custom files
     if [[ -d "$source_path" ]]; then
         log_info "Copying custom files from: $source_path"
-        cp -r "$source_path" . || log_warn "Some custom files failed to copy"
+        if ! cp -r "$source_path" .; then
+            log_warn "Some custom files failed to copy"
+        fi
 
         # Set permissions
         log_info "Setting file permissions"
-        find "$CUSTOM_FILES_DIR" -type f -exec chmod 644 {} \; 2>/dev/null
-        find "$CUSTOM_FILES_DIR" -type d -exec chmod 755 {} \; 2>/dev/null
-        find "$CUSTOM_FILES_DIR" -name "*.sh" -exec chmod +x {} \; 2>/dev/null
+        find "$CUSTOM_FILES_DIR" -type f -exec chmod 644 {} \; 2>/dev/null || true
+        find "$CUSTOM_FILES_DIR" -type d -exec chmod 755 {} \; 2>/dev/null || true
+        find "$CUSTOM_FILES_DIR" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
         log_success "Custom files prepared successfully"
     else
         log_info "No custom files directory found at: $source_path"
@@ -430,7 +499,7 @@ apply_patches() {
                     CONFIG_TARGET_IMAGES_GZIP
                 )
                 for config in "${configs[@]}"; do
-                    sed -i "s|${config}=.*|# ${config} is not set|" .config 2>/dev/null
+                    sed -i "s|${config}=.*|# ${config} is not set|" .config 2>/dev/null || true
                 done
                 log_success "ARM64 configurations applied"
             fi
@@ -438,8 +507,8 @@ apply_patches() {
         "x86-64")
             if [[ -f ".config" ]]; then
                 log_info "Configuring x86-64 specific settings"
-                sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null
-                sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null
+                sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null || true
+                sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null || true
                 log_success "x86-64 configurations applied"
             fi
             ;;
@@ -463,9 +532,10 @@ build_firmware() {
 
     # Construct package list
     local package_list="$DEFAULT_PACKAGES $DEFAULT_REMOVED_PACKAGES $PACKAGES_INCLUDE $PACKAGES_EXCLUDE"
-    local included_count=$(echo "$package_list" | tr ' ' '\n' | grep -v '^-' | wc -l)
-    log_info "Included packages: $included_count packages"
-    [[ -n "$PACKAGES_EXCLUDE" ]] && log_info "Excluded packages: $PACKAGES_EXCLUDE"
+    local included_count=$(echo "$package_list" | tr ' ' '\n' | grep -v '^-' | sort -u | wc -l)
+    local excluded_count=$(echo "$package_list" | tr ' ' '\n' | grep '^-' | sort -u | wc -l)
+    log_info "Included packages: $included_count unique packages"
+    log_info "Excluded packages: $excluded_count unique packages"
 
     # Build make command
     local make_cmd="make image PROFILE=\"$PROFILE\" PACKAGES=\"$package_list\""
@@ -475,14 +545,16 @@ build_firmware() {
     log_build "Executing build command with $JOBS parallel jobs"
     local start_time=$(date +%s)
     log_info "Build started at: $(date '+%Y-%m-%d %H:%M:%S')"
+    log_info "Build command: $make_cmd"
 
     if ! eval "$make_cmd"; then
         log_error "Build failed! Check output for details."
         log_info "Common solutions:"
         log_info "  • Check internet connection"
         log_info "  • Verify package names in PACKAGES_INCLUDE"
-        log_info "  • Ensure sufficient disk space"
+        log_info "  • Ensure sufficient disk space (minimum 10GB recommended)"
         log_info "  • Try with CLEAN_BUILD=1"
+        log_info "  • Check the log file: $LOG_FILE"
         exit 1
     fi
 
@@ -530,6 +602,7 @@ show_results() {
     log_info "  Target: $TARGET_SYSTEM ($PROFILE)"
     log_info "  Images Generated: ${#image_files[@]}"
     log_info "  Build Time: $(date '+%Y-%m-%d %H:%M:%S')"
+    log_info "  Log File: $LOG_FILE"
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
