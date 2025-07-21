@@ -81,15 +81,13 @@ readonly TARGET_NAME="${4:-x86-64}"
 readonly PROFILE="${5:-generic}"
 readonly ARCH="${6:-x86_64}"
 
-# 📦 Package configuration
-readonly PACKAGES_INCLUDE="${7}"
-
-readonly PACKAGES_EXCLUDE="${8}"
+# 📦 Package configuration - Fixed variable assignment
+readonly PACKAGES_INCLUDE="${7:-}"
+readonly PACKAGES_EXCLUDE="${8:-}"
 readonly CUSTOM_FILES_DIR="files"
 readonly JOBS="$(nproc)"
 readonly CLEAN_BUILD="${9:-0}"
 readonly VERSION="${10:-stable}"
-
 
 readonly DEFAULT_PACKAGES="dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua \
 luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full \
@@ -239,13 +237,16 @@ download_imagebuilder() {
 prepare_custom_packages() {
     log_step "${ICON_FILE}Preparing custom packages"
     
+    # Create packages directory if it doesn't exist
+    mkdir -p packages
+    
     local VEROP="$(echo "${BRANCH}" | awk -F. '{print $1"."$2}')"
     declare -a custom_packages=(
         "luci-app-advanced-reboot|https://downloads.openwrt.org/releases/packages-${VEROP}/${ARCH}/luci"
         "luci-app-netmonitor|https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
     )
 
-    # Fungsi untuk mendapatkan URL download dari GitHub API
+    # Function to get GitHub download URL
     get_github_download_url() {
         local api_url=$1
         local package_name=$2
@@ -253,70 +254,59 @@ prepare_custom_packages() {
         
         local download_url
         if [ "$version_type" == "ipk" ]; then
-            download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}_.*\.ipk" | cut -d '"' -f 4 | head -1)
+            download_url=$(curl -s "$api_url" | jq -r ".assets[] | select(.name | contains(\"${package_name}_\") and endswith(\".ipk\")) | .browser_download_url" | head -1)
         else
-            download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}-.*\.apk" | cut -d '"' -f 4 | head -1)
+            download_url=$(curl -s "$api_url" | jq -r ".assets[] | select(.name | contains(\"${package_name}-\") and endswith(\".apk\")) | .browser_download_url" | head -1)
         fi
         
-        if [ -z "$download_url" ]; then
-            echo "Error: Tidak dapat menemukan URL download untuk $package_name" >&2
+        if [ -z "$download_url" ] || [ "$download_url" == "null" ]; then
+            # Fallback to grep/awk if jq fails
+            if [ "$version_type" == "ipk" ]; then
+                download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}_.*\.ipk" | cut -d '"' -f 4 | head -1)
+            else
+                download_url=$(curl -s "$api_url" | grep -oP "browser_download_url.*${package_name}-.*\.apk" | cut -d '"' -f 4 | head -1)
+            fi
+        fi
+        
+        if [ -z "$download_url" ] || [ "$download_url" == "null" ]; then
+            echo "Error: Cannot find download URL for $package_name" >&2
             return 1
         fi
         
         echo "$download_url"
     }
 
-    # Fungsi untuk mendapatkan URL download dari direktori OpenWrt
+    # Function to get OpenWrt download URL
     get_openwrt_download_url() {
         local base_url=$1
         local package_name=$2
         local version_type=$3
         
-        local index_url
+        local index_url="${base_url}/Packages"
+        local package_pattern
+        
         if [ "$version_type" == "ipk" ]; then
-            index_url="${base_url}/Packages"
             package_pattern="${package_name}_.*\.ipk"
         else
-            index_url="${base_url}/Packages"
             package_pattern="${package_name}-.*\.apk"
         fi
         
-        # Cek jika URL adalah GitHub raw
-        if [[ "$base_url" == *"github.com"* ]]; then
-            # Format khusus untuk GitHub raw
-            local download_url="${base_url}/${package_name}_*"
-            if [ "$version_type" == "apk" ]; then
-                download_url="${base_url}/${package_name}-*"
-            fi
-            
-            # Dapatkan nama file yang tepat
-            local file_info=$(curl -s -I "$download_url" | grep -i "location:" | tail -1)
-            if [ -n "$file_info" ]; then
-                download_url=$(echo "$file_info" | awk '{print $2}' | tr -d '\r')
-                echo "$download_url"
-                return 0
-            fi
-        else
-            # Untuk URL OpenWrt biasa
-            local package_index=$(curl -s "$index_url")
-            if [ -z "$package_index" ]; then
-                echo "Error: Tidak dapat mengunduh indeks paket dari $index_url" >&2
-                return 1
-            fi
-            
-            local package_filename=$(echo "$package_index" | grep -oP "$package_pattern" | head -1)
-            if [ -z "$package_filename" ]; then
-                echo "Error: Tidak dapat menemukan nama file paket untuk $package_name" >&2
-                return 1
-            fi
-            
-            local download_url="${base_url}/${package_filename}"
-            echo "$download_url"
-            return 0
+        # For OpenWrt directory
+        local package_index=$(curl -s "$index_url")
+        if [ -z "$package_index" ]; then
+            echo "Error: Cannot download package index from $index_url" >&2
+            return 1
         fi
         
-        echo "Error: Gagal mendapatkan URL download untuk $package_name" >&2
-        return 1
+        local package_filename=$(echo "$package_index" | grep -oP "$package_pattern" | head -1)
+        if [ -z "$package_filename" ]; then
+            echo "Error: Cannot find package filename for $package_name" >&2
+            return 1
+        fi
+        
+        local download_url="${base_url}/${package_filename}"
+        echo "$download_url"
+        return 0
     }
 
     for PKG in "${custom_packages[@]}"; do
@@ -336,15 +326,15 @@ prepare_custom_packages() {
             pkg_name="${pkg_name%-apk}"
         fi
         
-        # Get download URL from GitHub or OpenWrt
+        # Get download URL
         local download_url
-        if [[ "$pkg_url" == *"github.com"* ]]; then
+        if [[ "$pkg_url" == *"github.com"*"releases"* ]]; then
             download_url=$(get_github_download_url "$pkg_url" "$pkg_name" "$version_type")
         else
             download_url=$(get_openwrt_download_url "$pkg_url" "$pkg_name" "$version_type")
         fi
         
-        if [[ -z "$download_url" ]]; then
+        if [[ -z "$download_url" ]] || [[ "$download_url" == "null" ]]; then
             log_error "Failed to get download URL for $pkg_name"
             continue
         fi
@@ -359,10 +349,15 @@ prepare_custom_packages() {
         log_success "Package downloaded: $pkg_name"
     done
 
-    cp -r ../packages/* . || {
-        log_error "Failed to copy custom packages"
-        exit 1
-    }
+    # Copy external packages if they exist
+    if [[ -d "../packages" ]]; then
+        log_info "Copying external packages"
+        cp -r ../packages/* packages/ || {
+            log_warn "Some external packages failed to copy"
+        }
+    fi
+    
+    log_success "Custom packages preparation completed"
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -373,41 +368,45 @@ prepare_custom_files() {
     
     local source_path="../$CUSTOM_FILES_DIR"
     
+    # Download additional scripts
+    log_info "Downloading additional scripts"
+    local scripts=(
+        "https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/sbin/sync_time.sh|files/sbin"
+        "https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/usr/bin/clock|files/usr/bin"
+        "https://raw.githubusercontent.com/frizkyiman/fix-read-only/main/install2.sh|files/root"
+    )
+
+    for script in "${scripts[@]}"; do
+        IFS='|' read -r url path <<< "$script"
+        log_info "Downloading: $(basename "$url")"
+        mkdir -p "$path"
+        if ! wget --no-check-certificate -nv -P "$path" "$url"; then
+            log_warn "Failed to download: $url (continuing...)"
+        fi
+    done
+    
     if [[ -d "$source_path" ]]; then
         log_info "Found custom files directory: ${GREEN}$source_path${NC}"
         
-        # Download additional scripts
-        log_info "Downloading additional scripts"
-        local scripts=(
-            "https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/sbin/sync_time.sh|files/sbin"
-            "https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/usr/bin/clock|files/usr/bin"
-            "https://raw.githubusercontent.com/frizkyiman/fix-read-only/main/install2.sh|files/root"
-        )
-
-        for script in "${scripts[@]}"; do
-            IFS='|' read -r url path <<< "$script"
-            log_info "Downloading: $(basename "$url")"
-            mkdir -p "$path"
-            if ! wget --no-check-certificate -nv -P "$path" "$url"; then
-                log_error "Failed to download: $url"
-                exit 1
-            fi
-        done
-        
         # Set proper permissions
         log_info "Setting file permissions"
-        find "$source_path" -type f -exec chmod 644 {} \;
-        find "$source_path" -type d -exec chmod 755 {} \;
-        find "$source_path" -name "*.sh" -exec chmod +x {} \;
+        find "$source_path" -type f -exec chmod 644 {} \; 2>/dev/null || true
+        find "$source_path" -type d -exec chmod 755 {} \; 2>/dev/null || true
+        find "$source_path" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
         log_info "Copying custom files"
-        cp -r "$source_path" .
+        cp -r "$source_path" . || {
+            log_warn "Some custom files failed to copy"
+        }
         
         log_success "Custom files prepared successfully"
     else
         log_info "No custom files directory found at: $source_path"
-        log_info "Skipping custom files preparation"
+        log_info "Using downloaded scripts only"
     fi
+    
+    # Set permissions for downloaded scripts
+    find files -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -416,11 +415,13 @@ prepare_custom_files() {
 apply_patches() {
     log_step "${ICON_GEAR}Applying firmware patches"
     
-    # Apply kernel and rootfs size patches
-    log_info "Configuring partition sizes"
-    sed -i 's|CONFIG_TARGET_KERNEL_PARTSIZE=.*|CONFIG_TARGET_KERNEL_PARTSIZE=128|' .config
-    sed -i 's|CONFIG_TARGET_ROOTFS_PARTSIZE=.*|CONFIG_TARGET_ROOTFS_PARTSIZE=1024|' .config
-    log_success "Partition sizes configured (Kernel: 128MB, RootFS: 1024MB)"
+    # Apply kernel and rootfs size patches if .config exists
+    if [[ -f ".config" ]]; then
+        log_info "Configuring partition sizes"
+        sed -i 's|CONFIG_TARGET_KERNEL_PARTSIZE=.*|CONFIG_TARGET_KERNEL_PARTSIZE=128|' .config
+        sed -i 's|CONFIG_TARGET_ROOTFS_PARTSIZE=.*|CONFIG_TARGET_ROOTFS_PARTSIZE=1024|' .config
+        log_success "Partition sizes configured (Kernel: 128MB, RootFS: 1024MB)"
+    fi
     
     # Base-specific patches
     case "$BASE" in
@@ -439,24 +440,28 @@ apply_patches() {
     log_info "Applying target-specific configurations for: ${GREEN}$TARGET_NAME${NC}"
     case "$TARGET_NAME" in
         "armsr-armv8")
-            log_info "Configuring ARM64 specific settings"
-            local configs=(
-                CONFIG_TARGET_ROOTFS_CPIOGZ
-                CONFIG_TARGET_ROOTFS_EXT4FS
-                CONFIG_TARGET_ROOTFS_SQUASHFS
-                CONFIG_TARGET_IMAGES_GZIP
-            )
+            if [[ -f ".config" ]]; then
+                log_info "Configuring ARM64 specific settings"
+                local configs=(
+                    CONFIG_TARGET_ROOTFS_CPIOGZ
+                    CONFIG_TARGET_ROOTFS_EXT4FS
+                    CONFIG_TARGET_ROOTFS_SQUASHFS
+                    CONFIG_TARGET_IMAGES_GZIP
+                )
 
-            for config in "${configs[@]}"; do
-                sed -i "s|${config}=.*|# ${config} is not set|" .config 2>/dev/null || true
-            done
-            log_success "ARM64 configurations applied"
+                for config in "${configs[@]}"; do
+                    sed -i "s|${config}=.*|# ${config} is not set|" .config 2>/dev/null || true
+                done
+                log_success "ARM64 configurations applied"
+            fi
             ;;
         "x86-64")
-            log_info "Configuring x86-64 specific settings"
-            sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null || true
-            sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null || true
-            log_success "x86-64 configurations applied"
+            if [[ -f ".config" ]]; then
+                log_info "Configuring x86-64 specific settings"
+                sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null || true
+                sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null || true
+                log_success "x86-64 configurations applied"
+            fi
             ;;
     esac
     
@@ -477,20 +482,37 @@ build_firmware() {
     log_step "${ICON_BUILD}Starting firmware build process"
     
     echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${PURPLE}║${NC}                     ${ICON_BUILD}BUILD DETAILS${NC}"
+    echo -e "${PURPLE}║${NC}                     ${ICON_BUILD}BUILD DETAILS${NC}                       ${PURPLE}║${NC}"
     echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════╣${NC}"
     echo -e "${PURPLE}║${NC} Profile:      ${WHITE}$PROFILE${NC}"
     echo -e "${PURPLE}║${NC} Jobs:         ${WHITE}$JOBS parallel${NC}"
     echo -e "${PURPLE}║${NC} Custom Files: ${WHITE}$([ -d "$CUSTOM_FILES_DIR" ] && echo "Yes" || echo "No")${NC}"
     echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════╝${NC}"
     
-    log_info "Included packages: ${GREEN}$(echo $PACKAGES_INCLUDE | wc -w) packages${NC}"
-    log_info "Excluded packages: ${RED}$PACKAGES_EXCLUDE${NC}"
+    # Count packages properly
+    local included_count=0
+    if [[ -n "$PACKAGES_INCLUDE" ]]; then
+        included_count=$(echo "$PACKAGES_INCLUDE" | wc -w)
+    fi
     
-    # Build make command
-    local make_cmd="make image"
-    make_cmd+=" PROFILE=\"$PROFILE\""
-    make_cmd+=" PACKAGES=\"$DEFAULT_PACKAGES $PACKAGES_INCLUDE $DEFAULT_REMOVED_PACKAGES $PACKAGES_EXCLUDE\""
+    log_info "Included packages: ${GREEN}${included_count} packages${NC}"
+    if [[ -n "$PACKAGES_EXCLUDE" ]]; then
+        log_info "Excluded packages: ${RED}$PACKAGES_EXCLUDE${NC}"
+    fi
+    
+    # Build make command with proper quoting
+    local make_cmd="make image PROFILE=\"$PROFILE\""
+    
+    # Construct package list
+    local package_list="$DEFAULT_PACKAGES $DEFAULT_REMOVED_PACKAGES"
+    if [[ -n "$PACKAGES_INCLUDE" ]]; then
+        package_list="$package_list $PACKAGES_INCLUDE"
+    fi
+    if [[ -n "$PACKAGES_EXCLUDE" ]]; then
+        package_list="$package_list $PACKAGES_EXCLUDE"
+    fi
+    
+    make_cmd+=" PACKAGES=\"$package_list\""
     
     if [[ -d "$CUSTOM_FILES_DIR" ]]; then
         make_cmd+=" FILES=\"$CUSTOM_FILES_DIR\""
@@ -516,10 +538,10 @@ build_firmware() {
         
         echo ""
         echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${GREEN}║${NC}                    ${ICON_SUCCESS}BUILD SUCCESSFUL${NC}"
+        echo -e "${GREEN}║${NC}                    ${ICON_SUCCESS}BUILD SUCCESSFUL${NC}                       ${GREEN}║${NC}"
         echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════╣${NC}"
         echo -e "${GREEN}║${NC} Build completed in: ${WHITE}${minutes}m ${seconds}s${NC}"
-        echo -e "${GREEN}║${NC} Total duration: ${WHITE}${duration} seconds${NC}}"
+        echo -e "${GREEN}║${NC} Total duration: ${WHITE}${duration} seconds${NC}"
         echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════╝${NC}"
     else
         log_error "Build failed! Check the output above for details"
