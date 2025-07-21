@@ -609,8 +609,11 @@ show_results() {
 # 🚀 MAIN EXECUTION FUNCTION
 # ═══════════════════════════════════════════════════════════════════════════════
 main() {
+    init_logging
     log_info "RTA-WRT Image Builder Script"
+    log_info "Starting build process..."
 
+    check_dependencies
     validate_parameters
     setup_environment
     download_imagebuilder
