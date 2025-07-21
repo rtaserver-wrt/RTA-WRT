@@ -102,7 +102,7 @@ kmod-usb-net-huawei-cdc-ncm kmod-usb-net-rndis kmod-usb-net-sierrawireless
 kmod-usb-ohci kmod-usb-serial-sierrawireless kmod-usb-uhci kmod-usb2 kmod-usb-ehci
 kmod-usb-net-ipheth usbmuxd libusbmuxd-utils libimobiledevice-utils usb-modeswitch kmod-nls-utf8
 mbim-utils kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3
-kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm
+kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm sms-tool python3-speedtest-cli
 "
 readonly DEFAULT_REMOVED_PACKAGES="-dnsmasq"
 
@@ -217,9 +217,74 @@ prepare_custom_packages() {
     mkdir -p packages
 
     local ver_op=$(echo "$BRANCH" | awk -F. '{print $1"."$2}')
+    declare -A REPOS=(
+        ["KIDDIN9"]="https://dl.openwrt.ai/releases/${ver_op}/packages/${ARCH}/kiddin9"
+        ["IMMORTALWRT"]="https://downloads.immortalwrt.org/releases/packages-${ver_op}/${ARCH}"
+        ["OPENWRT"]="https://downloads.openwrt.org/releases/packages-${ver_op}/${ARCH}"
+        ["GSPOTX2F"]="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/current"
+        ["FANTASTIC"]="https://fantastic-packages.github.io/packages/releases/${VEROP}/packages/mipsel_24kc"
+    )
     declare -A custom_packages=(
         ["luci-app-advanced-reboot"]="https://downloads.openwrt.org/releases/packages-${ver_op}/${ARCH}/luci"
         ["luci-app-netmonitor"]="https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
+
+        # KIDDIN9 packages
+        ["luci-app-tailscale"]="${REPOS[KIDDIN9]}"
+        ["luci-app-diskman"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-zte"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-gosun"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-qmi"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-yuge"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-thales"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-tw"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-meig"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-styx"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-mikrotik"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-dell"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-sierra"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-quectel"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-huawei"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-xmm"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-telit"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-fibocom"]="${REPOS[KIDDIN9]}"
+        ["modeminfo-serial-simcom"]="${REPOS[KIDDIN9]}"
+        ["modeminfo"]="${REPOS[KIDDIN9]}"
+        ["luci-app-modeminfo"]="${REPOS[KIDDIN9]}"
+        ["atinout"]="${REPOS[KIDDIN9]}"
+        ["luci-app-poweroffdevice"]="${REPOS[KIDDIN9]}"
+        ["xmm-modem"]="${REPOS[KIDDIN9]}"
+        ["luci-app-lite-watchdog"]="${REPOS[KIDDIN9]}"
+        ["luci-theme-alpha"]="${REPOS[KIDDIN9]}"
+        ["luci-app-adguardhome"]="${REPOS[KIDDIN9]}"
+        ["sing-box"]="${REPOS[KIDDIN9]}"
+        ["mihomo"]="${REPOS[KIDDIN9]}"
+        ["luci-app-droidmodem"]="${REPOS[KIDDIN9]}"
+
+        # IMMORTALWRT packages
+        ["luci-app-zerotier"]="${REPOS[IMMORTALWRT]}/luci"
+        ["luci-app-ramfree"]="${REPOS[IMMORTALWRT]}/luci"
+        ["luci-app-3ginfo-lite"]="${REPOS[IMMORTALWRT]}/luci"
+        ["modemband"]="${REPOS[IMMORTALWRT]}/packages"
+        ["luci-app-modemband"]="${REPOS[IMMORTALWRT]}/luci"
+        ["luci-app-sms-tool-js"]="${REPOS[IMMORTALWRT]}/luci"
+        ["dns2tcp"]="${REPOS[IMMORTALWRT]}/packages"
+        ["luci-app-argon-config"]="${REPOS[IMMORTALWRT]}/luci"
+        ["luci-theme-argon"]="${REPOS[IMMORTALWRT]}/luci"
+        ["luci-app-openclash"]="${REPOS[IMMORTALWRT]}/luci"
+        ["luci-app-passwall"]="${REPOS[IMMORTALWRT]}/luci"
+
+        # GSPOTX2F packages
+        ["luci-app-internet-detector"]="${REPOS[GSPOTX2F]}"
+        ["internet-detector"]="${REPOS[GSPOTX2F]}"
+        ["internet-detector-mod-modem-restart"]="${REPOS[GSPOTX2F]}"
+        ["luci-app-cpu-status-mini"]="${REPOS[GSPOTX2F]}"
+        ["luci-app-disks-info"]="${REPOS[GSPOTX2F]}"
+        ["luci-app-log-viewer"]="${REPOS[GSPOTX2F]}"
+        ["luci-app-temp-status"]="${REPOS[GSPOTX2F]}"
+
+        # FANTASTIC packages
+        ["luci-app-netspeedtest"]="${REPOS[FANTASTIC]}/luci"
+
     )
 
     for pkg_name in "${!custom_packages[@]}"; do
@@ -259,7 +324,11 @@ prepare_custom_packages() {
         cp -f ../packages/* packages/ 2>/dev/null || log_warn "Some external packages failed to copy"
     fi
 
-    PACKAGES_INCLUDE="${PACKAGES_INCLUDE} luci-app-advanced-reboot luci-app-netmonitor"
+    # Add custom packages to include list
+    for list_pkg in "${!custom_packages[@]}"; do
+        PACKAGES_INCLUDE="${PACKAGES_INCLUDE} ${list_pkg}"
+        log_info "Added custom package to include list: $list_pkg"
+    done
     log_success "Custom packages preparation completed"
 }
 
