@@ -59,20 +59,29 @@ get_github_browser_download_url() {
     echo "https://raw.githubusercontent.com/$repo/$branch/$filepath"
 }
 
+get_github_release_html() {
+    local repo="$1"
+    local pattern="$2"
+    curl -s "https://github.com/${repo}/releases/latest" | \
+    grep -oE "/${repo}/releases/download/[^\"]*${pattern}[^\"]*" | \
+    head -n 1 | \
+    sed "s|^|https://github.com|"
+}
+
 
 # Determine core file names
 determine_core_files() {
-    # OpenClash core
+    # OpenClash core (raw file di branch `core`)
     occore_file="clash-linux-${ARCH_1}"
-    openclash_core=$(get_github_browser_download_url "vernesong/OpenClash" "core" "master/meta/${occore_file}.tar.gz")
+    openclash_core_url=$(get_github_browser_download_url "vernesong/OpenClash" "core" "meta/${occore_file}.tar.gz")
 
-    # PassWall core
-    passwall_core_file_zip="passwall_packages_ipk_${ARCH_3}"
-    passwall_core_file_zip_down=$(get_github_release_any "xiaorouji/openwrt-passwall" "${passwall_core_file_zip}.*.zip")
+    # PassWall core (.zip dari release)
+    passwall_core_zip_pattern="passwall_packages_ipk_${ARCH_3}.*\.zip"
+    passwall_core_url=$(get_github_release_html "xiaorouji/openwrt-passwall" "$passwall_core_zip_pattern")
 
-    # Nikki core
-    nikki_file_ipk="nikki_${ARCH_3}-openwrt-${VEROP}"
-    nikki_file_ipk_down=$(get_github_release_any "nikkinikki-org/OpenWrt-nikki" "${nikki_file_ipk}.*.tar.gz")
+    # Nikki core (.tar.gz dari release)
+    nikki_core_pattern="nikki_${ARCH_3}-openwrt-${VEROP}.*\.tar.gz"
+    nikki_core_url=$(get_github_release_html "nikkinikki-org/OpenWrt-nikki" "$nikki_core_pattern")
 }
 
 # Function to download and extract package
@@ -104,7 +113,7 @@ setup_openclash() {
     download_packages openclash_ipk || return 1
     
     # Download and extract core
-    handle_package "${openclash_core}" "files/etc/openclash/core/clash.tar.gz" \
+    handle_package "${openclash_core_url}" "files/etc/openclash/core/clash.tar.gz" \
         "tar -xvf files/etc/openclash/core/clash.tar.gz -C files/etc/openclash/core" || return 1
     
     return 0
@@ -117,7 +126,7 @@ setup_passwall() {
     download_packages passwall_ipk || return 1
     
     # Download and extract core
-    handle_package "${passwall_core_file_zip_down}" "packages/passwall.zip" \
+    handle_package "${passwall_core_url}" "packages/passwall.zip" \
         "unzip -qq packages/passwall.zip -d packages && rm packages/passwall.zip" || return 1
     
     return 0
@@ -127,7 +136,7 @@ setup_nikki() {
     log "INFO" "Setting up Nikki..."
     
     # Download and extract core
-    handle_package "${nikki_file_ipk_down}" "packages/nikki.tar.gz" \
+    handle_package "${nikki_core_url}" "packages/nikki.tar.gz" \
         "tar -xzf packages/nikki.tar.gz -C packages && rm packages/nikki.tar.gz" || return 1
     
     return 0
