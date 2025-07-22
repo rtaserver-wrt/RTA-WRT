@@ -1,0 +1,57 @@
+name: Build Static Firmware Data
+
+on:
+  # schedule:
+    # Jalankan setiap 2 jam sekali (sesuaikan jadwalnya)
+    # https://crontab.guru/every-2-hours
+    # - cron: '0 */2 * * *'
+  workflow_dispatch: # Memungkinkan menjalankan workflow secara manual dari tab Actions
+  push:
+    branches:
+      - main # Atau branch utama Anda, jika build script atau dependencies-nya berubah
+      - dev
+
+jobs:
+  build-data:
+    runs-on: ubuntu-latest
+    permissions: # Tambahkan izin jika workflow perlu menulis kembali ke repo
+      contents: write # Untuk push perubahan file JSON
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+            ref: "pages"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Gunakan versi Node.js LTS atau yang sesuai
+
+      #- name: Install dependencies
+        # Jika build-data.js punya package.json, jalankan:
+        # run: npm install --prefix scripts # atau yarn install --cwd scripts
+        # Untuk skrip di atas yang hanya menggunakan modul bawaan, langkah ini tidak perlu.
+
+      - name: Build static JSON data
+        run: node scripts/build-data.js
+        env:
+          # GITHUB_TOKEN disediakan otomatis oleh Actions
+          # Jika Anda menggunakan PAT khusus untuk rate limit yang lebih tinggi atau akses ke repo private lain:
+          # REPO_PAT: ${{ secrets.YOUR_REPO_PAT_SECRET_NAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
+
+          git add data/*.json data/*.md 
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Automated: Update static firmware data"
+            git push
+          else
+            echo "No changes to commit."
+          fi
