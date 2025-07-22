@@ -8,9 +8,9 @@
     <title>RTA-WRT Firmware Downloads</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <!-- Tambahkan SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.12/marked.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -138,13 +138,103 @@
             background-size: 200% 100%;
             animation: shimmer 2s linear infinite;
         }
-        
+
+        .changelog-container {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(51, 65, 85, 0.95));
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .changelog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .changelog-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .changelog-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .changelog-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .changelog-content::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.3);
+            border-radius: 3px;
+        }
+
+        .changelog-content li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            transition: transform 0.3s ease;
+        }
+
+        .changelog-content li:hover {
+            transform: translateX(4px);
+        }
+
+        .changelog-content li::before {
+            content: "\f058";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #0ea5e9;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+            font-size: 0.9em;
+            margin-top: 0.25em;
+        }
+
+        .changelog-toggle {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            background: rgba(14, 165, 233, 0.2);
+            border-radius: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .changelog-toggle:hover {
+            background: rgba(14, 165, 233, 0.3);
+        }
+
+        @media (max-width: 640px) {
+            .changelog-container {
+                padding: 1.5rem;
+            }
+            
+            .changelog-header h2 {
+                font-size: 1.25rem;
+            }
+            
+            .changelog-content {
+                max-height: 300px;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .card-hover:hover {
                 transform: none;
             }
             .floating, .animate-glow, .animate-bounce-gentle {
                 animation: none;
+            }
+            .changelog-content li:hover {
+                transform: none;
             }
         }
     </style>
@@ -154,7 +244,6 @@
     <nav class="fixed top-0 w-full z-50 glass border-b border-gray-700/50" x-data="{ mobileOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Logo -->
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg animate-glow">
                         <i class="fas fa-wifi text-white text-lg"></i>
@@ -165,7 +254,6 @@
                     </div>
                 </div>
                 
-                <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="#downloads" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-primary-600/20 text-primary-400 border border-primary-500/30 hover:bg-primary-600/30 transition-all">
                         <i class="fas fa-download"></i>
@@ -181,13 +269,11 @@
                     </a>
                 </div>
                 
-                <!-- Mobile Menu Button -->
                 <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-lg hover:bg-gray-700/50 transition-colors" aria-label="Toggle menu">
                     <i class="fas" :class="mobileOpen ? 'fa-times' : 'fa-bars'"></i>
                 </button>
             </div>
             
-            <!-- Mobile Menu -->
             <div x-show="mobileOpen" x-cloak x-transition class="md:hidden py-4 border-t border-gray-700/50">
                 <div class="space-y-2">
                     <a href="#downloads" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-primary-600/20 text-primary-400">
@@ -235,7 +321,6 @@
                     Modern, secure, and powerful open-source firmware for your network devices
                 </p>
                 
-                <!-- Release Type Selector -->
                 <div class="flex justify-center mb-8">
                     <div class="glass rounded-xl p-1 inline-flex">
                         <button 
@@ -257,7 +342,6 @@
                     </div>
                 </div>
                 
-                <!-- Version Info -->
                 <div class="flex flex-wrap justify-center gap-4 mb-12" x-show="latestVersion && !loading" x-cloak>
                     <div class="glass px-4 py-2 rounded-full animate-fade-in">
                         <i class="fas fa-tag mr-2 text-primary-400"></i>
@@ -279,6 +363,21 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16" id="downloads">
+        <!-- Changelog Section -->
+        <div x-show="!errorState && changelog.length > 0 && latestVersion" x-cloak class="max-w-3xl mx-auto mb-12" data-aos="fade-up" data-aos-delay="200">
+            <div class="changelog-container card-hover">
+                <div class="changelog-header">
+                    <h2 class="text-2xl font-semibold text-white">
+                        Changelog 
+                        <span x-text="'OpenWrt ' + latestVersion" :class="releaseType === 'prerelease' ? 'text-accent-400' : 'text-primary-400'"></span>
+                    </h2>
+                </div>
+                <div class="changelog-content">
+                    <ul x-html="renderedChangelog"></ul>
+                </div>
+            </div>
+        </div>
+
         <!-- Search and Filters -->
         <div class="mb-12">
             <div class="relative max-w-2xl mx-auto mb-6">
@@ -300,7 +399,6 @@
                 </div>
             </div>
             
-            <!-- Filter Tags -->
             <div class="flex flex-wrap justify-center gap-2" x-show="!loading && firmwareData.length > 0" x-cloak>
                 <template x-for="arch in availableArchitectures" :key="arch">
                     <button 
@@ -387,7 +485,6 @@
         <div x-show="!loading && filteredFirmware.length > 0" x-cloak class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <template x-for="(item, index) in paginatedFirmware" :key="item.id || item.name">
                 <div class="glass rounded-xl p-6 card-hover animate-slide-up" :style="`animation-delay: ${index * 0.05}s`">
-                    <!-- Header -->
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center space-x-3 flex-1 min-w-0">
                             <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center shadow-sm">
@@ -405,7 +502,6 @@
                         </div>
                     </div>
 
-                    <!-- Tags -->
                     <div class="flex flex-wrap gap-2 mb-4">
                         <span class="px-2 py-1 bg-primary-600/20 text-primary-400 text-xs rounded-full border border-primary-500/30">
                             <span x-text="getKernelVersion(item.name)"></span>
@@ -417,7 +513,6 @@
                         </span>
                     </div>
 
-                    <!-- Description -->
                     <p class="text-gray-400 text-sm mb-6 line-clamp-2">
                         Official firmware optimized for <span class="text-white font-medium" x-text="getModelName(item.name)"></span>
                         <span x-show="item.download_count" class="block text-xs mt-1">
@@ -425,7 +520,6 @@
                         </span>
                     </p>
 
-                    <!-- Actions -->
                     <div class="flex space-x-3">
                         <button 
                             @click="downloadFirmware(item)"
@@ -522,6 +616,8 @@
                 totalDownloads: 0,
                 filteredFirmware: [],
                 firmwareData: [],
+                changelog: [],
+                renderedChangelog: '',
                 countDisplay: 'Loading firmware...',
                 downloading: '',
                 availableArchitectures: [],
@@ -534,10 +630,12 @@
                     message: '',
                     type: 'info'
                 },
+                isChangelogExpanded: false,
 
                 init() {
                     this.fetchData();
                     this.setupKeyboardShortcuts();
+                    this.fetchChangelog();
                 },
 
                 get paginatedFirmware() {
@@ -576,6 +674,7 @@
                     if (this.loading) return;
                     this.releaseType = type;
                     this.currentPage = 1;
+                    this.isChangelogExpanded = false;
                     this.fetchData();
                 },
 
@@ -585,7 +684,6 @@
                     this.downloading = '';
                     
                     try {
-                        // Try to fetch from GitHub API first
                         const apiUrl = this.releaseType === 'stable' 
                             ? 'https://api.github.com/repos/rtaserver-wrt/RTA-WRT/releases/latest'
                             : 'https://api.github.com/repos/rtaserver-wrt/RTA-WRT/releases';
@@ -596,15 +694,14 @@
                             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                         }
                         
-                        const data = this.releaseType === 'stable' ? response.json() : (await response.json())[0];
+                        const data = this.releaseType === 'stable' ? await response.json() : (await response.json())[0];
                         
-                        this.processReleaseData(await data);
+                        this.processReleaseData(data);
                         
                     } catch (error) {
                         console.warn('GitHub API failed, trying local files...', error);
                         
                         try {
-                            // Fallback to local JSON files
                             const localResponse = await fetch(`./data/${this.releaseType === 'stable' ? 'stable_release.json' : 'all_releases.json'}`);
                             if (!localResponse.ok) throw new Error('Local files not found');
                             
@@ -633,10 +730,8 @@
                         day: 'numeric'
                     }) : '';
                     
-                    // Calculate total downloads
                     this.totalDownloads = this.firmwareData.reduce((sum, item) => sum + (item.download_count || 0), 0);
                     
-                    // Extract available architectures
                     this.availableArchitectures = [...new Set(this.firmwareData.map(item => this.getArchitecture(item.name)))].filter(Boolean).sort();
                     
                     this.filterFirmware();
@@ -665,7 +760,6 @@
                         return matchesSearch && matchesArch;
                     });
                     
-                    // Reset to first page when filtering
                     if (this.currentPage > this.totalPages) {
                         this.currentPage = 1;
                     }
@@ -773,45 +867,27 @@
                     return match ? `Kernel ${match[1]}` : 'OpenWrt';
                 },
 
-
                 getModelName(name) {
-                    // Hapus semua ekstensi file secara bertahap
                     let cleanName = name;
-                    // Hapus ekstensi ganda seperti .img.gz, .tar.gz, dll
                     cleanName = cleanName.replace(/\.(img\.gz|tar\.gz|bin\.gz)$/i, '');
-                    // Hapus ekstensi tunggal
                     cleanName = cleanName.replace(/\.(bin|img|tar|gz|trx|ipk)$/i, '');
                     
-                    // Gunakan regex untuk mengekstrak nama model
-                    // Pattern: RTA-WRT-OpenWrt-[versi]-[MODEL_NAME]-[kernel/arch/suffix]
                     const match = cleanName.match(/RTA-WRT-(?:OpenWrt|ImmortalWrt)-[\d.]+-(.*?)(?:-k[\d.]+|-AW\d+|-DBAI|-all|-tunnel|$)/i);
                     
                     if (match) {
                         let modelName = match[1];
-                        
-                        // Bersihkan suffix tambahan yang mungkin masih tertinggal
                         modelName = modelName.replace(/-(k[\d.]+.*|AW\d+.*|DBAI.*|all.*|tunnel.*)$/i, '');
-                        
-                        // Ganti semua dash dengan underscore untuk konsistensi
                         modelName = modelName.replace(/-/g, '_');
-                        
-                        // Hapus underscore ganda jika ada
                         modelName = modelName.replace(/_+/g, '_');
-                        
-                        // Hapus underscore di awal dan akhir
                         modelName = modelName.replace(/^_+|_+$/g, '');
-                        
                         return modelName;
                     }
                     
-                    // Fallback jika pattern tidak cocok
                     const parts = cleanName.split('-');
                     if (parts.length >= 4) {
-                        // Ambil bagian setelah versi OpenWrt (index 3 dan seterusnya)
                         let modelParts = [];
                         for (let i = 3; i < parts.length; i++) {
                             const part = parts[i];
-                            // Stop jika menemukan pattern kernel, arch, atau suffix
                             if (/^(k[\d.]+|AW\d+|DBAI|all|tunnel)/i.test(part)) {
                                 break;
                             }
@@ -839,7 +915,6 @@
                     this.downloading = item.name;
                     
                     try {
-                        // Track download
                         if (typeof gtag !== 'undefined') {
                             gtag('event', 'download', {
                                 'firmware_name': item.name,
@@ -848,7 +923,6 @@
                             });
                         }
                         
-                        // Open download in new tab
                         const link = document.createElement('a');
                         link.href = item.browser_download_url;
                         link.target = '_blank';
@@ -856,7 +930,6 @@
                         link.download = item.name;
                         link.click();
                         
-                        // Show success notification with SweetAlert2
                         Swal.fire({
                             title: 'Download Started!',
                             text: `${item.name} is being downloaded`,
@@ -880,8 +953,6 @@
                         
                     } catch (error) {
                         console.error('Download failed:', error);
-                        
-                        // Show error notification with SweetAlert2
                         Swal.fire({
                             title: 'Download Failed',
                             text: 'Please try again later',
@@ -895,7 +966,6 @@
                             }
                         });
                     } finally {
-                        // Reset downloading state after a delay
                         setTimeout(() => {
                             this.downloading = '';
                         }, 2000);
@@ -905,8 +975,6 @@
                 async copyLink(item) {
                     try {
                         await navigator.clipboard.writeText(item.browser_download_url);
-                        
-                        // Show success notification with SweetAlert2
                         Swal.fire({
                             title: 'Link Copied!',
                             text: 'Download link copied to clipboard',
@@ -927,18 +995,14 @@
                                 timerProgressBar: 'bg-primary-500'
                             }
                         });
-                        
                     } catch (error) {
                         console.error('Copy failed:', error);
-                        // Fallback for older browsers
                         const textArea = document.createElement('textarea');
                         textArea.value = item.browser_download_url;
                         document.body.appendChild(textArea);
                         textArea.select();
                         document.execCommand('copy');
                         document.body.removeChild(textArea);
-                        
-                        // Show success notification with SweetAlert2
                         Swal.fire({
                             title: 'Link Copied!',
                             text: 'Download link copied to clipboard',
@@ -956,8 +1020,39 @@
                     }
                 },
 
+                async fetchChangelog() {
+                    try {
+                        const changelogResponse = await fetch(`./data/changelog_content.md`);
+                        if (!changelogResponse.ok) throw new Error(`Failed to fetch CHANGELOG.md: ${changelogResponse.status}`);
+                        const changelogData = await changelogResponse.text();
+                        this.parseChangelogMD(changelogData);
+                        this.renderedChangelog = marked.parse(this.changelog.join('\n'), { gfm: true, breaks: true });
+                    } catch (error) {
+                        console.error('Error fetching changelog from CHANGELOG.md:', error);
+                        this.changelog = [`- Unable to load changelog from file: ${error.message}`];
+                        this.renderedChangelog = marked.parse(this.changelog.join('\n'), { gfm: true, breaks: true });
+                    }
+                },
+
+                parseChangelogMD(content) {
+                    const lines = content.split('\n');
+                    let capturing = false;
+                    this.changelog = [];
+                    const versionRegex = new RegExp(`^##\\s*\\[?v?${this.latestVersion.replace('.', '\\.')}\\]?`, 'i');
+                    for (const line of lines) {
+                        if (versionRegex.test(line.trim())) {
+                            capturing = true;
+                            continue;
+                        }
+                        if (capturing && line.trim().startsWith('## ')) break;
+                        if (capturing && line.trim() !== '') this.changelog.push(line.replace(/^\s*/, ''));
+                    }
+                    if (this.changelog.length === 0) {
+                        this.changelog = ['- No specific changelog entries found for this version in CHANGELOG.md.'];
+                    }
+                },
+
                 showInfo(item) {
-                    // Gunakan SweetAlert2 untuk menampilkan info detail
                     Swal.fire({
                         title: this.formatDeviceName(item.name),
                         html: `
@@ -993,7 +1088,6 @@
                             no-repeat
                         `,
                         didOpen: () => {
-                            // Tambahkan animasi pada konten
                             const content = Swal.getHtmlContainer();
                             content.style.opacity = '0';
                             content.animate(
@@ -1014,7 +1108,6 @@
                         type
                     };
                     
-                    // Auto-hide after 4 seconds
                     setTimeout(() => {
                         this.hideNotification();
                     }, 4000);
