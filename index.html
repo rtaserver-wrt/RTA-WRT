@@ -175,7 +175,7 @@
                         <i class="fas fa-book"></i>
                         <span>Docs</span>
                     </a>
-                    <a href="https://github.com/rizkikotet-dev/RTA-WRT" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-700/50 transition-all">
+                    <a href="https://github.com/rtaserver-wrt/RTA-WRT" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-700/50 transition-all">
                         <i class="fab fa-github"></i>
                         <span>GitHub</span>
                     </a>
@@ -198,7 +198,7 @@
                         <i class="fas fa-book"></i>
                         <span>Documentation</span>
                     </a>
-                    <a href="https://github.com/rizkikotet-dev/RTA-WRT" target="_blank" rel="noopener noreferrer" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 transition-colors">
+                    <a href="https://github.com/rtaserver-wrt/RTA-WRT" target="_blank" rel="noopener noreferrer" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 transition-colors">
                         <i class="fab fa-github"></i>
                         <span>GitHub</span>
                     </a>
@@ -489,7 +489,7 @@
                 </div>
                 
                 <div class="flex space-x-6 mb-4 md:mb-0">
-                    <a href="https://github.com/rizkikotet-dev" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="GitHub Profile">
+                    <a href="https://github.com/rtaserver-wrt" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="GitHub Profile">
                         <i class="fab fa-github text-xl"></i>
                     </a>
                     <a href="https://t.me/rtawrt" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="Telegram Channel">
@@ -587,8 +587,8 @@
                     try {
                         // Try to fetch from GitHub API first
                         const apiUrl = this.releaseType === 'stable' 
-                            ? 'https://api.github.com/repos/rizkikotet-dev/RTA-WRT/releases/latest'
-                            : 'https://api.github.com/repos/rizkikotet-dev/RTA-WRT/releases';
+                            ? 'https://api.github.com/repos/rtaserver-wrt/RTA-WRT/releases/latest'
+                            : 'https://api.github.com/repos/rtaserver-wrt/RTA-WRT/releases';
                         
                         const response = await fetch(apiUrl);
                         
