@@ -64,7 +64,7 @@ get_github_browser_download_url() {
 determine_core_files() {
     # OpenClash core (raw file di branch `core`)
     occore_file="clash-linux-${ARCH_1}"
-    openclash_core_url=$(get_github_browser_download_url "vernesong/OpenClash" "core" "meta/${occore_file}.tar.gz")
+    openclash_core_url=$(get_github_browser_download_url "vernesong/OpenClash" "core" "master/meta/${occore_file}.tar.gz")
 
     # PassWall core (.zip dari release)
     passwall_core_zip_pattern="passwall_packages_ipk_${ARCH_3}.*\.zip"
