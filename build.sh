@@ -406,9 +406,10 @@ prepare_custom_packages() {
     # Add downloaded packages to include list
     local added_count=0
     for list_pkg in "${!custom_packages[@]}"; do
-        if [[ -f "packages/$list_pkg*.ipk" || -f "packages/$list_pkg*.apk" ]]; then
+        # Check for package files with .ipk or .apk extension
+        if compgen -G "packages/${list_pkg}*.{ipk,apk}" >/dev/null; then
             log_info "Adding custom package to include list: $list_pkg"
-            PACKAGES_INCLUDE+=" $list_pkg"
+            PACKAGES_INCLUDE="${PACKAGES_INCLUDE} $list_pkg"
             ((added_count++))
         else
             log_warn "Package not found: $list_pkg"
