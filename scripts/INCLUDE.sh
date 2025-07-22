@@ -16,6 +16,8 @@ CONFIG=(
     ["PARALLEL_DOWNLOADS"]=4
 )
 
+readonly GH_TOKEN="${GITHUB_TOKEN:-}"
+
 # Cleanup function
 cleanup() {
     printf "\e[?25h"  # Ensure cursor is visible
@@ -457,11 +459,20 @@ download_packages() {
             # Temporary file for response
             local temp_response=$(mktemp)
             
-            # Use curl with proper headers
-            curl -sL --max-time ${CONFIG[CONNECTION_TIMEOUT]} \
-                 -H "Accept: application/vnd.github.v3+json" \
-                 -o "$temp_response" \
-                 "$base_url"
+            # Use curl with proper headers including GitHub PAT if available
+            local curl_opts=(
+                "-sL"
+                "--max-time" "${CONFIG[CONNECTION_TIMEOUT]}"
+                "-H" "Accept: application/vnd.github.v3+json"
+                "-o" "$temp_response"
+            )
+            
+            # Add Authorization header if GH_TOKEN is set
+            if [ -n "${GH_TOKEN:-}" ]; then
+                curl_opts+=("-H" "Authorization: token ${GH_TOKEN}")
+            fi
+            
+            curl "${curl_opts[@]}" "$base_url"
             
             if [ $? -ne 0 ] || [ ! -s "$temp_response" ]; then
                 log "ERROR" "Failed to fetch data from GitHub API"
