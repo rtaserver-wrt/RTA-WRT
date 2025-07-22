@@ -159,8 +159,7 @@ get_builds_for_target() {
             echo "-s905x-:meson-gxl-s905x-b860h.dtb:B860H_v1-v2"
             ;;
         *)
-            log "ERROR" "Unsupported MATRIXTARGET: $MATRIXTARGET"
-            return 1
+            log "INFO" "Unsupported MATRIXTARGET: $MATRIXTARGET"
             ;;
     esac
 }

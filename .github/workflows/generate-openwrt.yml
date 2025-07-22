@@ -569,12 +569,6 @@ jobs:
           files: ${{ env.WORKING_DIR }}/compiled_images/*.img.gz
           prerelease: ${{ github.ref_name == 'dev' }}
 
-      - name: Upload Artifact Links
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-links-${{ matrix.target }}
-          path: ${{ env.WORKING_DIR }}/compiled_images/artifacts.txt
-
       - name: Clean Up Workspace
         run: |
           sudo rm -rf "${{ env.WORKING_DIR }}"
@@ -591,21 +585,6 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: Combine Artifacts
-        run: |
-          mkdir -p artifacts
-          find artifacts -name "artifacts.txt" -exec cat {} \; > combined_artifacts.txt || true
-          
-          if [ ! -s combined_artifacts.txt ]; then
-            echo "::warning::No firmware artifacts were found to notify about"
-            exit 1
-          fi
 
       - name: Send Telegram Notification
         run: |
