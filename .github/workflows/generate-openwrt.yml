@@ -228,7 +228,7 @@ jobs:
             `Amlogic s905x Support Mod SDCard`
 
             ## 📝 Changelog Firmware
-            [**Changelog Firmware**](https://github.com/rizkikotet-dev/RTA-WRT/blob/${{ github.ref_name }}/CHANGELOG.md "**Changelog Firmware**")
+            [**Changelog Firmware**](https://github.com//RTA-WRT/blob/${{ github.ref_name }}/CHANGELOG.md "**Changelog Firmware**")
           generate_release_notes: true
 
   build-firmware:

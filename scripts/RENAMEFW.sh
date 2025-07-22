@@ -103,7 +103,7 @@ rename_firmware() {
         "Amlogic_s905x-Mod_SDCard-B860H_v1-v2|Amlogic_s905x-Mod_SDCard-B860H_v1-v2"
     )
 
-    RELEASE_URL="https://github.com/rizkikotet-dev/RTA-WRT/releases/download/${RELEASE_TAG}"
+    RELEASE_URL="https://github.com/rtaserver-wrt/RTA-WRT/releases/download/${RELEASE_TAG}"
 
     for pattern in "${search_replace_patterns[@]}"; do
         local search="${pattern%%|*}"

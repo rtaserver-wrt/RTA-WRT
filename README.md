@@ -27,7 +27,7 @@
 ## 🚀 Link Download
 
 <p align="center">
-  <a href="https://github.com/rizkikotet-dev/RTA-WRT/releases/">
+  <a href="https://github.com/rtaserver-wrt/RTA-WRT/releases/">
     <img src="https://img.shields.io/badge/Download-OpenWrt-%231aa5de?style=for-the-badge&logo=OpenWrt" alt="Download OpenWrt">
   </a>
 </p>

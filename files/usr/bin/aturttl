@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Author: RizkiKotet
-# By: https://github.com/rtaserver | https://github.com/rizkikotet-dev
+# By: https://github.com/rtaserver | https://github.com/
 
 setup_colors() {
     PURPLE="\033[95m"

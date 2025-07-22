@@ -501,7 +501,7 @@ print_vpn() {
 print_extra() {
     ([ "$ExtraName" != "" ] || [ "$ExtraValue" != "" ]) && print_line "$ExtraName $ValueColor$ExtraValue$NormalColor"
     printf "\n"
-    print_line "${NormalColor}Github : ${ValueColor}https://github.com/rizkikotet-dev"
+    print_line "${NormalColor}Github : ${ValueColor}https://github.com/"
     print_line "${NormalColor}Telegram : ${ValueColor}https://t.me/RizkiKotet"
 }
 

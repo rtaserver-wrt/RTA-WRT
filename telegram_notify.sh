@@ -214,7 +214,7 @@ parse_buttons() {
 
     # Add "View Release" button if RELEASE_TAG is set
     if [[ -n "$RELEASE_TAG" ]]; then
-        button_array+=("View Release" "https://github.com/rizkikotet-dev/RTA-WRT/releases/tag/$RELEASE_TAG")
+        button_array+=("View Release" "https://github.com/rtaserver-wrt/RTA-WRT/releases/tag/$RELEASE_TAG")
     fi
 
     # Return the array elements separated by newline for easier processing outside
@@ -444,7 +444,7 @@ generate_firmware_html() {
             <i class="fa-solid fa-book"></i>
             <span>Documentation</span>
           </a>
-          <a href="https://github.com/rizkikotet-dev/RTA-WRT" class="nav-item text-slate-300 hover:text-white flex items-center space-x-1 py-1">
+          <a href="https://github.com/rtaserver-wrt/RTA-WRT" class="nav-item text-slate-300 hover:text-white flex items-center space-x-1 py-1">
             <i class="fa-solid fa-code-branch"></i>
             <span>GitHub</span>
           </a>
@@ -483,7 +483,7 @@ generate_firmware_html() {
               <i class="fa-solid fa-book"></i>
               <span>Documentation</span>
             </a>
-            <a href="https://github.com/rizkikotet-dev/RTA-WRT" class="text-slate-300 hover:text-white py-2 px-3 rounded-lg hover:bg-slate-800/50 flex items-center space-x-2">
+            <a href="https://github.com/rtaserver-wrt/RTA-WRT" class="text-slate-300 hover:text-white py-2 px-3 rounded-lg hover:bg-slate-800/50 flex items-center space-x-2">
               <i class="fa-solid fa-code-branch"></i>
               <span>GitHub</span>
             </a>
@@ -691,7 +691,7 @@ generate_firmware_html() {
           </div>
           
           <div class="flex space-x-6 mb-6 md:mb-0">
-            <a href="https://github.com/rizkikotet-dev" class="text-slate-400 hover:text-white transition-colors">
+            <a href="https://github.com/rtaserver-wrt" class="text-slate-400 hover:text-white transition-colors">
               <i class="fa-brands fa-github text-lg"></i>
             </a>
             <a href="https://t.me/rtawrt" class="text-slate-400 hover:text-white transition-colors">
