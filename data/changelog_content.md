@@ -1,6 +1,6 @@
 # Changelog
 
-## [rtawrt-openwrt-24.10.2-22072025] - 2025-07-22
+## [rtawrt-openwrt-24.10.2-23072025] - 2025-07-23
 - Update OpenWrt To Stable 24.10.2
 - Remove Unused Packages
 - Fix Modem
