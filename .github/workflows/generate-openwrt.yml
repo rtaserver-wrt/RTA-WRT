@@ -74,6 +74,7 @@ on:
         type: boolean
 
 permissions:
+  actions: write
   contents: write
   packages: write
   issues: write
