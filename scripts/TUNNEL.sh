@@ -52,11 +52,18 @@ get_github_release_tags() {
     head -n 1
 }
 
+get_github_browser_download_url() {
+    local repo="$1"
+    local branch="$2"
+    local pattern="$3"
+    local url"https://github.com/$repo/raw/refs/heads/$branch/$pattern"
+}
+
 # Determine core file names
 determine_core_files() {
     # OpenClash core
     occore_file="clash-linux-${ARCH_1}"
-    openclash_core=$(get_github_release_tags "vernesong/OpenClash" "mihomo" "${occore_file}.tar.gz")
+    openclash_core=$(get_github_browser_download_url "vernesong/OpenClash" "core" "master/meta/${occore_file}.tar.gz")
 
     # PassWall core
     passwall_core_file_zip="passwall_packages_ipk_${ARCH_3}"
@@ -64,7 +71,6 @@ determine_core_files() {
 
     # Nikki core
     nikki_file_ipk="nikki_${ARCH_3}-openwrt-${VEROP}"
-    # nikki_file_ipk_down=$(get_github_release_any "rizkikotet-dev/OpenWrt-nikki-Mod" "${nikki_file_ipk}.*.tar.gz")
     nikki_file_ipk_down=$(get_github_release_any "nikkinikki-org/OpenWrt-nikki" "${nikki_file_ipk}.*.tar.gz")
 }
 
@@ -97,8 +103,8 @@ setup_openclash() {
     download_packages openclash_ipk || return 1
     
     # Download and extract core
-    handle_package "${openclash_core}" "files/etc/openclash/core/clash_meta.tar.gz" \
-        "tar -xvf files/etc/openclash/core/clash_meta.tar.gz -C files/etc/openclash/core" || return 1
+    handle_package "${openclash_core}" "files/etc/openclash/core/clash.tar.gz" \
+        "tar -xvf files/etc/openclash/core/clash.tar.gz -C files/etc/openclash/core" || return 1
     
     return 0
 }
@@ -152,7 +158,7 @@ main() {
     local rc=0
     
     # Determine core files first
-    determine_core_files
+    determine_core_files || rc=1
     
     setup_openclash || rc=1
     setup_passwall || rc=1
