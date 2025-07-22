@@ -55,9 +55,10 @@ get_github_release_tags() {
 get_github_browser_download_url() {
     local repo="$1"
     local branch="$2"
-    local pattern="$3"
-    local url"https://github.com/$repo/raw/refs/heads/$branch/$pattern"
+    local filepath="$3"
+    echo "https://raw.githubusercontent.com/$repo/$branch/$filepath"
 }
+
 
 # Determine core file names
 determine_core_files() {
