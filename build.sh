@@ -352,12 +352,27 @@ prepare_custom_packages() {
             # Handle GitHub API download
             log_info "Fetching GitHub release info for $pkg_name"
             response=$(curl -s "$base_url")
-            download_url=$(echo "$response" | jq -r '.assets[] | select(.name | test("\\.(ipk|apk)$")) | .browser_download_url' | head -n1)
+            if [[ $VERSION == "snapshot" ]]; then
+                # For snapshot, get the latest release
+                download_url=$(echo "$response" | jq -r '.assets[] | select(.name | test("\\.apk$")) | .browser_download_url' | head -n1)
+            else
+                # For stable, get the specific version
+                download_url=$(echo "$response" | jq -r '.assets[] | select(.name | test("\\.ipk$")) | .browser_download_url' | head -n1)
+            fi
         else
             # Try fetching .ipk or .apk
-            files=$(curl -sL "$base_url/" | grep -oP "href=\"\K${pkg_name}[-_][^\"]*\.(ipk|apk)(?=\")" | sort -V | tail -n1)
-            if [[ -n "$files" ]]; then
-                download_url="${base_url}/${files}"
+            if [[ $VERSION == "snapshot" ]]; then
+                # For snapshot, get the latest .apk
+                files=$(curl -sL "$base_url/" | grep -oP "href=\"\K${pkg_name}[-_][^\"]*\.apk(?=\")" | sort -V | tail -n1)
+                if [[ -n "$files" ]]; then
+                    download_url="${base_url}/${files}"
+                fi
+            else
+                # For stable, get the latest .ipk
+                files=$(curl -sL "$base_url/" | grep -oP "href=\"\K${pkg_name}[-_][^\"]*\.ipk(?=\")" | sort -V | tail -n1)
+                if [[ -n "$files" ]]; then  
+                    download_url="${base_url}/${files}"
+                fi
             fi
         fi
 
