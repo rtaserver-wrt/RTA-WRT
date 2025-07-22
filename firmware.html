@@ -3,30 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0F172A" /> <title>RTA-WRT Firmware Downloads</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="theme-color" content="#0F172A" />
+  <title>RTA-WRT Firmware Downloads</title>
+  <meta name="description" content="Download RTA-WRT firmware for your network devices. Open-source, customizable router firmware.">
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" crossorigin="anonymous">
+  
+  <!-- JS Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" crossorigin="anonymous"></script>
+  
   <script>
     tailwind.config = {
-      darkMode: 'class', // Tidak digunakan secara eksplisit di sini, tapi baik untuk ada
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            primary: { // Warna biru standar
+            primary: {
               50: '#eef7ff', 100: '#d9edff', 200: '#bce0ff', 300: '#8bcbff', 400: '#53adff',
               500: '#2a90ff', 600: '#1272f5', 700: '#0d5bdd', 800: '#104ab4', 900: '#12408f', 950: '#0c2554',
             },
-            crimson: { // Warna merah tua untuk pre-release
+            crimson: {
               50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af', 400: '#fb7185',
               500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239', 900: '#881337', 950: '#4c0519'
             },
-            secondary: { // Tetap sama atau bisa juga dibuat varian crimson
+            secondary: {
               50: '#f5f7fa', 100: '#ebeef3', 200: '#d2dae7', 300: '#a7b8d2', 400: '#7896bc', 
               500: '#5679a8', 600: '#40618c', 700: '#344f72', 800: '#2e4460', 900: '#293a51', 950: '#1a2433',
             },
@@ -53,7 +68,7 @@
           boxShadow: {
             'glow-primary': '0 0 15px rgba(42, 144, 255, 0.5)',
             'glow-lg-primary': '0 0 25px rgba(42, 144, 255, 0.6)',
-            'glow-crimson': '0 0 15px rgba(244, 63, 94, 0.5)', // crimson-500
+            'glow-crimson': '0 0 15px rgba(244, 63, 94, 0.5)',
             'glow-lg-crimson': '0 0 25px rgba(244, 63, 94, 0.6)',
             'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
@@ -63,21 +78,15 @@
     }
   </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
     :root {
       --theme-color-50: #eef7ff; --theme-color-100: #d9edff; --theme-color-200: #bce0ff; --theme-color-300: #8bcbff; --theme-color-400: #53adff;
-      --theme-color-500: #2a90ff; --theme-color-600: #1272f5; --theme-color-700: #0d5bdd; --theme-color-800: #104ab4; --theme-color-900: #12408f; --theme-color-950: #0c2554;
-      --theme-color-DEFAULT: #2a90ff; /* primary-500 */
-
-      /* Ini tidak akan secara otomatis digunakan oleh Tailwind 'shadow-glow', jadi kita akan menggunakan class switching */
-      /* --glow-color-rgba: rgba(42, 144, 255, 0.5); */
-      /* --glow-lg-color-rgba: rgba(42, 144, 255, 0.6); */
+      --theme-color-500: #2a90ff; --theme-color-600: #1272f5; --theme-color-700: #0d5bdd; --theme-color-800: #104ab4; --theme-color-900: '#12408f'; --theme-color-950: '#0c2554';
+      --theme-color-DEFAULT: #2a90ff;
     }
 
     [x-cloak] { display: none !important; }
 
-    .bg-gradient-mesh { /* Gradient mesh mungkin perlu juga disesuaikan jika ingin warna merah */
+    .bg-gradient-mesh {
       background-image: 
         radial-gradient(circle at 15% 50%, var(--theme-color-500-alpha-10, rgba(42, 144, 255, 0.1)) 0%, transparent 25%),
         radial-gradient(circle at 85% 30%, var(--theme-color-800-alpha-10, rgba(16, 74, 180, 0.1)) 0%, transparent 25%),
@@ -92,7 +101,7 @@
       color: transparent;
     }
     
-    .card-shine::before { /* Biarkan warna shine tetap putih/terang */
+    .card-shine::before {
       background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 100%);
     }
         
@@ -108,12 +117,15 @@
       color: var(--theme-color-500);
     }
 
-    /* Scrollbar bisa dibiarkan netral atau disesuaikan juga jika diinginkan */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
     ::-webkit-scrollbar-track { background: #1a2433; }
     ::-webkit-scrollbar-thumb { background: #344f72; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #40618c; }
     
-    .search-animate:focus { /* Border color akan dihandle oleh class Tailwind dinamis */
+    .search-animate:focus {
       transform: scale(1.01);
     }
 
@@ -122,7 +134,6 @@
     .changelog-content li { display: flex; align-items: flex-start; margin-bottom: 0.75rem; }
     .changelog-content li::before { content: "\f058"; font-family: "Font Awesome 6 Free"; font-weight: 900; margin-right: 0.75rem; flex-shrink: 0; font-size: 0.9em; margin-top: 0.15em; }
     
-    /* Gaya untuk tombol pemilih jenis rilis */
     .release-type-selector button {
         padding: 0.5rem 1rem;
         border-radius: 0.5rem;
@@ -136,6 +147,27 @@
         background-color: var(--theme-color-500);
         color: white;
         border-color: var(--theme-color-500);
+    }
+    
+    /* Performance optimizations */
+    .will-change-transform {
+      will-change: transform;
+    }
+    .will-change-opacity {
+      will-change: opacity;
+    }
+    
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-delay: -1ms !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        background-attachment: initial !important;
+        scroll-behavior: auto !important;
+        transition-delay: 0s !important;
+        transition-duration: 0s !important;
+      }
     }
   </style>
 </head>
@@ -228,7 +260,7 @@
             <button @click="setSelectedReleaseType('stable')"
                     :class="{
                         'active text-white border-primary-500 bg-primary-600 hover:bg-primary-700': selectedReleaseTypeId === 'stable' && !isPrereleaseActive,
-                        'active text-white border-crimson-500 bg-crimson-600 hover:bg-crimson-700': selectedReleaseTypeId === 'stable' && isPrereleaseActive, /* Should not happen if logic is correct */
+                        'active text-white border-crimson-500 bg-crimson-600 hover:bg-crimson-700': selectedReleaseTypeId === 'stable' && isPrereleaseActive,
                         'text-slate-300 bg-slate-700 hover:bg-slate-600': selectedReleaseTypeId !== 'stable'
                     }">
                 <i class="fa-solid fa-rocket mr-2"></i>Stable
@@ -241,7 +273,6 @@
                 <i class="fa-solid fa-flask mr-2"></i>Pre-release
             </button>
         </div>
-
 
         <div class="mt-6 flex flex-wrap justify-center gap-4 mb-12" data-aos="fade-up" data-aos-delay="150">
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm border" x-show="latestVersion" x-cloak
@@ -349,7 +380,6 @@
           </button>
         </div>
 
-
         <div id="firmware-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
              x-show="!loading && filteredFirmware.length > 0 && !errorState" x-cloak
              x-transition:enter="transition-opacity duration-500" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
@@ -436,7 +466,7 @@
     function firmwareApp() {
       return {
         firmwareData: [],
-        allReleasesData: [], // Untuk menyimpan semua rilis dari API
+        allReleasesData: [],
         filteredFirmware: [],
         searchQuery: '',
         loading: true,
@@ -447,32 +477,30 @@
         countDisplay: 'Loading firmware...',
         errorState: false,
         errorMessage: '',
-        noPreReleasesFoundError: false, // Flag baru
+        noPreReleasesFoundError: false,
         repoOwner: 'rtaserver-wrt',
         repoName: 'RTA-WRT',
         githubApiBase: 'https://api.github.com',
         
-        selectedReleaseTypeId: 'stable', // 'stable' atau 'prerelease'
+        selectedReleaseTypeId: 'stable',
         
         get isPrereleaseActive() {
           return this.selectedReleaseTypeId === 'prerelease';
         },
         
-        get themePrefix() { // Untuk kelas Tailwind dinamis
+        get themePrefix() {
             return this.isPrereleaseActive ? 'crimson' : 'primary';
         },
 
         init() {
-          this.updateThemeVariables(); // Panggil sekali di awal
+          this.updateThemeVariables();
           this.fetchData();
           
           this.$watch('filteredFirmware', () => { this.$nextTick(() => { AOS.refresh(); }); });
           this.$watch('isPrereleaseActive', (newValue, oldValue) => {
             if (newValue !== oldValue) {
                 this.updateThemeVariables();
-                // Perlu fetch ulang data jika jenis rilis berubah signifikan,
-                // kecuali jika kita sudah punya allReleasesData dan bisa filter dari sana
-                this.fetchData(); // Fetch ulang untuk jenis rilis baru
+                this.fetchData();
             }
           });
         },
@@ -480,7 +508,6 @@
         setSelectedReleaseType(typeId) {
             if (this.selectedReleaseTypeId !== typeId) {
                 this.selectedReleaseTypeId = typeId;
-                // this.fetchData(); // Dipanggil oleh $watch isPrereleaseActive jika perlu
             }
         },
         
@@ -493,16 +520,14 @@
             }
             document.documentElement.style.setProperty('--theme-color-DEFAULT', newPalette[500]);
 
-            // Update gradient mesh variables (contoh sederhana)
             document.documentElement.style.setProperty('--theme-color-500-alpha-10', this.hexToRgba(newPalette[500], 0.1));
             document.documentElement.style.setProperty('--theme-color-800-alpha-10', this.hexToRgba(newPalette[800], 0.1));
             document.documentElement.style.setProperty('--theme-color-950', newPalette[950]);
             document.documentElement.style.setProperty('--theme-color-800', newPalette[800]);
             
-            // Update meta theme-color
             const themeColorMeta = document.querySelector('meta[name="theme-color"]');
             if (themeColorMeta) {
-                themeColorMeta.setAttribute('content', newPalette[950]); // Warna paling gelap untuk address bar
+                themeColorMeta.setAttribute('content', newPalette[950]);
             }
         },
 
@@ -531,7 +556,7 @@
               }
               releaseData = await releaseResponse.json();
               assets = releaseData.assets || [];
-            } else { // 'prerelease'
+            } else {
               const allReleasesResponse = await fetch(`${this.githubApiBase}/repos/${this.repoOwner}/${this.repoName}/releases`);
               if (!allReleasesResponse.ok) {
                 const errorData = await allReleasesResponse.json().catch(() => ({}));
@@ -541,20 +566,17 @@
               const preReleases = this.allReleasesData.filter(r => r.prerelease);
 
               if (preReleases.length > 0) {
-                releaseData = preReleases[0]; // API mengembalikan yang terbaru di awal
+                releaseData = preReleases[0];
                 assets = releaseData.assets || [];
               } else {
-                // Tidak ada pre-release, kembali ke stable atau tampilkan pesan
                 this.noPreReleasesFoundError = true;
-                // Fetch stable sebagai fallback
                 const stableReleaseResponse = await fetch(`${this.githubApiBase}/repos/${this.repoOwner}/${this.repoName}/releases/latest`);
-                 if (!stableReleaseResponse.ok) { // jika fallback pun gagal
+                 if (!stableReleaseResponse.ok) {
                     const errorData = await stableReleaseResponse.json().catch(() => ({}));
                     throw new Error(`No pre-releases found, and failed to fetch fallback stable release: ${stableReleaseResponse.status} ${stableReleaseResponse.statusText}. ${errorData.message || ''}`);
                 }
                 releaseData = await stableReleaseResponse.json();
                 assets = releaseData.assets || [];
-                // Jangan set selectedReleaseTypeId kembali ke 'stable' di sini agar UI tetap menunjukkan "Pre-release" dipilih tapi dgn data stable
               }
             }
             
@@ -568,13 +590,13 @@
               size: this.formatFileSize(asset.size),
               created_at: new Date(asset.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
               download_count: asset.download_count.toLocaleString(),
-              is_prerelease: releaseData.prerelease // Tambahkan flag ini
+              is_prerelease: releaseData.prerelease
             })).filter(asset => {
               const extensions = ['.bin', '.img', '.tar', '.gz', '.trx', '.img.gz'];
               return extensions.some(ext => asset.name.toLowerCase().endsWith(ext));
             }).sort((a,b) => a.name.localeCompare(b.name));
 
-            await this.fetchChangelog(releaseData.body); // Kirim body rilis untuk changelog
+            await this.fetchChangelog();
             this.filterFirmware();
             
           } catch (error) {
@@ -589,25 +611,13 @@
           }
         },
         
-        async fetchChangelog(releaseBody) { // Modifikasi untuk menerima releaseBody
-          if (!this.latestVersion) {
-            this.changelog = ['- Changelog requires a valid release version.'];
-            this.renderedChangelog = marked.parse(this.changelog.join('\n'));
-            return;
-          }
-          // Jika releaseBody (catatan rilis dari GitHub) tersedia dan tidak kosong, gunakan itu sebagai changelog.
-          if (releaseBody && releaseBody.trim() !== '') {
-              this.changelog = releaseBody.split('\n').filter(line => line.trim() !== '');
-              this.renderedChangelog = marked.parse(releaseBody, { gfm: true, breaks: true });
-              return;
-          }
-          // Fallback ke CHANGELOG.md jika releaseBody kosong
+        async fetchChangelog() { 
           try {
             const changelogResponse = await fetch(`${this.githubApiBase}/repos/${this.repoOwner}/${this.repoName}/contents/CHANGELOG.md`);
             if (!changelogResponse.ok) throw new Error(`Failed to fetch CHANGELOG.md: ${changelogResponse.status}`);
             const changelogData = await changelogResponse.json();
             const decodedContent = atob(changelogData.content);
-            this.parseChangelogMD(decodedContent); // Ganti nama fungsi parsing
+            this.parseChangelogMD(decodedContent);
             this.renderedChangelog = marked.parse(this.changelog.join('\n'), { gfm: true, breaks: true });
           } catch (error) {
             console.error('Error fetching changelog from CHANGELOG.md:', error);
@@ -616,7 +626,7 @@
           }
         },
         
-        parseChangelogMD(content) { // Parsing dari file CHANGELOG.md
+        parseChangelogMD(content) {
           const lines = content.split('\n');
           let capturing = false; this.changelog = [];
           const versionRegex = new RegExp(`^##\\s*\\[?v?${this.latestVersion.replace('.', '\\.')}\\]?`, 'i');
@@ -628,7 +638,7 @@
           if (this.changelog.length === 0) this.changelog = ['- No specific changelog entries found for this version in CHANGELOG.md.'];
         },
         
-        filterFirmware() { /* ... (sama seperti sebelumnya) ... */
+        filterFirmware() { 
           const query = this.searchQuery.toLowerCase().trim();
           if (!query) {
             this.filteredFirmware = [...this.firmwareData];
@@ -641,17 +651,17 @@
           }
           this.updateCountDisplay();
         },
-        updateCountDisplay() { /* ... (sama seperti sebelumnya) ... */
+        updateCountDisplay() { 
           const count = this.filteredFirmware.length;
           const total = this.firmwareData.length;
           if (this.loading) { this.countDisplay = 'Loading firmware...'; }
           else if (this.errorState) { this.countDisplay = 'Error loading data'; }
-          else if (total === 0 && !this.noPreReleasesFoundError) { this.countDisplay = 'No firmware available for this selection.'; } // Pesan jika memang kosong
-          else if (this.noPreReleasesFoundError && total > 0) { this.countDisplay = `No pre-releases. Showing ${total} stable firmware files.`;} // Pesan jika fallback
+          else if (total === 0 && !this.noPreReleasesFoundError) { this.countDisplay = 'No firmware available for this selection.'; }
+          else if (this.noPreReleasesFoundError && total > 0) { this.countDisplay = `No pre-releases. Showing ${total} stable firmware files.`;}
           else if (count === total && !this.searchQuery) { this.countDisplay = `Showing all ${total} firmware files`; }
           else { this.countDisplay = `Found ${count} of ${total} firmware files`; }
         },
-        clearSearch() { /* ... (sama seperti sebelumnya) ... */
+        clearSearch() { 
             this.searchQuery = ''; this.filterFirmware(); document.getElementById('search')?.focus();
         },
         retryFetch() { this.fetchData(); },
@@ -660,7 +670,7 @@
             return this.isPrereleaseActive ? tailwind.config.theme.extend.colors.crimson : tailwind.config.theme.extend.colors.primary;
         },
 
-        downloadFirmware(item) { /* ... (sama, tapi gunakan this.currentThemeColors untuk SweetAlert jika perlu) ... */
+        downloadFirmware(item) {
           const link = document.createElement('a'); link.href = item.url; link.download = item.name; link.target = '_blank';
           document.body.appendChild(link); link.click(); document.body.removeChild(link);
           Swal.fire({
@@ -670,7 +680,7 @@
             background: '#1E293B', color: '#F1F5F9', iconColor: this.currentThemeColors[500]
           });
         },
-        copyLink(item) { /* ... (sama, tapi gunakan this.currentThemeColors untuk SweetAlert jika perlu) ... */
+        copyLink(item) {
           navigator.clipboard.writeText(item.url).then(() => {
             Swal.fire({
               title: 'Link Copied!', text: 'Firmware download link copied to clipboard.', icon: 'success',
@@ -682,41 +692,41 @@
             Swal.fire({
               title: 'Copy Failed', text: 'Could not copy link. See console for details.', icon: 'error',
               toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000,
-              background: '#1E293B', color: '#F1F5F9', iconColor: tailwind.config.theme.extend.colors.crimson[500] // Selalu merah untuk error
+              background: '#1E293B', color: '#F1F5F9', iconColor: tailwind.config.theme.extend.colors.crimson[500]
             });
           });
         },
-        formatFileSize(bytes, decimals = 2) { /* ... (sama seperti sebelumnya) ... */
+        formatFileSize(bytes, decimals = 2) { 
             if (bytes === 0) return '0 Bytes'; const k = 1024; const dm = decimals < 0 ? 0 : decimals;
             const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']; const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
         },
-        formatDeviceName(name) { /* ... (sama seperti sebelumnya) ... */
+        formatDeviceName(name) { 
             return name.replace(/\.(bin|img|tar|gz|trx|img\.gz)$/i, '').replace(/[_-]/g, ' ').replace(/rtawrt/i, '').replace(/\s+/g, ' ').trim().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
         },
-        getDeviceType(name) { /* ... (sama seperti sebelumnya) ... */
+        getDeviceType(name) { 
             const n = name.toLowerCase(); if (n.includes('router') || n.includes('rt-')) return 'Router'; if (n.includes('gateway')) return 'Gateway'; if (n.includes('extender') || n.includes('repeater')) return 'Extender'; if (n.includes('ap') || n.includes('accesspoint') || n.includes('access point')) return 'Access Point'; if (n.includes('switch')) return 'Switch'; return 'Device';
         },
-        getKernelVersion(name) { /* ... (sama seperti sebelumnya) ... */
+        getKernelVersion(name) { 
             const kernelMatch = name.match(/kernel(?:-|_)(\d+\.\d+(?:\.\d+)?)/i); if (kernelMatch && kernelMatch[1]) return `Kernel ${kernelMatch[1]}`;
             const openWrtMatch = name.match(/openwrt(?:-|_)(\d+\.\d+)/i); if (openWrtMatch && openWrtMatch[1]) return `OpenWrt ${openWrtMatch[1]}`;
             return 'OpenWrt Based';
         },
-        getModelName(name) { /* ... (sama seperti sebelumnya) ... */
+        getModelName(name) { 
             const lowerName = name.toLowerCase(); const modelPatterns = [/(rt-(?:ac|ax|n)\d+[a-z]*(?:_v\d)?)/i, /(archer AX\d+|archer C\d+ v\d+|archer [a-z]\d+)/i, /(wrt\d+(?:ac|acs|ax)[a-z]*(?:_v\d)?)/i, /(r\d{4}[a-z]*)/i, /(e[ar]\d{4}[a-z]*)/i, /(dir[-_]?\d+[a-z]*)/i, /([a-z0-9]+[-_][a-z0-9]+)/i, /([a-z]+\d+)/i ];
             for (const pattern of modelPatterns) { const match = lowerName.match(pattern); if (match && match[1]) return match[1].toUpperCase().replace(/[-_]/g, ' ');}
             const basicMatch = lowerName.match(/^([a-z0-9]+(?:[-_][a-z0-9]+)?)/); if (basicMatch && basicMatch[1]) return basicMatch[1].toUpperCase().replace(/[-_]/g, ' ');
             return 'Generic Device';
         },
         
-        showItemInfo(item) { /* ... (gunakan this.currentThemeColors untuk title jika perlu) ... */
+        showItemInfo(item) {
           Swal.fire({
             title: `<strong class="${this.isPrereleaseActive ? 'text-crimson-400' : 'text-primary-400'}">${this.formatDeviceName(item.name)}</strong>`,
             html: ` <div class="text-left text-slate-300 space-y-2 p-2"> <p><strong><i class="fas fa-file-alt w-5 mr-1 text-slate-400"></i>File:</strong> ${item.name}</p> <p><strong><i class="fas fa-hdd w-5 mr-1 text-slate-400"></i>Size:</strong> ${item.size}</p> <p><strong><i class="fas fa-download w-5 mr-1 text-slate-400"></i>Downloads:</strong> ${item.download_count}</p> <p><strong><i class="fas fa-calendar-alt w-5 mr-1 text-slate-400"></i>Added:</strong> ${item.created_at}</p> </div> `,
             showCloseButton: true, showConfirmButton: false, background: '#162133', color: '#F1F5F9', customClass: { title: 'text-xl mb-0', htmlContainer: 'mt-0 pt-0' }, width: 'auto', padding: '1.5rem', backdrop: 'rgba(0,0,0,0.6)'
           });
         },
-        showDeviceGuide() { /* ... (gunakan this.currentThemeColors untuk title dan tombol jika perlu) ... */
+        showDeviceGuide() {
           Swal.fire({
             title: `<i class="fas fa-book-open mr-2 ${this.isPrereleaseActive ? 'text-crimson-400' : 'text-primary-400'}"></i>Device Compatibility Guide`,
             html: ` <div class="text-left text-slate-300 space-y-4 p-2 text-sm"> <p>RTA-WRT firmware is available for various router models. This guide helps you pick the right one:</p> <div> <h3 class="text-md font-semibold mb-1 text-slate-100">How to identify your device:</h3> <ul class="space-y-1 list-inside"> <li><i class="fas fa-check-circle text-green-400 mr-1.5"></i>Check model number on router (sticker).</li> <li><i class="fas fa-check-circle text-green-400 mr-1.5"></i>Note hardware version (e.g., v1, v2).</li> <li><i class="fas fa-check-circle text-green-400 mr-1.5"></i>Match exactly with firmware file names.</li> </ul> </div> <div> <h3 class="text-md font-semibold mb-1 text-slate-100">Popular supported manufacturers/series:</h3> <ul class="space-y-1 list-inside"> <li><i class="fas fa-tag mr-1.5 ${this.isPrereleaseActive ? 'text-crimson-300' : 'text-primary-300'}"></i>ASUS RT-AC, RT-AX series</li> <li><i class="fas fa-tag mr-1.5 ${this.isPrereleaseActive ? 'text-crimson-300' : 'text-primary-300'}"></i>Linksys WRT, EA series</li> <li><i class="fas fa-tag mr-1.5 ${this.isPrereleaseActive ? 'text-crimson-300' : 'text-primary-300'}"></i>Netgear R, Nighthawk series</li> <li><i class="fas fa-tag mr-1.5 ${this.isPrereleaseActive ? 'text-crimson-300' : 'text-primary-300'}"></i>TP-Link Archer, WR series</li> <li><i class="fas fa-tag mr-1.5 ${this.isPrereleaseActive ? 'text-crimson-300' : 'text-primary-300'}"></i>Xiaomi Mi Router series</li> </ul> </div> <div> <h3 class="text-md font-semibold mb-1 text-slate-100">Important Installation Tips:</h3> <ul class="space-y-1 list-inside"> <li><i class="fas fa-exclamation-triangle text-yellow-400 mr-1.5"></i><strong>Always</strong> backup current firmware.</li> <li><i class="fas fa-exclamation-triangle text-yellow-400 mr-1.5"></i>Ensure stable power during flashing.</li> <li><i class="fas fa-exclamation-triangle text-yellow-400 mr-1.5"></i>Use a <strong>wired (Ethernet)</strong> connection.</li> <li><i class="fas fa-exclamation-triangle text-yellow-400 mr-1.5"></i>Follow device-specific instructions.</li> </ul> </div> <p class="mt-3 italic text-slate-400">Flashing custom firmware carries risks. Proceed with caution.</p> </div> `,
