@@ -285,85 +285,96 @@ prepare_custom_packages() {
     mkdir -p packages
 
     local ver_op=$(echo "$BRANCH" | awk -F. '{print $1"."$2}')
-    declare -A REPOS=(
-        ["KIDDIN9"]="https://dl.openwrt.ai/releases/${ver_op}/packages/${ARCH}/kiddin9"
-        ["IMMORTALWRT"]="https://downloads.immortalwrt.org/releases/packages-${ver_op}/${ARCH}"
-        ["OPENWRT"]="https://downloads.openwrt.org/releases/packages-${ver_op}/${ARCH}"
-        ["GSPOTX2F"]="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/current"
-        ["FANTASTIC"]="https://fantastic-packages.github.io/packages/releases/${ver_op}/packages/mipsel_24kc"
-    )
-    declare -A custom_packages=(
-        ["luci-app-advanced-reboot"]="https://downloads.openwrt.org/releases/packages-${ver_op}/${ARCH}/luci"
-        ["luci-app-netmonitor"]="https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
-
-        ["python3-speedtest-cli"]="${REPOS[OPENWRT]}/packages"
-
-        # KIDDIN9 packages
-        ["luci-app-tailscale"]="${REPOS[KIDDIN9]}"
-        ["luci-app-diskman"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-zte"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-gosun"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-qmi"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-yuge"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-thales"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-tw"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-meig"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-styx"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-mikrotik"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-dell"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-sierra"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-quectel"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-huawei"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-xmm"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-telit"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-fibocom"]="${REPOS[KIDDIN9]}"
-        ["modeminfo-serial-simcom"]="${REPOS[KIDDIN9]}"
-        ["modeminfo"]="${REPOS[KIDDIN9]}"
-        ["luci-app-modeminfo"]="${REPOS[KIDDIN9]}"
-        ["atinout"]="${REPOS[KIDDIN9]}"
-        ["luci-app-poweroffdevice"]="${REPOS[KIDDIN9]}"
-        ["xmm-modem"]="${REPOS[KIDDIN9]}"
-        ["luci-app-lite-watchdog"]="${REPOS[KIDDIN9]}"
-        ["luci-theme-alpha"]="${REPOS[KIDDIN9]}"
-        ["luci-app-adguardhome"]="${REPOS[KIDDIN9]}"
-        ["sing-box"]="${REPOS[KIDDIN9]}"
-        ["mihomo"]="${REPOS[KIDDIN9]}"
-        ["luci-app-droidmodem"]="${REPOS[KIDDIN9]}"
-
-        # IMMORTALWRT packages
-        ["luci-app-zerotier"]="${REPOS[IMMORTALWRT]}/luci"
-        ["luci-app-ramfree"]="${REPOS[IMMORTALWRT]}/luci"
-        ["luci-app-3ginfo-lite"]="${REPOS[IMMORTALWRT]}/luci"
-        ["modemband"]="${REPOS[IMMORTALWRT]}/packages"
-        ["luci-app-modemband"]="${REPOS[IMMORTALWRT]}/luci"
-        ["luci-app-sms-tool-js"]="${REPOS[IMMORTALWRT]}/luci"
-        ["dns2tcp"]="${REPOS[IMMORTALWRT]}/packages"
-        ["luci-app-argon-config"]="${REPOS[IMMORTALWRT]}/luci"
-        ["luci-theme-argon"]="${REPOS[IMMORTALWRT]}/luci"
-        ["luci-app-openclash"]="${REPOS[IMMORTALWRT]}/luci"
-        ["luci-app-passwall"]="${REPOS[IMMORTALWRT]}/luci"
-
-        # GSPOTX2F packages
-        ["luci-app-internet-detector"]="${REPOS[GSPOTX2F]}"
-        ["internet-detector"]="${REPOS[GSPOTX2F]}"
-        ["internet-detector-mod-modem-restart"]="${REPOS[GSPOTX2F]}"
-        ["luci-app-cpu-status-mini"]="${REPOS[GSPOTX2F]}"
-        ["luci-app-disks-info"]="${REPOS[GSPOTX2F]}"
-        ["luci-app-log-viewer"]="${REPOS[GSPOTX2F]}"
-        ["luci-app-temp-status"]="${REPOS[GSPOTX2F]}"
-
-        # FANTASTIC packages
-        ["luci-app-netspeedtest"]="${REPOS[FANTASTIC]}/luci"
-    )
-
-    for pkg_name in "${!custom_packages[@]}"; do
-        local base_url="${custom_packages[$pkg_name]}"
-        log_info "Processing package: $pkg_name"
-        if ! process_packages "$base_url" "packages"; then
-            log_warn "Failed to process package: $pkg_name"
-            continue
+    declare -A repo_urls
+    
+    if [[ "${VERSION}" == "snapshot" ]]; then
+        repo_urls=(
+            ["openwrt"]="https://downloads.openwrt.org/snapshots/packages/${ARCH}"
+            ["immortalwrt"]="https://downloads.immortalwrt.org/snapshots/packages/${ARCH}"
+            ["gspotx2f"]="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/snapshot"
+            ["rta"]="https://github.com/rizkikotet-dev/RTA-WRT_Packages/raw/refs/heads/releases/packages/SNAPSHOT/${ARCH}"
+        )
+    else
+        repo_urls=(
+            ["openwrt"]="https://downloads.openwrt.org/releases/${ver_op}/packages/${ARCH}"
+            ["immortalwrt"]="https://downloads.immortalwrt.org/releases/${ver_op}/packages/${ARCH}"
+            ["gspotx2f"]="https://github.com/gSpotx2f/packages-openwrt/raw/refs/heads/master/current"
+            ["rta"]="https://dl.openwrt.ai/releases/${ver_op}/packages/${ARCH}/kiddin9"
+        )
+    fi
+    
+    # Validate repository URLs
+    for repo in "${!repo_urls[@]}"; do
+        local url="${repo_urls[$repo]}"
+        log "INFO" "Validating repository: $repo at $url"
+        if ! curl --output /dev/null --silent --head --fail "$url"; then
+            log "WARN" "Repository $repo seems unreachable: $url"
         fi
-        log_success "Package processed: $pkg_name"
+    done
+    
+    # Package definitions by category
+    declare -A package_groups
+    
+    # GitHub releases
+    package_groups["github"]=(
+        "luci-app-amlogic|https://api.github.com/repos/ophub/luci-app-amlogic/releases/latest"
+        "luci-app-netmonitor|https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
+    )
+    
+    # RTA custom packages
+    package_groups["rta"]=(
+        "atinout|${repo_urls[rta]}"
+        "luci-app-lite-watchdog|${repo_urls[rta]}"
+    )
+    
+    # OpenWrt core packages
+    package_groups["openwrt"]=(
+        "modemmanager-rpcd|${repo_urls[openwrt]}/packages"
+        "luci-proto-modemmanager|${repo_urls[openwrt]}/luci"
+        "libqmi|${repo_urls[openwrt]}/packages"
+        "libmbim|${repo_urls[openwrt]}/packages"
+        "modemmanager|${repo_urls[openwrt]}/packages"
+        "sms-tool|${repo_urls[openwrt]}/packages"
+        "tailscale|${repo_urls[openwrt]}/packages"
+        "python3-speedtest-cli|${repo_urls[openwrt]}/packages"
+    )
+    
+    # ImmortalWrt packages
+    package_groups["immortalwrt"]=(
+        "luci-app-diskman|${repo_urls[immortalwrt]}/luci"
+        "luci-app-zerotier|${repo_urls[immortalwrt]}/luci"
+        "luci-app-ramfree|${repo_urls[immortalwrt]}/luci"
+        "luci-app-3ginfo-lite|${repo_urls[immortalwrt]}/luci"
+        "modemband|${repo_urls[immortalwrt]}/packages"
+        "luci-app-modemband|${repo_urls[immortalwrt]}/luci"
+        "luci-app-sms-tool-js|${repo_urls[immortalwrt]}/luci"
+        "dns2tcp|${repo_urls[immortalwrt]}/packages"
+        "luci-app-argon-config|${repo_urls[immortalwrt]}/luci"
+        "luci-theme-argon|${repo_urls[immortalwrt]}/luci"
+        "luci-app-openclash|${repo_urls[immortalwrt]}/luci"
+        "luci-app-passwall|${repo_urls[immortalwrt]}/luci"
+    )
+
+    # GSPOTX2F packages
+    package_groups["gspotx2f"]=(
+        "luci-app-internet-detector|${repo_urls[gspotx2f]}"
+        "internet-detector|${repo_urls[gspotx2f]}"
+        "internet-detector-mod-modem-restart|${repo_urls[gspotx2f]}"
+        "luci-app-cpu-status-mini|${repo_urls[gspotx2f]}"
+        "luci-app-disks-info|${repo_urls[gspotx2f]}"
+        "luci-app-log-viewer|${repo_urls[gspotx2f]}"
+        "luci-app-temp-status|${repo_urls[gspotx2f]}"
+    )
+    
+    # Process downloads by group
+    local failed_groups=()
+    
+    for group in "${!package_groups[@]}"; do
+        log "INFO" "Processing $group packages..."
+        if ! process_packages "package_groups[$group]" "$SCRIPT_DIR/../packages"; then
+            log "ERROR" "Failed to process $group packages"
+            failed_groups+=("$group")
+        fi
     done
 
     # Copy external packages from ../packages if exist
