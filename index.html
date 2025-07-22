@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="description" content="Download the latest RTA-WRT firmware - Modern, secure, and powerful open-source firmware for your network devices">
+    <title>RTA-WRT Firmware Downloads</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Tambahkan SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
+                            400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
+                            800: '#075985', 900: '#0c4a6e', 950: '#082f49'
+                        },
+                        accent: {
+                            50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5',
+                            400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c',
+                            800: '#991b1b', 900: '#7f1d1d', 950: '#450a0a'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s ease-in-out infinite',
+                        'bounce-gentle': 'bounce 2s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'shimmer': 'shimmer 2s linear infinite'
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        glow: { '0%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.3)' }, '100%': { boxShadow: '0 0 30px rgba(14, 165, 233, 0.5)' } },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' }
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .glass {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+        }
+        
+        .search-glow:focus {
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+            border-color: #0ea5e9;
+        }
+        
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(14, 165, 233, 0.3);
+            border-radius: 50%;
+            border-top-color: #0ea5e9;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .hero-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(239, 68, 68, 0.1) 0%, transparent 50%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .shimmer-bg {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 4rem;
+            right: 1rem;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .card-hover:hover {
+                transform: none;
+            }
+            .floating, .animate-glow, .animate-bounce-gentle {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-100 gradient-bg" x-data="firmwareApp()">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-gray-700/50" x-data="{ mobileOpen: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg animate-glow">
+                        <i class="fas fa-wifi text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">RTA-WRT</h1>
+                        <p class="text-xs text-gray-400">Firmware Portal</p>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#downloads" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-primary-600/20 text-primary-400 border border-primary-500/30 hover:bg-primary-600/30 transition-all">
+                        <i class="fas fa-download"></i>
+                        <span>Downloads</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-700/50 transition-all">
+                        <i class="fas fa-book"></i>
+                        <span>Docs</span>
+                    </a>
+                    <a href="https://github.com/rizkikotet-dev/RTA-WRT" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-700/50 transition-all">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-lg hover:bg-gray-700/50 transition-colors" aria-label="Toggle menu">
+                    <i class="fas" :class="mobileOpen ? 'fa-times' : 'fa-bars'"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div x-show="mobileOpen" x-cloak x-transition class="md:hidden py-4 border-t border-gray-700/50">
+                <div class="space-y-2">
+                    <a href="#downloads" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-primary-600/20 text-primary-400">
+                        <i class="fas fa-download"></i>
+                        <span>Downloads</span>
+                    </a>
+                    <a href="#" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 transition-colors">
+                        <i class="fas fa-book"></i>
+                        <span>Documentation</span>
+                    </a>
+                    <a href="https://github.com/rizkikotet-dev/RTA-WRT" target="_blank" rel="noopener noreferrer" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 transition-colors">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notification -->
+    <div x-show="notification.show" x-cloak class="notification glass rounded-lg p-4 max-w-sm shadow-lg border border-gray-600/50" :class="notification.show ? 'show' : ''">
+        <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0">
+                <i class="fas" :class="notification.type === 'success' ? 'fa-check-circle text-green-400' : notification.type === 'error' ? 'fa-exclamation-circle text-red-400' : 'fa-info-circle text-blue-400'"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm text-white" x-text="notification.message"></p>
+            </div>
+            <button @click="hideNotification()" class="flex-shrink-0 text-gray-400 hover:text-white transition-colors">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-16 hero-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="animate-fade-in">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-primary-400 via-primary-500 to-accent-500 bg-clip-text text-transparent">
+                        RTA-WRT
+                    </span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                    Modern, secure, and powerful open-source firmware for your network devices
+                </p>
+                
+                <!-- Release Type Selector -->
+                <div class="flex justify-center mb-8">
+                    <div class="glass rounded-xl p-1 inline-flex">
+                        <button 
+                            @click="setReleaseType('stable')" 
+                            :class="releaseType === 'stable' ? 'bg-primary-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
+                            class="px-6 py-3 rounded-lg transition-all font-medium flex items-center space-x-2"
+                            :disabled="loading">
+                            <i class="fas fa-rocket"></i>
+                            <span>Stable</span>
+                        </button>
+                        <button 
+                            @click="setReleaseType('prerelease')" 
+                            :class="releaseType === 'prerelease' ? 'bg-accent-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
+                            class="px-6 py-3 rounded-lg transition-all font-medium flex items-center space-x-2"
+                            :disabled="loading">
+                            <i class="fas fa-flask"></i>
+                            <span>Pre-release</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Version Info -->
+                <div class="flex flex-wrap justify-center gap-4 mb-12" x-show="latestVersion && !loading" x-cloak>
+                    <div class="glass px-4 py-2 rounded-full animate-fade-in">
+                        <i class="fas fa-tag mr-2 text-primary-400"></i>
+                        <span>Version: </span>
+                        <span class="font-mono text-primary-400" x-text="latestVersion"></span>
+                    </div>
+                    <div class="glass px-4 py-2 rounded-full animate-fade-in" x-show="releaseDate" x-cloak>
+                        <i class="fas fa-calendar mr-2 text-gray-400"></i>
+                        <span x-text="releaseDate"></span>
+                    </div>
+                    <div class="glass px-4 py-2 rounded-full animate-fade-in" x-show="totalDownloads > 0" x-cloak>
+                        <i class="fas fa-download mr-2 text-green-400"></i>
+                        <span x-text="formatNumber(totalDownloads) + ' downloads'"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16" id="downloads">
+        <!-- Search and Filters -->
+        <div class="mb-12">
+            <div class="relative max-w-2xl mx-auto mb-6">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input 
+                    type="search" 
+                    placeholder="Search firmware by device name, model, or architecture..."
+                    class="w-full pl-12 pr-12 py-4 glass rounded-xl border border-gray-600/50 focus:border-primary-500 search-glow transition-all text-white placeholder-gray-400"
+                    x-model="searchQuery"
+                    @input="debounceFilter()"
+                    autocomplete="off"
+                    spellcheck="false">
+                <div class="absolute inset-y-0 right-0 pr-4 flex items-center" x-show="searchQuery" x-cloak>
+                    <button @click="clearSearch()" class="p-2 hover:bg-gray-700/50 rounded-lg text-gray-400 hover:text-white transition-colors" title="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Filter Tags -->
+            <div class="flex flex-wrap justify-center gap-2" x-show="!loading && firmwareData.length > 0" x-cloak>
+                <template x-for="arch in availableArchitectures" :key="arch">
+                    <button 
+                        @click="toggleArchFilter(arch)"
+                        :class="selectedArchitectures.includes(arch) ? 'bg-primary-600/30 text-primary-400 border-primary-500/50' : 'bg-gray-700/30 text-gray-400 border-gray-600/30'"
+                        class="px-3 py-1 rounded-full text-sm border transition-all hover:bg-primary-600/20"
+                        x-text="arch">
+                    </button>
+                </template>
+                <button 
+                    @click="clearFilters()"
+                    x-show="selectedArchitectures.length > 0"
+                    class="px-3 py-1 rounded-full text-sm bg-accent-600/20 text-accent-400 border border-accent-500/30 hover:bg-accent-600/30 transition-all">
+                    <i class="fas fa-times mr-1"></i>Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="text-center mb-8" x-show="!loading" x-cloak>
+            <p class="text-gray-400" x-text="countDisplay"></p>
+        </div>
+
+        <!-- Loading Skeleton -->
+        <div x-show="loading" x-cloak>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="i in 6" :key="i">
+                    <div class="glass rounded-xl p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 skeleton rounded-lg"></div>
+                                <div>
+                                    <div class="h-4 skeleton rounded w-32 mb-2"></div>
+                                    <div class="h-3 skeleton rounded w-20"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mb-4">
+                            <div class="h-6 skeleton rounded-full w-16"></div>
+                            <div class="h-6 skeleton rounded-full w-12"></div>
+                        </div>
+                        <div class="h-10 skeleton rounded-lg mb-4"></div>
+                        <div class="flex space-x-3">
+                            <div class="flex-1 h-12 skeleton rounded-lg"></div>
+                            <div class="w-12 h-12 skeleton rounded-lg"></div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div x-show="errorState" x-cloak class="text-center py-16">
+            <div class="glass rounded-xl p-8 max-w-md mx-auto">
+                <i class="fas fa-exclamation-triangle text-4xl text-accent-500 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Unable to load data</h3>
+                <p class="text-gray-400 mb-6" x-text="errorMessage"></p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button @click="retryFetch()" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg font-medium transition-all" :disabled="loading">
+                        <i class="fas fa-redo mr-2" :class="loading && 'animate-spin'"></i>Retry
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results -->
+        <div x-show="!loading && filteredFirmware.length === 0 && !errorState && firmwareData.length > 0" x-cloak class="text-center py-16">
+            <div class="glass rounded-xl p-8 max-w-md mx-auto">
+                <i class="fas fa-search text-4xl text-gray-500 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">No firmware found</h3>
+                <p class="text-gray-400 mb-6">Try adjusting your search query or filters</p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button @click="clearSearch()" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg font-medium transition-all">
+                        Clear Search
+                    </button>
+                    <button @click="clearFilters()" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-medium transition-all">
+                        Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Firmware Grid -->
+        <div x-show="!loading && filteredFirmware.length > 0" x-cloak class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <template x-for="(item, index) in paginatedFirmware" :key="item.id || item.name">
+                <div class="glass rounded-xl p-6 card-hover animate-slide-up" :style="`animation-delay: ${index * 0.05}s`">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3 flex-1 min-w-0">
+                            <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center shadow-sm">
+                                <i class="fas fa-microchip text-white"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <h3 class="font-semibold text-white truncate" x-text="formatDeviceName(item.name)" :title="formatDeviceName(item.name)"></h3>
+                                <p class="text-sm text-gray-400" x-text="getDeviceType(item.name)"></p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-1 ml-2">
+                            <button @click="showInfo(item)" class="p-2 hover:bg-gray-700/50 rounded-lg text-gray-400 hover:text-white transition-all" title="Show details">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-primary-600/20 text-primary-400 text-xs rounded-full border border-primary-500/30">
+                            <span x-text="getKernelVersion(item.name)"></span>
+                        </span>
+                        <span x-show="item.is_prerelease" class="px-2 py-1 bg-accent-600/20 text-accent-400 text-xs rounded-full border border-accent-500/30">
+                            Pre-release
+                        </span>
+                        <span x-show="getFileSize(item.size)" class="px-2 py-1 bg-gray-600/20 text-gray-400 text-xs rounded-full border border-gray-500/30" x-text="getFileSize(item.size)">
+                        </span>
+                    </div>
+
+                    <!-- Description -->
+                    <p class="text-gray-400 text-sm mb-6 line-clamp-2">
+                        Official firmware optimized for <span class="text-white font-medium" x-text="getModelName(item.name)"></span>
+                        <span x-show="item.download_count" class="block text-xs mt-1">
+                            <i class="fas fa-download mr-1"></i><span x-text="formatNumber(item.download_count) + ' downloads'"></span>
+                        </span>
+                    </p>
+
+                    <!-- Actions -->
+                    <div class="flex space-x-3">
+                        <button 
+                            @click="downloadFirmware(item)"
+                            class="flex-1 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 py-3 px-4 rounded-lg font-medium transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                            :disabled="downloading === item.name">
+                            <i class="fas mr-2 group-hover:animate-bounce-gentle" :class="downloading === item.name ? 'fa-spinner animate-spin' : 'fa-download'"></i>
+                            <span x-text="downloading === item.name ? 'Downloading...' : 'Download'"></span>
+                        </button>
+                        <button 
+                            @click="copyLink(item)"
+                            class="p-3 glass hover:bg-gray-700/50 rounded-lg transition-all"
+                            title="Copy download link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- Pagination -->
+        <div x-show="!loading && filteredFirmware.length > itemsPerPage" x-cloak class="flex justify-center mt-12">
+            <div class="flex items-center space-x-2">
+                <button 
+                    @click="prevPage()" 
+                    :disabled="currentPage === 1"
+                    class="px-4 py-2 glass rounded-lg hover:bg-gray-700/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <template x-for="page in visiblePages" :key="page">
+                    <button 
+                        @click="goToPage(page)"
+                        :class="page === currentPage ? 'bg-primary-600 text-white' : 'glass hover:bg-gray-700/50'"
+                        class="px-4 py-2 rounded-lg transition-all font-medium"
+                        x-text="page">
+                    </button>
+                </template>
+                
+                <button 
+                    @click="nextPage()" 
+                    :disabled="currentPage === totalPages"
+                    class="px-4 py-2 glass rounded-lg hover:bg-gray-700/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-700/50 glass mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                    <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-wifi text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-white">RTA-WRT</span>
+                        <p class="text-xs text-gray-400">Open Source Firmware</p>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-6 mb-4 md:mb-0">
+                    <a href="https://github.com/rizkikotet-dev" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="GitHub Profile">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="https://t.me/rtawrt" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="Telegram Channel">
+                        <i class="fab fa-telegram text-xl"></i>
+                    </a>
+                </div>
+                
+                <div class="text-gray-500 text-sm text-center md:text-right">
+                    <p>© <span x-text="new Date().getFullYear()"></span> RTA-WRT</p>
+                    <p class="text-xs mt-1">Made with ❤️ for the community</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Alpine.js -->
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function firmwareApp() {
+            return {
+                releaseType: 'stable',
+                searchQuery: '',
+                loading: true,
+                errorState: false,
+                errorMessage: '',
+                latestVersion: '',
+                releaseDate: '',
+                totalDownloads: 0,
+                filteredFirmware: [],
+                firmwareData: [],
+                countDisplay: 'Loading firmware...',
+                downloading: '',
+                availableArchitectures: [],
+                selectedArchitectures: [],
+                filterTimeout: null,
+                currentPage: 1,
+                itemsPerPage: 12,
+                notification: {
+                    show: false,
+                    message: '',
+                    type: 'info'
+                },
+
+                init() {
+                    this.fetchData();
+                    this.setupKeyboardShortcuts();
+                },
+
+                get paginatedFirmware() {
+                    const start = (this.currentPage - 1) * this.itemsPerPage;
+                    return this.filteredFirmware.slice(start, start + this.itemsPerPage);
+                },
+
+                get totalPages() {
+                    return Math.ceil(this.filteredFirmware.length / this.itemsPerPage);
+                },
+
+                get visiblePages() {
+                    const pages = [];
+                    const start = Math.max(1, this.currentPage - 2);
+                    const end = Math.min(this.totalPages, this.currentPage + 2);
+                    
+                    for (let i = start; i <= end; i++) {
+                        pages.push(i);
+                    }
+                    return pages;
+                },
+
+                setupKeyboardShortcuts() {
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+                            e.preventDefault();
+                            document.querySelector('input[type="search"]').focus();
+                        }
+                        if (e.key === 'Escape') {
+                            this.clearSearch();
+                        }
+                    });
+                },
+
+                setReleaseType(type) {
+                    if (this.loading) return;
+                    this.releaseType = type;
+                    this.currentPage = 1;
+                    this.fetchData();
+                },
+
+                async fetchData() {
+                    this.loading = true;
+                    this.errorState = false;
+                    this.downloading = '';
+                    
+                    try {
+                        // Try to fetch from GitHub API first
+                        const apiUrl = this.releaseType === 'stable' 
+                            ? 'https://api.github.com/repos/rizkikotet-dev/RTA-WRT/releases/latest'
+                            : 'https://api.github.com/repos/rizkikotet-dev/RTA-WRT/releases';
+                        
+                        const response = await fetch(apiUrl);
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        
+                        const data = this.releaseType === 'stable' ? response.json() : (await response.json())[0];
+                        
+                        this.processReleaseData(await data);
+                        
+                    } catch (error) {
+                        console.warn('GitHub API failed, trying local files...', error);
+                        
+                        try {
+                            // Fallback to local JSON files
+                            const localResponse = await fetch(`./data/${this.releaseType === 'stable' ? 'stable_release.json' : 'all_releases.json'}`);
+                            if (!localResponse.ok) throw new Error('Local files not found');
+                            
+                            const localData = await localResponse.json();
+                            this.processReleaseData(localData);
+                            
+                        } catch (localError) {
+                            console.error('Both GitHub API and local files failed:', localError);
+                            this.errorState = true;
+                            this.errorMessage = 'Unable to fetch firmware data. Please check your internet connection or try again later.';
+                            this.firmwareData = [];
+                            this.filteredFirmware = [];
+                        }
+                    } finally {
+                        this.loading = false;
+                        this.updateCountDisplay();
+                    }
+                },
+
+                processReleaseData(data) {
+                    this.firmwareData = data.assets || [];
+                    this.latestVersion = data.tag_name?.replace(/^v/i, '') || '';
+                    this.releaseDate = data.published_at ? new Date(data.published_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    }) : '';
+                    
+                    // Calculate total downloads
+                    this.totalDownloads = this.firmwareData.reduce((sum, item) => sum + (item.download_count || 0), 0);
+                    
+                    // Extract available architectures
+                    this.availableArchitectures = [...new Set(this.firmwareData.map(item => this.getArchitecture(item.name)))].filter(Boolean).sort();
+                    
+                    this.filterFirmware();
+                },
+
+                debounceFilter() {
+                    clearTimeout(this.filterTimeout);
+                    this.filterTimeout = setTimeout(() => {
+                        this.currentPage = 1;
+                        this.filterFirmware();
+                    }, 300);
+                },
+
+                filterFirmware() {
+                    const query = this.searchQuery.toLowerCase().trim();
+                    
+                    this.filteredFirmware = this.firmwareData.filter(item => {
+                        const matchesSearch = !query || 
+                            item.name.toLowerCase().includes(query) ||
+                            this.formatDeviceName(item.name).toLowerCase().includes(query) ||
+                            this.getModelName(item.name).toLowerCase().includes(query);
+                        
+                        const matchesArch = this.selectedArchitectures.length === 0 || 
+                            this.selectedArchitectures.includes(this.getArchitecture(item.name));
+                        
+                        return matchesSearch && matchesArch;
+                    });
+                    
+                    // Reset to first page when filtering
+                    if (this.currentPage > this.totalPages) {
+                        this.currentPage = 1;
+                    }
+                    
+                    this.updateCountDisplay();
+                },
+
+                updateCountDisplay() {
+                    const total = this.firmwareData.length;
+                    const filtered = this.filteredFirmware.length;
+                    
+                    if (this.loading) {
+                        this.countDisplay = 'Loading firmware...';
+                    } else if (this.errorState) {
+                        this.countDisplay = 'Error loading data';
+                    } else if (filtered === 0 && total > 0) {
+                        this.countDisplay = 'No firmware found matching your criteria';
+                    } else if (filtered === total) {
+                        this.countDisplay = `Showing all ${total} firmware files`;
+                    } else {
+                        this.countDisplay = `Found ${filtered} of ${total} firmware files`;
+                    }
+                },
+
+                clearSearch() {
+                    this.searchQuery = '';
+                    this.currentPage = 1;
+                    this.filterFirmware();
+                },
+
+                clearFilters() {
+                    this.selectedArchitectures = [];
+                    this.currentPage = 1;
+                    this.filterFirmware();
+                },
+
+                toggleArchFilter(arch) {
+                    const index = this.selectedArchitectures.indexOf(arch);
+                    if (index === -1) {
+                        this.selectedArchitectures.push(arch);
+                    } else {
+                        this.selectedArchitectures.splice(index, 1);
+                    }
+                    this.currentPage = 1;
+                    this.filterFirmware();
+                },
+
+                prevPage() {
+                    if (this.currentPage > 1) {
+                        this.currentPage--;
+                        this.scrollToTop();
+                    }
+                },
+
+                nextPage() {
+                    if (this.currentPage < this.totalPages) {
+                        this.currentPage++;
+                        this.scrollToTop();
+                    }
+                },
+
+                goToPage(page) {
+                    this.currentPage = page;
+                    this.scrollToTop();
+                },
+
+                scrollToTop() {
+                    document.getElementById('downloads').scrollIntoView({ behavior: 'smooth' });
+                },
+
+                formatDeviceName(name) {
+                    return name.replace(/\.(bin|img|tar|gz|trx|ipk)$/i, '')
+                        .replace(/[_-]/g, ' ')
+                        .replace(/\b\w/g, l => l.toUpperCase())
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                },
+
+                getDeviceType(name) {
+                    const nameLower = name.toLowerCase();
+                    if (nameLower.includes('x86_64') || nameLower.includes('x64')) return 'x86 64-bit';
+                    if (nameLower.includes('x86')) return 'x86 32-bit';
+                    if (nameLower.includes('arm64') || nameLower.includes('aarch64')) return 'ARM 64-bit';
+                    if (nameLower.includes('arm')) return 'ARM 32-bit';
+                    if (nameLower.includes('orangepi')) return 'Orange Pi';
+                    if (nameLower.includes('raspberrypi') || nameLower.includes('rpi')) return 'Raspberry Pi';
+                    if (nameLower.includes('amlogic')) return 'Amlogic';
+                    return 'Generic Device';
+                },
+
+                getArchitecture(name) {
+                    const nameLower = name.toLowerCase();
+                    if (nameLower.includes('x86_64') || nameLower.includes('x64')) return 'x86_64';
+                    if (nameLower.includes('x86')) return 'x86';
+                    if (nameLower.includes('arm64') || nameLower.includes('aarch64')) return 'ARM64';
+                    if (nameLower.includes('arm')) return 'ARM';
+                    if (nameLower.includes('orangepi')) return 'Orange Pi';
+                    if (nameLower.includes('raspberrypi') || nameLower.includes('rpi')) return 'Raspberry Pi';
+                    if (nameLower.includes('amlogic')) return 'Amlogic';
+                    return null;
+                },
+
+                getKernelVersion(name) {
+                    const match = name.match(/k(\d+\.\d+)/i);
+                    return match ? `Kernel ${match[1]}` : 'OpenWrt';
+                },
+
+
+                getModelName(name) {
+                    // Hapus semua ekstensi file secara bertahap
+                    let cleanName = name;
+                    // Hapus ekstensi ganda seperti .img.gz, .tar.gz, dll
+                    cleanName = cleanName.replace(/\.(img\.gz|tar\.gz|bin\.gz)$/i, '');
+                    // Hapus ekstensi tunggal
+                    cleanName = cleanName.replace(/\.(bin|img|tar|gz|trx|ipk)$/i, '');
+                    
+                    // Gunakan regex untuk mengekstrak nama model
+                    // Pattern: RTA-WRT-OpenWrt-[versi]-[MODEL_NAME]-[kernel/arch/suffix]
+                    const match = cleanName.match(/RTA-WRT-(?:OpenWrt|ImmortalWrt)-[\d.]+-(.*?)(?:-k[\d.]+|-AW\d+|-DBAI|-all|-tunnel|$)/i);
+                    
+                    if (match) {
+                        let modelName = match[1];
+                        
+                        // Bersihkan suffix tambahan yang mungkin masih tertinggal
+                        modelName = modelName.replace(/-(k[\d.]+.*|AW\d+.*|DBAI.*|all.*|tunnel.*)$/i, '');
+                        
+                        // Ganti semua dash dengan underscore untuk konsistensi
+                        modelName = modelName.replace(/-/g, '_');
+                        
+                        // Hapus underscore ganda jika ada
+                        modelName = modelName.replace(/_+/g, '_');
+                        
+                        // Hapus underscore di awal dan akhir
+                        modelName = modelName.replace(/^_+|_+$/g, '');
+                        
+                        return modelName;
+                    }
+                    
+                    // Fallback jika pattern tidak cocok
+                    const parts = cleanName.split('-');
+                    if (parts.length >= 4) {
+                        // Ambil bagian setelah versi OpenWrt (index 3 dan seterusnya)
+                        let modelParts = [];
+                        for (let i = 3; i < parts.length; i++) {
+                            const part = parts[i];
+                            // Stop jika menemukan pattern kernel, arch, atau suffix
+                            if (/^(k[\d.]+|AW\d+|DBAI|all|tunnel)/i.test(part)) {
+                                break;
+                            }
+                            modelParts.push(part);
+                        }
+                        return modelParts.join('_');
+                    }
+                    
+                    return 'Unknown';
+                },
+
+                getFileSize(bytes) {
+                    if (!bytes || bytes <= 0) return null;
+                    const sizes = ['B', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+                    return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
+                },
+
+                formatNumber(num) {
+                    if (!num || num <= 0) return '0';
+                    return new Intl.NumberFormat().format(num);
+                },
+
+                async downloadFirmware(item) {
+                    this.downloading = item.name;
+                    
+                    try {
+                        // Track download
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'download', {
+                                'firmware_name': item.name,
+                                'firmware_size': item.size,
+                                'release_type': this.releaseType
+                            });
+                        }
+                        
+                        // Open download in new tab
+                        const link = document.createElement('a');
+                        link.href = item.browser_download_url;
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        link.download = item.name;
+                        link.click();
+                        
+                        // Show success notification with SweetAlert2
+                        Swal.fire({
+                            title: 'Download Started!',
+                            text: `${item.name} is being downloaded`,
+                            icon: 'success',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            background: 'rgba(30, 41, 59, 0.95)',
+                            color: '#f1f5f9',
+                            backdrop: `
+                                rgba(15, 23, 42, 0.7)
+                                url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230ea5e9' fill-opacity='0.1'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10zm10 8c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm32 24c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+                                center
+                                no-repeat
+                            `,
+                            customClass: {
+                                title: 'text-white',
+                                timerProgressBar: 'bg-primary-500'
+                            }
+                        });
+                        
+                    } catch (error) {
+                        console.error('Download failed:', error);
+                        
+                        // Show error notification with SweetAlert2
+                        Swal.fire({
+                            title: 'Download Failed',
+                            text: 'Please try again later',
+                            icon: 'error',
+                            confirmButtonText: 'Try Again',
+                            background: 'rgba(30, 41, 59, 0.95)',
+                            color: '#f1f5f9',
+                            customClass: {
+                                confirmButton: 'bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg',
+                                title: 'text-white'
+                            }
+                        });
+                    } finally {
+                        // Reset downloading state after a delay
+                        setTimeout(() => {
+                            this.downloading = '';
+                        }, 2000);
+                    }
+                },
+
+                async copyLink(item) {
+                    try {
+                        await navigator.clipboard.writeText(item.browser_download_url);
+                        
+                        // Show success notification with SweetAlert2
+                        Swal.fire({
+                            title: 'Link Copied!',
+                            text: 'Download link copied to clipboard',
+                            icon: 'success',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            background: 'rgba(30, 41, 59, 0.95)',
+                            color: '#f1f5f9',
+                            backdrop: `
+                                rgba(15, 23, 42, 0.7)
+                                url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230ea5e9' fill-opacity='0.1'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10zm10 8c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm32 24c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+                                center
+                                no-repeat
+                            `,
+                            customClass: {
+                                title: 'text-white',
+                                timerProgressBar: 'bg-primary-500'
+                            }
+                        });
+                        
+                    } catch (error) {
+                        console.error('Copy failed:', error);
+                        // Fallback for older browsers
+                        const textArea = document.createElement('textarea');
+                        textArea.value = item.browser_download_url;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        // Show success notification with SweetAlert2
+                        Swal.fire({
+                            title: 'Link Copied!',
+                            text: 'Download link copied to clipboard',
+                            icon: 'success',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            background: 'rgba(30, 41, 59, 0.95)',
+                            color: '#f1f5f9',
+                            customClass: {
+                                title: 'text-white',
+                                timerProgressBar: 'bg-primary-500'
+                            }
+                        });
+                    }
+                },
+
+                showInfo(item) {
+                    // Gunakan SweetAlert2 untuk menampilkan info detail
+                    Swal.fire({
+                        title: this.formatDeviceName(item.name),
+                        html: `
+                            <div class="text-left text-gray-300">
+                                <div class="mb-4">
+                                    <p class="mb-2"><span class="text-white font-medium">Device Model:</span> ${this.getModelName(item.name)}</p>
+                                    <p class="mb-2"><span class="text-white font-medium">Architecture:</span> ${this.getDeviceType(item.name)}</p>
+                                    <p class="mb-2"><span class="text-white font-medium">Kernel:</span> ${this.getKernelVersion(item.name)}</p>
+                                    <p class="mb-2"><span class="text-white font-medium">File Size:</span> ${this.getFileSize(item.size) || 'Unknown'}</p>
+                                    <p class="mb-2"><span class="text-white font-medium">Downloads:</span> ${this.formatNumber(item.download_count || 0)}</p>
+                                </div>
+                                <div class="bg-gray-800/50 p-3 rounded-lg">
+                                    <p class="text-sm text-gray-400 break-all">${item.browser_download_url}</p>
+                                </div>
+                            </div>
+                        `,
+                        icon: 'info',
+                        confirmButtonText: 'Download',
+                        showCancelButton: true,
+                        cancelButtonText: 'Close',
+                        background: 'rgba(30, 41, 59, 0.95)',
+                        color: '#f1f5f9',
+                        customClass: {
+                            title: 'text-white text-xl',
+                            confirmButton: 'bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg',
+                            cancelButton: 'bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg',
+                            htmlContainer: 'text-left'
+                        },
+                        backdrop: `
+                            rgba(15, 23, 42, 0.8)
+                            url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230ea5e9' fill-opacity='0.1'%3E%3Cpath d='M36 34.5c0-3.044 2.456-5.5 5.5-5.5s5.5 2.456 5.5 5.5-2.456 5.5-5.5 5.5-5.5-2.456-5.5-5.5z'/%3E%3Cpath d='M12 12c0-2.208 1.792-4 4-4s4 1.792 4 4-1.792 4-4 4-4-1.792-4-4zm4 2c-1.104 0-2-.896-2-2s.896-2 2-2 2 .896 2 2-.896 2-2 2zm24 16c-3.312 0-6-2.688-6-6s2.688-6 6-6 6 2.688 6 6-2.688 6-6 6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+                            center
+                            no-repeat
+                        `,
+                        didOpen: () => {
+                            // Tambahkan animasi pada konten
+                            const content = Swal.getHtmlContainer();
+                            content.style.opacity = '0';
+                            content.animate(
+                                { opacity: [0, 1] },
+                                { duration: 500, easing: 'ease-out' }
+                            ).onfinish = () => content.style.opacity = '1';
+                        },
+                        preConfirm: () => {
+                            this.downloadFirmware(item);
+                        }
+                    });
+                },
+
+                showNotification(message, type = 'info') {
+                    this.notification = {
+                        show: true,
+                        message,
+                        type
+                    };
+                    
+                    // Auto-hide after 4 seconds
+                    setTimeout(() => {
+                        this.hideNotification();
+                    }, 4000);
+                },
+
+                hideNotification() {
+                    this.notification.show = false;
+                },
+
+                async retryFetch() {
+                    await this.fetchData();
+                }
+            };
+        }
+    </script>
+</body>
+</html>
