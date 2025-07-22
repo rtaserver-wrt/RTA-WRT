@@ -34,8 +34,8 @@ Arguments:
   -k, --kernel        Kernel version to use
 
 Examples:
-  repackwrt --OPHUB -t amlogic -k 5.15.100 -tn wireguard
-  repackwrt --ULO -t s905x -k 6.1.10 -tn openvpn
+  repackwrt --OPHUB -t amlogic -k 5.15.100
+  repackwrt --ULO -t s905x -k 6.1.10
 EOF
     exit 1
 }
@@ -273,10 +273,10 @@ repackwrt() {
 }
 
 # Main execution
-if [[ ${#} -lt 4 ]]; then
+if [[ ${#} -lt 3 ]]; then
     error_msg "Not enough arguments provided"
     show_usage
 fi
 
 # Execute the function with all passed arguments
-repackwrt --"$1" -t "$2" -k "$3" -tn "$4"
+repackwrt --"$1" -t "$2" -k "$3"
