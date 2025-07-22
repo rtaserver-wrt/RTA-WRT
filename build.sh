@@ -2,6 +2,19 @@
 
 set -euo pipefail
 
+# Determine script directory and include paths
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INCLUDES_PATH="${SCRIPT_DIR}/scripts/0-includes.sh"
+
+if [ ! -f "$INCLUDES_PATH" ]; then
+    echo "ERROR: Required includes file not found: $INCLUDES_PATH"
+    exit 1
+fi
+
+# Source includes
+. "$INCLUDES_PATH"
+
+
 # 🎨 COLOR DEFINITIONS & ICONS
 # ═══════════════════════════════════════════════════════════════════════════════
 readonly RED='\033[0;31m'
@@ -346,47 +359,11 @@ prepare_custom_packages() {
     for pkg_name in "${!custom_packages[@]}"; do
         local base_url="${custom_packages[$pkg_name]}"
         log_info "Processing package: $pkg_name"
-
-        local download_url=""
-        if [[ "$base_url" == *"api.github.com"* ]]; then
-            # Handle GitHub API download
-            log_info "Fetching GitHub release info for $pkg_name"
-            response=$(curl -s "$base_url")
-            if [[ $VERSION == "snapshot" ]]; then
-                # For snapshot, get the latest release
-                download_url=$(echo "$response" | jq -r '.assets[] | select(.name | test("\\.apk$")) | .browser_download_url' | head -n1)
-            else
-                # For stable, get the specific version
-                download_url=$(echo "$response" | jq -r '.assets[] | select(.name | test("\\.ipk$")) | .browser_download_url' | head -n1)
-            fi
-        else
-            # Try fetching .ipk or .apk
-            if [[ $VERSION == "snapshot" ]]; then
-                # For snapshot, get the latest .apk
-                files=$(curl -sL "$base_url/" | grep -oP "href=\"\K${pkg_name}[-_][^\"]*\.apk(?=\")" | sort -V | tail -n1)
-                if [[ -n "$files" ]]; then
-                    download_url="${base_url}/${files}"
-                fi
-            else
-                # For stable, get the latest .ipk
-                files=$(curl -sL "$base_url/" | grep -oP "href=\"\K${pkg_name}[-_][^\"]*\.ipk(?=\")" | sort -V | tail -n1)
-                if [[ -n "$files" ]]; then  
-                    download_url="${base_url}/${files}"
-                fi
-            fi
-        fi
-
-        if [[ -z "$download_url" ]]; then
-            log_warn "Failed to get download URL for $pkg_name"
+        if ! process_packages "$base_url" "packages"; then
+            log_warn "Failed to process package: $pkg_name"
             continue
         fi
-
-        log_info "Downloading package: $pkg_name from $download_url"
-        if ! wget --no-check-certificate -q --tries=2 -P packages/ "$download_url"; then
-            log_warn "Failed to download package: $pkg_name"
-            continue
-        fi
-        log_success "Package downloaded: $pkg_name"
+        log_success "Package processed: $pkg_name"
     done
 
     # Copy external packages from ../packages if exist
