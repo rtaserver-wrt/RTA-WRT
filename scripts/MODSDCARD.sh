@@ -110,7 +110,7 @@ build_mod_sdcard() {
 
     local kernel
     kernel=$(grep -oP 'k[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)?' <<<"$file_name")
-    local new_name="RTA-WRT-${OP_BASE}-${BRANCH}-Amlogic_s905x-Mod_SDCard-${suffix}-${kernel}-${TUNNEL}.img.gz"
+    local new_name="RTA-WRT-${OP_BASE}-${BRANCH}-Amlogic_s905x-Mod_SDCard-${suffix}-${kernel}.img.gz"
     mv "${file_name}.gz" "../${new_name}" || return 1
 
     cd ..

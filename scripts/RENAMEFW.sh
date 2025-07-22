@@ -97,13 +97,7 @@ rename_firmware() {
         "x86-64-generic-squashfs-combined|X86_64_Generic_Squashfs_Combined"
         "x86-64-generic-squashfs-rootfs|X86_64_Generic_Squashfs_Rootfs"
         "x86-64-generic-rootfs|X86_64_Generic_Rootfs"
-
-
-        "Amlogic_s905x-Mod_SDCard-HG680P|Amlogic_s905x-Mod_SDCard-HG680P"
-        "Amlogic_s905x-Mod_SDCard-B860H_v1-v2|Amlogic_s905x-Mod_SDCard-B860H_v1-v2"
     )
-
-    RELEASE_URL="https://github.com/rtaserver-wrt/RTA-WRT/releases/download/${RELEASE_TAG}"
 
     for pattern in "${search_replace_patterns[@]}"; do
         local search="${pattern%%|*}"
@@ -119,7 +113,6 @@ rename_firmware() {
             else
                 new_name="RTA-WRT-${OP_BASE}-${BRANCH}-${replace}.img.gz"
             fi
-            echo "${replace}-${kernel:-}|${RELEASE_URL}/${new_name}" >> artifacts.txt
             echo -e "${INFO} Renaming: $file → $new_name"
             mv "$file" "$new_name" || echo -e "${WARNING} Failed to rename $file"
         done
