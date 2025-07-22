@@ -120,6 +120,12 @@ download_custom_scripts() {
     done
 }
 
+set_permissions() {
+    find "files" -type f -exec chmod 644 {} \;
+    find "files" -type d -exec chmod 755 {} \;
+    find "files" -name "*.sh" -exec chmod +x {} \;
+}
+
 # Main execution
 main() {
     init_environment
@@ -128,6 +134,7 @@ main() {
     setup_branch_config
     configure_amlogic_permissions
     download_custom_scripts
+    set_permissions
     log "SUCCESS" "All custom configuration steps completed successfully!"
 }
 
