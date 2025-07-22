@@ -116,58 +116,60 @@ jobs:
           TARGET_OPTION="${{ github.event.inputs.target }}"
           echo "Selected target option: [$TARGET_OPTION]"
           
-          # Define all target devices
-          TARGETS=(
-            "Raspberry Pi 3B"
-            "Raspberry Pi 4B"
-            "x86-64"
-            "OPHUB Amlogic s905"
-            "OPHUB Amlogic s905 Beelink Mini"
-            "OPHUB Amlogic s905 MXQ Pro Plus"
-            "OPHUB Amlogic s905W"
-            "OPHUB Amlogic s905W W95"
-            "OPHUB Amlogic s905W X96 Mini"
-            "OPHUB Amlogic s905W X96W"
-            "OPHUB Amlogic s905X HG680P"
-            "OPHUB Amlogic s905X B860H"
-            "OPHUB Amlogic s905X Nexbox A95X"
-            "OPHUB Amlogic s905X2"
-            "OPHUB Amlogic s905X2 KM3"
-            "OPHUB Amlogic s905X2 X96 Max 2G"
-            "OPHUB Amlogic s905X3"
-            "OPHUB Amlogic s905X3 H96 Max"
-            "OPHUB Amlogic s905X3 HK1"
-            "OPHUB Amlogic s905X3 X96 Max"
-            "OPHUB Amlogic s912"
-            "OPHUB Amlogic s912 H96 Pro Plus"
-            "OPHUB Amlogic s912 X92"
-            "OPHUB Rockchip rk3318 H96-MAX"
-            "ULO Amlogic s905X HG680P"
-            "ULO Amlogic s905X B860H"
-            "ULO Amlogic s905X2"
-            "ULO Amlogic s905X3"
-            "ULO Amlogic s905X4"
-            "ULO Allwinner H5 Orange Pi Zero Plus2"
-            "ULO Allwinner H5 Orange Pi Zero Plus"
-            "ULO Allwinner H5 Orange Pi Prime"
-            "ULO Allwinner H5 Orange Pi PC2"
-            "ULO Allwinner H6 Orange Pi Lite2"
-            "ULO Allwinner H6 Orange Pi 1 Plus"
-            "ULO Allwinner H6 Orange Pi 3"
-            "ULO Allwinner H6 Orange Pi 3 LTS"
-            "ULO Allwinner H616 Orange Pi Zero2"
-            "ULO Allwinner H618 Orange Pi Zero2W"
-            "ULO Allwinner H618 Orange Pi Zero3"
-            "ULO Rockchip rk3566 Orange Pi 3B"
-            "ULO Rockchip rk3588s Orange Pi 5"
+          TARGET_JSON=$(cat << 'EOJ'
+          {
+            "target": [
+              "Raspberry Pi 3B",
+              "Raspberry Pi 4B",
+              "x86-64",
+              "OPHUB Amlogic s905",
+              "OPHUB Amlogic s905 Beelink Mini",
+              "OPHUB Amlogic s905 MXQ Pro Plus",
+              "OPHUB Amlogic s905W",
+              "OPHUB Amlogic s905W W95",
+              "OPHUB Amlogic s905W X96 Mini",
+              "OPHUB Amlogic s905W X96W",
+              "OPHUB Amlogic s905X HG680P",
+              "OPHUB Amlogic s905X B860H",
+              "OPHUB Amlogic s905X Nexbox A95X",
+              "OPHUB Amlogic s905X2",
+              "OPHUB Amlogic s905X2 KM3",
+              "OPHUB Amlogic s905X2 X96 Max 2G",
+              "OPHUB Amlogic s905X3",
+              "OPHUB Amlogic s905X3 H96 Max",
+              "OPHUB Amlogic s905X3 HK1",
+              "OPHUB Amlogic s905X3 X96 Max",
+              "OPHUB Amlogic s912",
+              "OPHUB Amlogic s912 H96 Pro Plus",
+              "OPHUB Amlogic s912 X92",
+              "OPHUB Rockchip rk3318 H96-MAX",
+              "ULO Amlogic s905X HG680P",
+              "ULO Amlogic s905X B860H",
+              "ULO Amlogic s905X2",
+              "ULO Amlogic s905X3",
+              "ULO Amlogic s905X4",
+              "ULO Allwinner H5 Orange Pi Zero Plus2",
+              "ULO Allwinner H5 Orange Pi Zero Plus",
+              "ULO Allwinner H5 Orange Pi Prime",
+              "ULO Allwinner H5 Orange Pi PC2",
+              "ULO Allwinner H6 Orange Pi Lite2",
+              "ULO Allwinner H6 Orange Pi 1 Plus",
+              "ULO Allwinner H6 Orange Pi 3",
+              "ULO Allwinner H6 Orange Pi 3 LTS",
+              "ULO Allwinner H616 Orange Pi Zero2",
+              "ULO Allwinner H618 Orange Pi Zero2W",
+              "ULO Allwinner H618 Orange Pi Zero3",
+              "ULO Rockchip rk3566 Orange Pi 3B",
+              "ULO Rockchip rk3588s Orange Pi 5"
+            ]
+          }
+          EOJ
           )
 
-          if [ "$TARGET_OPTION" == "all-device" ]; then
-            # Convert array to JSON format
-            TARGET_JSON=$(printf '%s\n' "${TARGETS[@]}" | jq -R . | jq -s .)
+          if [ "${{ github.event.inputs.target }}" == "all-device" ]; then
+            echo "target=$(echo "$TARGET_JSON" | jq -c '.target')" >> $GITHUB_OUTPUT
           else
-            # Single target selection
-            TARGET_JSON=$(jq -nc --arg target "$TARGET_OPTION" '[$target]')
+            echo "target=$(jq -nc --arg d "${{ github.event.inputs.target }}" '[$d]')" >> $GITHUB_OUTPUT
           fi
 
           echo "target=$TARGET_JSON" >> $GITHUB_OUTPUT
