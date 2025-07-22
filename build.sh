@@ -293,6 +293,8 @@ prepare_custom_packages() {
         ["luci-app-advanced-reboot"]="https://downloads.openwrt.org/releases/packages-${ver_op}/${ARCH}/luci"
         ["luci-app-netmonitor"]="https://api.github.com/repos/rizkikotet-dev/luci-app-netmonitor/releases/latest"
 
+        ["python3-speedtest-cli"]="${REPOS[OPENWRT]}/packages"
+
         # KIDDIN9 packages
         ["luci-app-tailscale"]="${REPOS[KIDDIN9]}"
         ["luci-app-diskman"]="${REPOS[KIDDIN9]}"
@@ -404,7 +406,8 @@ prepare_custom_packages() {
     # Add downloaded packages to include list
     local added_count=0
     for list_pkg in "${!custom_packages[@]}"; do
-        if [[ -f "packages/$list_pkg" ]]; then
+        if [[ -f "packages/$list_pkg*.ipk" || -f "packages/$list_pkg*.apk" ]]; then
+            log_info "Adding custom package to include list: $list_pkg"
             PACKAGES_INCLUDE+=" $list_pkg"
             ((added_count++))
         else
