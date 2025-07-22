@@ -365,7 +365,7 @@ prepare_custom_packages() {
             # Try fetching .ipk or .apk
             for ext in ipk apk; do
                 temp_url="$base_url/${pkg_name}*.$ext"
-                files=$(wget -qO- "$base_url/" | grep -oP "${pkg_name}[-_].*?\.${ext}" | head -n 1)
+                files=$(wget -qO- "$base_url/" | grep -oP "${pkg_name}[-_][^\"'<>]*\.${ext}" | sort -V | tail -n1)
                 [[ -n "$files" ]] && download_url="${base_url}/${files}" && break
             done
         fi
