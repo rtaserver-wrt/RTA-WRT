@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # 🎨 COLOR DEFINITIONS & ICONS
 # ═══════════════════════════════════════════════════════════════════════════════
 readonly RED='\033[0;31m'
@@ -32,13 +31,14 @@ readonly ICON_CLEAN="🧹"
 # ═══════════════════════════════════════════════════════════════════════════════
 init_logging() {
     readonly LOG_FILE="${WORK_DIR}/build.log"
+    mkdir -p "$(dirname "${LOG_FILE}")"
     exec > >(tee -a "${LOG_FILE}") 2>&1
 }
 
 log() {
     local level=$1 color=$2 icon=$3
     shift 3
-    echo -e "${color}${icon}[$level]$(date '+%Y-%m-%d %H:%M:%S')${NC} $*" >&2
+    echo -e "${color}${icon} [$level] $(date '+%Y-%m-%d %H:%M:%S')${NC} $*" >&2
 }
 
 log_info() { log "INFO" "$BLUE" "$ICON_INFO" "$@"; }
@@ -116,10 +116,10 @@ PACKAGES_EXCLUDE="${8:-}"
 CLEAN_BUILD="${9:-0}"
 VERSION="${10:-stable}"
 CUSTOM_FILES_DIR="files"
-JOBS="$(nproc)"
+JOBS="$(($(nproc) + 1))"
 FORCE_DOWNLOAD="${FORCE_DOWNLOAD:-0}"
 
-# Default packages (consolidated to remove duplicates)
+# Default packages
 readonly DEFAULT_PACKAGES="
 dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua \
 luci-base luci-lib-base luci-lib-ip luci-lib-jsonc luci-lib-nixio luci-mod-admin-full \
@@ -149,7 +149,7 @@ kmod-usb-net-huawei-cdc-ncm kmod-usb-net-rndis kmod-usb-net-sierrawireless \
 kmod-usb-ohci kmod-usb-serial-sierrawireless kmod-usb-uhci kmod-usb2 kmod-usb-ehci \
 kmod-usb-net-ipheth usbmuxd libusbmuxd-utils libimobiledevice-utils usb-modeswitch kmod-nls-utf8 \
 mbim-utils kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3 \
-kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm sms-tool python3-speedtest-cli"
+kmod-r8169 kmod-lan743x picocom minicom kmod-usb-atm sms-tool"
 readonly DEFAULT_REMOVED_PACKAGES="-dnsmasq"
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -239,20 +239,10 @@ download_imagebuilder() {
     else
         log_info "Downloading from: $url"
         
-        # Use aria2c if available, otherwise fallback to wget
-        if command -v aria2c &>/dev/null; then
-            if ! aria2c -x16 -s16 -c "$url"; then
-                log_error "Failed to download with aria2c, trying wget..."
-                if ! wget -q --show-progress "$url"; then
-                    log_error "Failed to download Image Builder from: $url"
-                    exit 1
-                fi
-            fi
-        else
-            if ! wget -q --show-progress "$url"; then
-                log_error "Failed to download Image Builder from: $url"
-                exit 1
-            fi
+        # Use wget with retries
+        if ! wget -q --tries=3 --retry-connrefused --show-progress "$url"; then
+            log_error "Failed to download Image Builder from: $url"
+            exit 1
         fi
         log_success "Download completed: $ib_file"
     fi
@@ -362,22 +352,23 @@ prepare_custom_packages() {
             # Handle GitHub API download
             log_info "Fetching GitHub release info for $pkg_name"
             response=$(curl -s "$base_url")
-            download_url=$(echo "$response" | grep "browser_download_url" | grep -E "\.ipk|\.apk" | cut -d '"' -f 4 | head -n 1)
+            download_url=$(echo "$response" | jq -r '.assets[] | select(.name | test("\\.(ipk|apk)$")) | .browser_download_url' | head -n1)
         else
             # Try fetching .ipk or .apk
-            temp_url="$base_url/${pkg_name}*"
-            files=$(wget -qO- "$base_url/" | grep -oP "${pkg_name}[-_][^\"'<>]*\.(ipk|apk)" | sort -V | tail -n1)
-            [[ -n "$files" ]] && download_url="${base_url}/${files}"
+            files=$(curl -sL "$base_url/" | grep -oP "href=\"\K${pkg_name}[-_][^\"]*\.(ipk|apk)(?=\")" | sort -V | tail -n1)
+            if [[ -n "$files" ]]; then
+                download_url="${base_url}/${files}"
+            fi
         fi
 
-        if [[ -z "$download_url" || "$download_url" == "null" ]]; then
-            log_error "Failed to get download URL for $pkg_name"
+        if [[ -z "$download_url" ]]; then
+            log_warn "Failed to get download URL for $pkg_name"
             continue
         fi
 
         log_info "Downloading package: $pkg_name from $download_url"
-        if ! wget --no-check-certificate -nv -P packages/ "$download_url"; then
-            log_error "Failed to download package: $pkg_name"
+        if ! wget --no-check-certificate -q --tries=2 -P packages/ "$download_url"; then
+            log_warn "Failed to download package: $pkg_name"
             continue
         fi
         log_success "Package downloaded: $pkg_name"
@@ -386,35 +377,23 @@ prepare_custom_packages() {
     # Copy external packages from ../packages if exist
     if [[ -d "../packages" ]]; then
         log_info "Copying external packages"
-        local copied_count=0 failed_count=0
-
-        for ext_pkg in ../packages/*; do
-            [[ -f "$ext_pkg" ]] || continue
-            if cp "$ext_pkg" packages/ 2>/dev/null; then
-                ((copied_count++))
-            else
-                ((failed_count++))
-            fi
-        done
-
-        [[ $copied_count -gt 0 ]] && log_success "Copied $copied_count external packages"
-        [[ $failed_count -gt 0 ]] && log_warn "$failed_count external packages failed to copy"
+        find ../packages -maxdepth 1 -type f -exec cp -v {} packages/ \;
+        log_success "External packages copied"
     fi
 
-    # Add downloaded packages to include list
-    local added_count=0
-    for list_pkg in "${!custom_packages[@]}"; do
-        # Check for package files with .ipk or .apk extension
-        if ls packages/${list_pkg}* 2>/dev/null | grep -q -E '\.(ipk|apk)$'; then
-            log_info "Adding custom package to include list: $list_pkg"
-            PACKAGES_INCLUDE="${PACKAGES_INCLUDE} $list_pkg"
-            ((added_count++))
-        else
-            log_warn "Package not found: $list_pkg"
-        fi
-    done
+    ls packages
 
-    log_success "Custom packages preparation completed - $added_count packages added to include list"
+    # # Add downloaded packages to include list
+    # for list_pkg in "${!custom_packages[@]}"; do
+    #     if ls packages/${list_pkg}* 1>/dev/null 2>&1; then
+    #         log_info "Adding custom package to include list: $list_pkg"
+    #         PACKAGES_INCLUDE+=" $list_pkg"
+    #     else
+    #         log_warn "Package not found: $list_pkg"
+    #     fi
+    # done
+
+    log_success "Custom packages preparation completed"
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -435,7 +414,7 @@ prepare_custom_files() {
         IFS='|' read -r url path <<< "$script"
         log_info "Downloading: $(basename "$url")"
         mkdir -p "$path"
-        if ! wget --no-check-certificate -nv -O "${path}/$(basename "$url")" "$url"; then
+        if ! wget --no-check-certificate -q -T 10 -O "${path}/$(basename "$url")" "$url"; then
             log_warn "Failed to download: $url"
         fi
     done
@@ -443,15 +422,15 @@ prepare_custom_files() {
     # Copy custom files
     if [[ -d "$source_path" ]]; then
         log_info "Copying custom files from: $source_path"
-        if ! cp -r "$source_path" .; then
+        cp -rT "$source_path" "$CUSTOM_FILES_DIR" || {
             log_warn "Some custom files failed to copy"
-        fi
+        }
 
         # Set permissions
         log_info "Setting file permissions"
-        find "$CUSTOM_FILES_DIR" -type f -exec chmod 644 {} \; 2>/dev/null || true
-        find "$CUSTOM_FILES_DIR" -type d -exec chmod 755 {} \; 2>/dev/null || true
-        find "$CUSTOM_FILES_DIR" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
+        find "$CUSTOM_FILES_DIR" -type f -exec chmod 644 {} \;
+        find "$CUSTOM_FILES_DIR" -type d -exec chmod 755 {} \;
+        find "$CUSTOM_FILES_DIR" -name "*.sh" -exec chmod +x {} \;
         log_success "Custom files prepared successfully"
     else
         log_info "No custom files directory found at: $source_path"
@@ -470,6 +449,8 @@ apply_patches() {
         sed -i 's|CONFIG_TARGET_KERNEL_PARTSIZE=.*|CONFIG_TARGET_KERNEL_PARTSIZE=128|' .config
         sed -i 's|CONFIG_TARGET_ROOTFS_PARTSIZE=.*|CONFIG_TARGET_ROOTFS_PARTSIZE=1024|' .config
         log_success "Partition sizes configured (Kernel: 128MB, RootFS: 1024MB)"
+    else
+        log_warn ".config file not found for partition size configuration"
     fi
 
     # Base-specific patches
@@ -487,23 +468,18 @@ apply_patches() {
         "armsr-armv8")
             if [[ -f ".config" ]]; then
                 log_info "Configuring ARM64 specific settings"
-                local configs=(
-                    CONFIG_TARGET_ROOTFS_CPIOGZ
-                    CONFIG_TARGET_ROOTFS_EXT4FS
-                    CONFIG_TARGET_ROOTFS_SQUASHFS
-                    CONFIG_TARGET_IMAGES_GZIP
-                )
-                for config in "${configs[@]}"; do
-                    sed -i "s|${config}=.*|# ${config} is not set|" .config 2>/dev/null || true
-                done
+                sed -i '/CONFIG_TARGET_ROOTFS_CPIOGZ/d' .config
+                sed -i '/CONFIG_TARGET_ROOTFS_EXT4FS/d' .config
+                sed -i '/CONFIG_TARGET_ROOTFS_SQUASHFS/d' .config
+                sed -i '/CONFIG_TARGET_IMAGES_GZIP/d' .config
                 log_success "ARM64 configurations applied"
             fi
             ;;
         "x86-64")
             if [[ -f ".config" ]]; then
                 log_info "Configuring x86-64 specific settings"
-                sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config 2>/dev/null || true
-                sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config 2>/dev/null || true
+                sed -i 's|CONFIG_ISO_IMAGES=y|# CONFIG_ISO_IMAGES is not set|' .config
+                sed -i 's|CONFIG_VHDX_IMAGES=y|# CONFIG_VHDX_IMAGES is not set|' .config
                 log_success "x86-64 configurations applied"
             fi
             ;;
@@ -564,12 +540,14 @@ build_firmware() {
 show_results() {
     log_step "Displaying build results"
 
-    local image_files
-    mapfile -t image_files < <(find bin/targets -type f \( -name "*.img.gz" -o -name "*.bin" -o -name "*.vmdk" -o -name "*.img" \) 2>/dev/null)
+    local image_files=()
+    while IFS= read -r -d $'\0' file; do
+        image_files+=("$file")
+    done < <(find bin/targets -type f \( -name "*.img.gz" -o -name "*.bin" -o -name "*.vmdk" -o -name "*.img" \) -print0 2>/dev/null)
 
     if [[ ${#image_files[@]} -eq 0 ]]; then
         log_warn "No firmware images found in bin/targets"
-        find bin/targets -type f 2>/dev/null || log_warn "bin/targets directory not found"
+        find bin/targets -type f -print0 | xargs -0 ls -lh 2>/dev/null || log_warn "bin/targets directory not found"
     else
         log_info "Firmware images generated:"
         printf "${WHITE}%-50s %10s %20s${NC}\n" "Filename" "Size" "Modified"
@@ -583,8 +561,11 @@ show_results() {
         log_info "Images location: $(pwd)/bin/targets"
     fi
 
-    local other_files
-    mapfile -t other_files < <(find bin/targets -type f \( -name "*.buildinfo" -o -name "*.manifest" \) 2>/dev/null)
+    local other_files=()
+    while IFS= read -r -d $'\0' file; do
+        other_files+=("$file")
+    done < <(find bin/targets -type f \( -name "*.buildinfo" -o -name "*.manifest" \) -print0 2>/dev/null)
+    
     if [[ ${#other_files[@]} -gt 0 ]]; then
         log_info "Additional build artifacts:"
         for file in "${other_files[@]}"; do
@@ -604,6 +585,24 @@ show_results() {
 # 🚀 MAIN EXECUTION FUNCTION
 # ═══════════════════════════════════════════════════════════════════════════════
 main() {
+    # ⚙️ CONFIGURATION VARIABLES (dipindahkan ke atas)
+    # Default configuration
+    WORK_DIR="${OPENWRT_WORK_DIR:-${PWD}/openwrt-build}"
+    BASE="${1:-openwrt}"
+    BRANCH="${2:-24.10.2}"
+    TARGET_SYSTEM="${3:-x86/64}"
+    TARGET_NAME="${4:-x86-64}"
+    PROFILE="${5:-generic}"
+    ARCH="${6:-x86_64}"
+    PACKAGES_INCLUDE="${7:-}"
+    PACKAGES_EXCLUDE="${8:-}"
+    CLEAN_BUILD="${9:-0}"
+    VERSION="${10:-stable}"
+    CUSTOM_FILES_DIR="files"
+    JOBS="$(($(nproc) + 1))"
+    FORCE_DOWNLOAD="${FORCE_DOWNLOAD:-0}"
+
+
     init_logging
     log_info "RTA-WRT Image Builder Script"
     log_info "Starting build process..."
