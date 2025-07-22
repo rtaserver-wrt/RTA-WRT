@@ -452,10 +452,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-logs-${{ matrix.target }}-${{ env.DATE }}
-          path: |
-            ${{ github.workspace }}/openwrt-build/build.log
-            ${{ github.workspace }}/openwrt-build/.config
-            ${{ github.workspace }}/openwrt-build/logs/
+          path: ${{ github.workspace }}/openwrt-build/build.log
           retention-days: 30
           if-no-files-found: warn
 
