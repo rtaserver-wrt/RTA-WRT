@@ -1036,20 +1036,14 @@
 
                 parseChangelogMD(content) {
                     const lines = content.split('\n');
-                    let capturing = false;
-                    this.changelog = [];
+                    let capturing = false; this.changelog = [];
                     const versionRegex = new RegExp(`^##\\s*\\[?v?${this.latestVersion.replace('.', '\\.')}\\]?`, 'i');
                     for (const line of lines) {
-                        if (versionRegex.test(line.trim())) {
-                            capturing = true;
-                            continue;
-                        }
-                        if (capturing && line.trim().startsWith('## ')) break;
+                        if (versionRegex.test(line.trim())) { capturing = true; continue; }
+                        if (capturing && line.trim().startsWith('## ')) break; 
                         if (capturing && line.trim() !== '') this.changelog.push(line.replace(/^\s*/, ''));
                     }
-                    if (this.changelog.length === 0) {
-                        this.changelog = ['- No specific changelog entries found for this version in CHANGELOG.md.'];
-                    }
+                    if (this.changelog.length === 0) this.changelog = ['- No specific changelog entries found for this version in CHANGELOG.md.'];
                 },
 
                 showInfo(item) {
