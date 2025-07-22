@@ -352,21 +352,22 @@ prepare_custom_packages() {
     )
 
     for pkg_name in "${!custom_packages[@]}"; do
-        local pkg_url=${custom_packages[$pkg_name]}
+        local base_url="${custom_packages[$pkg_name]}"
         log_info "Processing package: $pkg_name"
 
-        local version_type="ipk"
-        [[ "$pkg_name" == *"-apk" ]] && version_type="apk" && pkg_name="${pkg_name%-apk}"
-
-        local download_url
-        if [[ "$pkg_url" == *"github.com"*"releases"* ]]; then
-            download_url=$(curl -s "$pkg_url" | jq -r ".assets[] | select(.name | contains(\"${pkg_name}_\") and endswith(\".${version_type}\")) | .browser_download_url" | head -1)
-            [[ -z "$download_url" || "$download_url" == "null" ]] && download_url=$(curl -s "$pkg_url" | grep -oP "browser_download_url.*${pkg_name}_.*\.${version_type}" | cut -d '"' -f 4 | head -1)
+        local download_url=""
+        if [[ "$base_url" == *"api.github.com"* ]]; then
+            # Handle GitHub API download
+            log_info "Fetching GitHub release info for $pkg_name"
+            response=$(curl -s "$base_url")
+            download_url=$(echo "$response" | grep "browser_download_url" | grep -E "\.ipk|\.apk" | cut -d '"' -f 4 | head -n 1)
         else
-            local index_url="${pkg_url}/Packages"
-            local package_index=$(curl -s "$index_url") || { log_error "Cannot download package index from $index_url"; continue; }
-            local package_filename=$(echo "$package_index" | grep -oP "${pkg_name}_.*\.${version_type}" | head -1)
-            download_url="${pkg_url}/${package_filename}"
+            # Try fetching .ipk or .apk
+            for ext in ipk apk; do
+                temp_url="$base_url/${pkg_name}*.$ext"
+                files=$(wget -qO- "$base_url/" | grep -oP "${pkg_name}[-_].*?\.${ext}" | head -n 1)
+                [[ -n "$files" ]] && download_url="${base_url}/${files}" && break
+            done
         fi
 
         if [[ -z "$download_url" || "$download_url" == "null" ]]; then
@@ -382,43 +383,39 @@ prepare_custom_packages() {
         log_success "Package downloaded: $pkg_name"
     done
 
-    # Copy external packages
+    # Copy external packages from ../packages if exist
     if [[ -d "../packages" ]]; then
         log_info "Copying external packages"
-        local copied_count=0
-        local failed_count=0
-        
+        local copied_count=0 failed_count=0
+
         for ext_pkg in ../packages/*; do
             [[ -f "$ext_pkg" ]] || continue
-            
             if cp "$ext_pkg" packages/ 2>/dev/null; then
                 ((copied_count++))
             else
                 ((failed_count++))
             fi
         done
-        
+
         [[ $copied_count -gt 0 ]] && log_success "Copied $copied_count external packages"
         [[ $failed_count -gt 0 ]] && log_warn "$failed_count external packages failed to copy"
     fi
 
-    # Add custom packages to the include list
+    # Add downloaded packages to include list
     local added_count=0
     for list_pkg in "${!custom_packages[@]}"; do
-        # Determine expected file pattern based on package type
-        local expected_file="packages/${list_pkg}*.ipk"
-        [[ "$list_pkg" == *".apk" ]] && expected_file="packages/${list_pkg}*.apk"
-
-        # Use globbing to check if any matching files exist
-        if compgen -G "$expected_file" > /dev/null; then
+        shopt -s nullglob
+        found_files=(packages/${list_pkg}*.ipk packages/${list_pkg}*.apk)
+        if (( ${#found_files[@]} )); then
             PACKAGES_INCLUDE="${PACKAGES_INCLUDE} ${list_pkg}"
             log_info "Added custom package to include list: $list_pkg"
             ((added_count++))
         else
             log_warn "No matching package file found, skipping: $list_pkg"
         fi
+        shopt -u nullglob
     done
-    
+
     log_success "Custom packages preparation completed - $added_count packages added to include list"
 }
 
