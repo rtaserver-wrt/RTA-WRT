@@ -655,3 +655,12 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
+
+      - name: Deploy to pages branch
+        run: |
+          git checkout --orphan pages
+          git rm -rf .
+          cp ../${{ github.ref_name }}/firmware.html index.html
+          git add index.html
+          git commit -m "Deploy firmware.html as index.html"
+          git push origin pages --force
