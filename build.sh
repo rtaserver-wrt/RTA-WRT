@@ -306,9 +306,9 @@ prepare_custom_packages() {
     # Validate repository URLs
     for repo in "${!repo_urls[@]}"; do
         local url="${repo_urls[$repo]}"
-        log "INFO" "Validating repository: $repo at $url"
+        log_info "Validating repository: $repo at $url"
         if ! curl --output /dev/null --silent --head --fail "$url"; then
-            log "WARN" "Repository $repo seems unreachable: $url"
+            log_warn "Repository $repo seems unreachable: $url"
         fi
     done
     
@@ -370,9 +370,9 @@ prepare_custom_packages() {
     local failed_groups=()
     
     for group in "${!package_groups[@]}"; do
-        log "INFO" "Processing $group packages..."
+        log_info "Processing $group packages..."
         if ! process_packages "package_groups[$group]" "packages"; then
-            log "ERROR" "Failed to process $group packages"
+            log_error "Failed to process $group packages"
             failed_groups+=("$group")
         fi
     done
