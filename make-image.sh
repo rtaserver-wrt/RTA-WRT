@@ -130,4 +130,4 @@ if [ -z "$1" ]; then
     log "ERROR" "Profile not specified"
 fi
 
-build_firmware "$1" "$2"
+build_firmware "$1"
