@@ -371,7 +371,7 @@ prepare_custom_packages() {
     
     for group in "${!package_groups[@]}"; do
         log "INFO" "Processing $group packages..."
-        if ! process_packages "package_groups[$group]" "$SCRIPT_DIR/../packages"; then
+        if ! process_packages "package_groups[$group]" "packages"; then
             log "ERROR" "Failed to process $group packages"
             failed_groups+=("$group")
         fi
