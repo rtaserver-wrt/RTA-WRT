@@ -115,8 +115,10 @@ rename_firmware() {
             local kernel=""
             if [[ "$file" =~ k[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)? ]]; then
                 kernel="${BASH_REMATCH[0]}"
+                new_name="RTA-WRT-${OP_BASE}-${BRANCH}-${replace}-${kernel}.img.gz"
+            else
+                new_name="RTA-WRT-${OP_BASE}-${BRANCH}-${replace}.img.gz"
             fi
-            local new_name="RTA-WRT-${OP_BASE}-${BRANCH}-${replace}-${kernel}.img.gz"
             echo "${replace}-${kernel:-}|${RELEASE_URL}/${new_name}" >> artifacts.txt
             echo -e "${INFO} Renaming: $file → $new_name"
             mv "$file" "$new_name" || echo -e "${WARNING} Failed to rename $file"
