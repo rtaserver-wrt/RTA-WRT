@@ -172,8 +172,6 @@ jobs:
             echo "target=$(jq -nc --arg d "${{ github.event.inputs.target }}" '[$d]')" >> $GITHUB_OUTPUT
           fi
 
-          echo "target=$TARGET_JSON" >> $GITHUB_OUTPUT
-
       - name: Setup Build Environment
         id: setupenv
         run: |
