@@ -131,7 +131,11 @@
         border: 2px solid transparent;
     }
     .release-type-selector button.active {
-        /* Gaya aktif akan dihandle oleh class binding Tailwind */
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+        background-color: var(--theme-color-500);
+        color: white;
+        border-color: var(--theme-color-500);
     }
   </style>
 </head>
