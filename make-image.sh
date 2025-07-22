@@ -42,7 +42,7 @@ kmod-usb-uhci kmod-usb2 kmod-usb-ehci kmod-usb-net-ipheth usbmuxd libusbmuxd-uti
 kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0 kmod-usb3 kmod-r8169 kmod-lan743x"
 
 # Modem Tools
-PACKAGES+=" modeminfo-serial-zte modeminfo-serial-gosun modeminfo-qmi modeminfo-serial-yuge modeminfo-serial-thales modeminfo-serial-tw modeminfo-serial-meig modeminfo-serial-styx modeminfo-serial-mikrotik modeminfo-serial-dell modeminfo-serial-sierra modeminfo-serial-quectel modeminfo-serial-huawei modeminfo-serial-xmm modeminfo-serial-telit modeminfo-serial-fibocom modeminfo-serial-simcom modeminfo luci-app-modeminfo"
+PACKAGES+=" modeminfo-serial-zte modeminfo-qmi modeminfo-serial-dell modeminfo-serial-sierra modeminfo-serial-huawei modeminfo-serial-xmm modeminfo-serial-fibocom modeminfo luci-app-modeminfo"
 PACKAGES+=" atinout modemband luci-app-modemband sms-tool luci-app-sms-tool-js luci-app-lite-watchdog luci-app-3ginfo-lite picocom minicom kmod-usb-atm luci-app-droidmodem"
 
 # Tunnel option
@@ -62,7 +62,7 @@ PACKAGES+=" luci-app-diskman luci-app-disks-info smartmontools kmod-usb-storage 
 PACKAGES+=" internet-detector luci-app-internet-detector internet-detector-mod-modem-restart nlbwmon luci-app-nlbwmon vnstat2 vnstati2 luci-app-vnstat2 netdata luci-app-netmonitor"
 
 # Theme
-PACKAGES+=" luci-theme-rtawrt luci-theme-material luci-theme-argon luci-app-argon-config"
+PACKAGES+=" luci-theme-material luci-theme-argon luci-app-argon-config"
 
 # PHP8
 PACKAGES+=" php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo php8-mod-zip php8-mod-iconv php8-mod-mbstring"
