@@ -404,16 +404,12 @@ prepare_custom_packages() {
     # Add downloaded packages to include list
     local added_count=0
     for list_pkg in "${!custom_packages[@]}"; do
-        shopt -s nullglob
-        found_files=(packages/${list_pkg}*.ipk packages/${list_pkg}*.apk)
-        if (( ${#found_files[@]} )); then
-            PACKAGES_INCLUDE="${PACKAGES_INCLUDE} ${list_pkg}"
-            log_info "Added custom package to include list: $list_pkg"
+        if [[ -f "packages/$list_pkg" ]]; then
+            PACKAGES_INCLUDE+=" $list_pkg"
             ((added_count++))
         else
-            log_warn "No matching package file found, skipping: $list_pkg"
+            log_warn "Package not found: $list_pkg"
         fi
-        shopt -u nullglob
     done
 
     log_success "Custom packages preparation completed - $added_count packages added to include list"
