@@ -365,11 +365,9 @@ prepare_custom_packages() {
             download_url=$(echo "$response" | grep "browser_download_url" | grep -E "\.ipk|\.apk" | cut -d '"' -f 4 | head -n 1)
         else
             # Try fetching .ipk or .apk
-            for ext in ipk apk; do
-                temp_url="$base_url/${pkg_name}*.$ext"
-                files=$(wget -qO- "$base_url/" | grep -oP "${pkg_name}[-_][^\"'<>]*\.${ext}" | sort -V | tail -n1)
-                [[ -n "$files" ]] && download_url="${base_url}/${files}" && break
-            done
+            temp_url="$base_url/${pkg_name}*"
+            files=$(wget -qO- "$base_url/" | grep -oP "${pkg_name}[-_][^\"'<>]*\.(ipk|apk)" | sort -V | tail -n1)
+            [[ -n "$files" ]] && download_url="${base_url}/${files}"
         fi
 
         if [[ -z "$download_url" || "$download_url" == "null" ]]; then
@@ -407,7 +405,7 @@ prepare_custom_packages() {
     local added_count=0
     for list_pkg in "${!custom_packages[@]}"; do
         # Check for package files with .ipk or .apk extension
-        if compgen -G "packages/${list_pkg}*.{ipk,apk}" >/dev/null; then
+        if ls packages/${list_pkg}* 2>/dev/null | grep -q -E '\.(ipk|apk)$'; then
             log_info "Adding custom package to include list: $list_pkg"
             PACKAGES_INCLUDE="${PACKAGES_INCLUDE} $list_pkg"
             ((added_count++))
