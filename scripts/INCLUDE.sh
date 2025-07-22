@@ -16,7 +16,7 @@ CONFIG=(
     ["PARALLEL_DOWNLOADS"]=4
 )
 
-readonly GH_TOKEN="${GITHUB_TOKEN:-}"
+GH_TOKEN="${GITHUB_TOKEN:-}"
 
 # Cleanup function
 cleanup() {
