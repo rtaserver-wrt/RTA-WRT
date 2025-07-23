@@ -1075,7 +1075,7 @@
         "state": "uploaded",
         "size": 395095066,
         "digest": "sha256:b550866f3d6c606f342eb4e761302d704d8dd80705df77f927819cef973c2cb5",
-        "download_count": 9,
+        "download_count": 11,
         "created_at": "2025-07-22T17:53:32Z",
         "updated_at": "2025-07-22T17:53:46Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-HG680P-NONMOD-k6.1.146.img.gz"
