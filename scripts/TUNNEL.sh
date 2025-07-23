@@ -104,8 +104,8 @@ setup_openclash() {
     download_packages openclash_ipk || return 1
     
     # Download and extract core
-    handle_package "${openclash_core_url}" "files/etc/openclash/core/clash.tar.gz" \
-        "tar -xvf files/etc/openclash/core/clash.tar.gz -C files/etc/openclash/core" || return 1
+    handle_package "${openclash_core_url}" "files/etc/openclash/core/clash_meta.tar.gz" \
+        "tar -xvf files/etc/openclash/core/clash_meta.tar.gz -C files/etc/openclash/core" || return 1
     
     return 0
 }
