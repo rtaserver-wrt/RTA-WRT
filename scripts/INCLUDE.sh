@@ -522,6 +522,7 @@ download_packages() {
             local patterns=(
                 "${filename}[^\"]*\.(ipk|apk)"
                 "${filename}_.*\.(ipk|apk)"
+                "${filename}-.*\.(ipk|apk)"
                 "${filename}.*\.(ipk|apk)"
             )
             
