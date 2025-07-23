@@ -77,7 +77,6 @@ check_modem_status() {
         return 1
     fi
     
-    log "DEBUG" "Found $modem_count modem(s)"
     return 0
 }
 
@@ -190,8 +189,6 @@ monitor_loop() {
             else
                 log "ERROR" "Fix failed, will retry on next check cycle"
             fi
-        else
-            log "DEBUG" "ModemManager and modem status OK"
         fi
         
         sleep $CHECK_INTERVAL
