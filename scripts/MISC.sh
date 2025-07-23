@@ -121,9 +121,20 @@ download_custom_scripts() {
 }
 
 set_permissions() {
-    find "files" -type f -exec chmod 644 {} \;
-    find "files" -type d -exec chmod 755 {} \;
-    find "files" -name "*.sh" -exec chmod +x {} \;
+    local folder="files"
+    log "INFO" "Setting permissions for files in $folder"
+
+    # Set default permissions
+    find "$folder" -type d -exec chmod 755 {} \;  # Directory permissions
+    find "$folder" -type f -exec chmod 644 {} \;  # Default file permissions
+
+    # Make ALL scripts in /usr/bin executable (regardless of extension)
+    find "$folder/usr/bin" -type f -exec chmod +x {} \;
+
+    # Make specific scripts executable
+    find "$folder/etc/init.d" -type f -exec chmod +x {} \;
+    find "$folder/lib" -type f -exec chmod +x {} \;
+    find "$folder/sbin" -type f -exec chmod +x {} \;
 }
 
 # Main execution
