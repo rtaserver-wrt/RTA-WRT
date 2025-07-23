@@ -239,13 +239,13 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased text-gray-100 gradient-bg" x-data="firmwareApp()">
+<body class="font-sans antialiased text-gray-100 gradient-bg" x-data="firmwareApp()" x-cloak>
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass border-b border-gray-700/50" x-data="{ mobileOpen: false }">
+    <nav class="fixed top-0 w-full z-50 glass border-b border-gray-700/50" x-data="{ mobileOpen: false }" role="navigation" aria-label="Main navigation">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg animate-glow">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg animate-glow" aria-hidden="true">
                         <i class="fas fa-wifi text-white text-lg"></i>
                     </div>
                     <div>
@@ -255,37 +255,37 @@
                 </div>
                 
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="#downloads" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-primary-600/20 text-primary-400 border border-primary-500/30 hover:bg-primary-600/30 transition-all">
-                        <i class="fas fa-download"></i>
+                    <a href="#downloads" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-primary-600/20 text-primary-400 border border-primary-500/30 hover:bg-primary-600/30 transition-all focus:outline-none focus:ring-2 focus:ring-primary-400" tabindex="0">
+                        <i class="fas fa-download" aria-hidden="true"></i>
                         <span>Downloads</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-700/50 transition-all">
-                        <i class="fas fa-book"></i>
+                    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-700/50 transition-all focus:outline-none focus:ring-2 focus:ring-primary-400" tabindex="0">
+                        <i class="fas fa-book" aria-hidden="true"></i>
                         <span>Docs</span>
                     </a>
-                    <a href="https://github.com/rtaserver-wrt/RTA-WRT" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-700/50 transition-all">
-                        <i class="fab fa-github"></i>
+                    <a href="https://github.com/rtaserver-wrt/RTA-WRT" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-700/50 transition-all focus:outline-none focus:ring-2 focus:ring-primary-400" tabindex="0">
+                        <i class="fab fa-github" aria-hidden="true"></i>
                         <span>GitHub</span>
                     </a>
                 </div>
                 
-                <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-lg hover:bg-gray-700/50 transition-colors" aria-label="Toggle menu">
-                    <i class="fas" :class="mobileOpen ? 'fa-times' : 'fa-bars'"></i>
+                <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-lg hover:bg-gray-700/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400" aria-label="Toggle menu" :aria-expanded="mobileOpen.toString()" aria-controls="mobile-menu">
+                    <i class="fas" :class="mobileOpen ? 'fa-times' : 'fa-bars'" aria-hidden="true"></i>
                 </button>
             </div>
             
-            <div x-show="mobileOpen" x-cloak x-transition class="md:hidden py-4 border-t border-gray-700/50">
+            <div x-show="mobileOpen" x-cloak x-transition class="md:hidden py-4 border-t border-gray-700/50" id="mobile-menu" role="menu" aria-label="Mobile menu">
                 <div class="space-y-2">
-                    <a href="#downloads" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-primary-600/20 text-primary-400">
-                        <i class="fas fa-download"></i>
+                    <a href="#downloads" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-primary-600/20 text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-400" role="menuitem" tabindex="0">
+                        <i class="fas fa-download" aria-hidden="true"></i>
                         <span>Downloads</span>
                     </a>
-                    <a href="#" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 transition-colors">
-                        <i class="fas fa-book"></i>
+                    <a href="#" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400" role="menuitem" tabindex="0">
+                        <i class="fas fa-book" aria-hidden="true"></i>
                         <span>Documentation</span>
                     </a>
-                    <a href="https://github.com/rtaserver-wrt/RTA-WRT" target="_blank" rel="noopener noreferrer" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 transition-colors">
-                        <i class="fab fa-github"></i>
+                    <a href="https://github.com/rtaserver-wrt/RTA-WRT" target="_blank" rel="noopener noreferrer" @click="mobileOpen = false" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400" role="menuitem" tabindex="0">
+                        <i class="fab fa-github" aria-hidden="true"></i>
                         <span>GitHub</span>
                     </a>
                 </div>
@@ -294,16 +294,16 @@
     </nav>
 
     <!-- Notification -->
-    <div x-show="notification.show" x-cloak class="notification glass rounded-lg p-4 max-w-sm shadow-lg border border-gray-600/50" :class="notification.show ? 'show' : ''">
+    <div x-show="notification.show" x-cloak class="notification glass rounded-lg p-4 max-w-sm shadow-lg border border-gray-600/50" :class="notification.show ? 'show' : ''" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="flex items-start space-x-3">
             <div class="flex-shrink-0">
-                <i class="fas" :class="notification.type === 'success' ? 'fa-check-circle text-green-400' : notification.type === 'error' ? 'fa-exclamation-circle text-red-400' : 'fa-info-circle text-blue-400'"></i>
+                <i class="fas" :class="notification.type === 'success' ? 'fa-check-circle text-green-400' : notification.type === 'error' ? 'fa-exclamation-circle text-red-400' : 'fa-info-circle text-blue-400'" aria-hidden="true"></i>
             </div>
             <div class="flex-1">
                 <p class="text-sm text-white" x-text="notification.message"></p>
             </div>
-            <button @click="hideNotification()" class="flex-shrink-0 text-gray-400 hover:text-white transition-colors">
-                <i class="fas fa-times text-sm"></i>
+            <button @click="hideNotification()" class="flex-shrink-0 text-gray-400 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400" aria-label="Close notification">
+                <i class="fas fa-times text-sm" aria-hidden="true"></i>
             </button>
         </div>
     </div>
@@ -321,39 +321,43 @@
                     Modern, secure, and powerful open-source firmware for your network devices
                 </p>
                 
-                <div class="flex justify-center mb-8">
+                <div class="flex justify-center mb-8 space-x-4">
                     <div class="glass rounded-xl p-1 inline-flex">
                         <button 
                             @click="setReleaseType('stable')" 
                             :class="releaseType === 'stable' ? 'bg-primary-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
                             class="px-6 py-3 rounded-lg transition-all font-medium flex items-center space-x-2"
-                            :disabled="loading">
-                            <i class="fas fa-rocket"></i>
+                            :disabled="loading"
+                            aria-pressed="releaseType === 'stable' ? 'true' : 'false'">
+                            <i class="fas fa-rocket" aria-hidden="true"></i>
                             <span>Stable</span>
                         </button>
+                    </div>
+                    <div class="glass rounded-xl p-1 inline-flex">
                         <button 
                             @click="setReleaseType('prerelease')" 
                             :class="releaseType === 'prerelease' ? 'bg-accent-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
                             class="px-6 py-3 rounded-lg transition-all font-medium flex items-center space-x-2"
-                            :disabled="loading">
-                            <i class="fas fa-flask"></i>
+                            :disabled="loading"
+                            aria-pressed="releaseType === 'prerelease' ? 'true' : 'false'">
+                            <i class="fas fa-flask" aria-hidden="true"></i>
                             <span>Pre-release</span>
                         </button>
                     </div>
                 </div>
                 
                 <div class="flex flex-wrap justify-center gap-4 mb-12" x-show="latestVersion && !loading" x-cloak>
-                    <div class="glass px-4 py-2 rounded-full animate-fade-in">
-                        <i class="fas fa-tag mr-2 text-primary-400"></i>
+                    <div class="glass px-4 py-2 rounded-full animate-fade-in" role="status" aria-live="polite" aria-atomic="true">
+                        <i class="fas fa-tag mr-2 text-primary-400" aria-hidden="true"></i>
                         <span>Version: </span>
                         <span class="font-mono text-primary-400" x-text="latestVersion"></span>
                     </div>
                     <div class="glass px-4 py-2 rounded-full animate-fade-in" x-show="releaseDate" x-cloak>
-                        <i class="fas fa-calendar mr-2 text-gray-400"></i>
+                        <i class="fas fa-calendar mr-2 text-gray-400" aria-hidden="true"></i>
                         <span x-text="releaseDate"></span>
                     </div>
                     <div class="glass px-4 py-2 rounded-full animate-fade-in" x-show="totalDownloads > 0" x-cloak>
-                        <i class="fas fa-download mr-2 text-green-400"></i>
+                        <i class="fas fa-download mr-2 text-green-400" aria-hidden="true"></i>
                         <span x-text="formatNumber(totalDownloads) + ' downloads'"></span>
                     </div>
                 </div>
@@ -362,17 +366,17 @@
     </section>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16" id="downloads">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16" id="downloads" tabindex="-1">
         <!-- Changelog Section -->
         <div x-show="!errorState && changelog.length > 0 && latestVersion" x-cloak class="max-w-3xl mx-auto mb-12" data-aos="fade-up" data-aos-delay="200">
-            <div class="changelog-container card-hover">
+            <div class="changelog-container card-hover" role="region" aria-labelledby="changelog-heading" tabindex="0">
                 <div class="changelog-header">
-                    <h2 class="text-2xl font-semibold text-white">
+                    <h2 id="changelog-heading" class="text-2xl font-semibold text-white">
                         Changelog 
                         <span x-text="'OpenWrt ' + latestVersion" :class="releaseType === 'prerelease' ? 'text-accent-400' : 'text-primary-400'"></span>
                     </h2>
                 </div>
-                <div class="changelog-content">
+                <div class="changelog-content" tabindex="0" aria-live="polite" aria-atomic="true">
                     <ul x-html="renderedChangelog"></ul>
                 </div>
             </div>
@@ -574,7 +578,7 @@
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="flex items-center space-x-3 mb-4 md:mb-0">
                     <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-wifi text-white text-sm"></i>
+                        <i class="fas fa-wifi text-white text-sm" aria-hidden="true"></i>
                     </div>
                     <div>
                         <span class="font-bold text-white">RTA-WRT</span>
@@ -583,11 +587,11 @@
                 </div>
                 
                 <div class="flex space-x-6 mb-4 md:mb-0">
-                    <a href="https://github.com/rtaserver-wrt" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="GitHub Profile">
-                        <i class="fab fa-github text-xl"></i>
+                    <a href="https://github.com/rtaserver-wrt" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="GitHub Profile" aria-label="GitHub Profile">
+                        <i class="fab fa-github text-xl" aria-hidden="true"></i>
                     </a>
-                    <a href="https://t.me/rtawrt" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="Telegram Channel">
-                        <i class="fab fa-telegram text-xl"></i>
+                    <a href="https://t.me/rtawrt" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="Telegram Channel" aria-label="Telegram Channel">
+                        <i class="fab fa-telegram text-xl" aria-hidden="true"></i>
                     </a>
                 </div>
                 
@@ -1037,7 +1041,7 @@
                 parseChangelogMD(content) {
                     const lines = content.split('\n');
                     let capturing = false; this.changelog = [];
-                    const versionRegex = new RegExp(`^##\\s*\\[?v?${this.latestVersion.replace('.', '\\.')}\\]?`, 'i');
+                    const versionRegex = new RegExp(`^##\\s*\\[?${this.latestVersion.replace('.', '\\.')}\\]?`, 'i');
                     for (const line of lines) {
                         if (versionRegex.test(line.trim())) { capturing = true; continue; }
                         if (capturing && line.trim().startsWith('## ')) break; 
@@ -1116,6 +1120,25 @@
                 }
             };
         }
+    </script>
+
+    <!-- Back to Top Button -->
+    <button 
+        x-show="window.pageYOffset > 300" 
+        @click="window.scrollTo({ top: 0, behavior: 'smooth' })" 
+        x-cloak
+        aria-label="Back to top"
+        class="fixed bottom-8 right-8 p-3 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors z-50">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backToTopButton = document.querySelector('button[aria-label="Back to top"]');
+            window.addEventListener('scroll', () => {
+                backToTopButton.style.display = window.pageYOffset > 300 ? 'block' : 'none';
+            });
+        });
     </script>
 </body>
 </html>
