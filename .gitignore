@@ -3,3 +3,4 @@ combined_artifacts.txt
 bot.log
 bot_config.json
 bot_session.session
+dos2unix_*
