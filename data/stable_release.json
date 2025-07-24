@@ -2442,7 +2442,7 @@
       "state": "uploaded",
       "size": 254213472,
       "digest": "sha256:4611f4ac73ffc8338f05cff91aec218a849ad4c681bf5d6c4e52b60d7f59a2e8",
-      "download_count": 2,
+      "download_count": 3,
       "created_at": "2025-07-22T18:03:13Z",
       "updated_at": "2025-07-22T18:03:22Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_4B-Ext4_Sysupgrade.img.gz"
