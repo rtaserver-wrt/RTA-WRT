@@ -574,8 +574,7 @@ jobs:
           sudo rm -rf "${{ env.WORKING_DIR }}"
 
   notify:
-    name: Notify Release
-    if: github.event.inputs.notify == 'true'
+    name: Notify And Buld Pages
     needs: [prebuild, build-firmware]
     runs-on: ubuntu-latest
     
@@ -588,8 +587,10 @@ jobs:
 
       - name: Send Telegram Notification
         run: |
-          chmod +x ./telegram_notify.sh
-          ./telegram_notify.sh
+          if [ "${{ github.event.inputs.notify }}" == "true" ]; then
+            chmod +x ./telegram_notify.sh
+            ./telegram_notify.sh
+          fi
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
@@ -598,16 +599,3 @@ jobs:
           VERSION: ${{ needs.prebuild.outputs.branch }}
           FOR: ${{ github.ref_name }}
           RELEASE_TAG: ${{ needs.prebuild.outputs.release_tag }}
-
-      - name: Set up Git
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
-      - name: Deploy to pages branch
-        run: |
-          git checkout --orphan pages
-          cp ../${{ github.ref_name }}/firmware.html index.html
-          git add index.html
-          git commit -m "Deploy firmware.html as index.html"
-          git push pages --force

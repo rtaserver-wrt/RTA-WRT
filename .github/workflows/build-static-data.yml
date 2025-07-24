@@ -1,15 +1,19 @@
 name: Build Static Firmware Data
 
 on:
-  # schedule:
+  chedule:
     # Jalankan setiap 2 jam sekali (sesuaikan jadwalnya)
     # https://crontab.guru/every-2-hours
-    # - cron: '0 */2 * * *'
+    - cron: '0 */2 * * *'
   workflow_dispatch: # Memungkinkan menjalankan workflow secara manual dari tab Actions
   push:
     branches:
       - main # Atau branch utama Anda, jika build script atau dependencies-nya berubah
       - dev
+  workflow_run:
+    workflows: ["generate-openwrt.yml"]  # Fixed typo in workflow name
+    types: [completed]
+
 
 permissions:
   actions: write
