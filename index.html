@@ -679,7 +679,9 @@
                     this.releaseType = type;
                     this.currentPage = 1;
                     this.isChangelogExpanded = false;
-                    this.fetchData();
+                    this.fetchData().then(() => {
+                        this.fetchChangelog();
+                    });
                 },
 
                 async fetchData() {
@@ -718,19 +720,52 @@
                 },
 
                 processReleaseData(data) {
-                    this.firmwareData = data.assets || [];
-                    this.latestVersion = data.tag_name?.replace(/^v/i, '') || '';
-                    this.releaseDate = data.published_at ? new Date(data.published_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    }) : '';
-                    
-                    this.totalDownloads = this.firmwareData.reduce((sum, item) => sum + (item.download_count || 0), 0);
-                    
-                    this.availableArchitectures = [...new Set(this.firmwareData.map(item => this.getArchitecture(item.name)))].filter(Boolean).sort();
-                    
-                    this.filterFirmware();
+                    if (this.releaseType === 'prerelease' && Array.isArray(data)) {
+                        // Filter prereleases
+                        const prereleases = data.filter(release => release.prerelease);
+                        // Aggregate assets from all prereleases
+                        this.firmwareData = prereleases.flatMap(release => {
+                            // Add release info to each asset for display
+                            return (release.assets || []).map(asset => ({
+                                ...asset,
+                                tag_name: release.tag_name,
+                                published_at: release.published_at,
+                                is_prerelease: true
+                            }));
+                        });
+                        // Sort firmwareData by published_at descending
+                        this.firmwareData.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+                        // Set latestVersion and releaseDate from the latest prerelease
+                        if (prereleases.length > 0) {
+                            const latest = prereleases.reduce((a, b) => new Date(a.published_at) > new Date(b.published_at) ? a : b);
+                            this.latestVersion = latest.tag_name?.replace(/^v/i, '') || '';
+                            this.releaseDate = latest.published_at ? new Date(latest.published_at).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            }) : '';
+                        } else {
+                            this.latestVersion = '';
+                            this.releaseDate = '';
+                        }
+                        this.totalDownloads = this.firmwareData.reduce((sum, item) => sum + (item.download_count || 0), 0);
+                        this.availableArchitectures = [...new Set(this.firmwareData.map(item => this.getArchitecture(item.name)))].filter(Boolean).sort();
+                        this.filterFirmware();
+                    } else {
+                        this.firmwareData = data.assets || [];
+                        this.latestVersion = data.tag_name?.replace(/^v/i, '') || '';
+                        this.releaseDate = data.published_at ? new Date(data.published_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        }) : '';
+                        
+                        this.totalDownloads = this.firmwareData.reduce((sum, item) => sum + (item.download_count || 0), 0);
+                        
+                        this.availableArchitectures = [...new Set(this.firmwareData.map(item => this.getArchitecture(item.name)))].filter(Boolean).sort();
+                        
+                        this.filterFirmware();
+                    }
                 },
 
                 debounceFilter() {
