@@ -133,7 +133,9 @@ set_permissions() {
 
     # Make specific scripts executable
     find "$folder/etc/init.d" -type f -exec chmod +x {} \;
-    find "$folder/lib" -type f -exec chmod +x {} \;
+    if [ -d "$folder/lib" ]; then
+        find "$folder/lib" -type f -exec chmod +x {} \;
+    fi
     find "$folder/sbin" -type f -exec chmod +x {} \;
 }
 
