@@ -688,19 +688,11 @@
                     this.downloading = '';
                     
                     try {
-                        const apiUrl = this.releaseType === 'stable' 
-                            ? 'https://api.github.com/repos/rtaserver-wrt/RTA-WRT/releases/latest'
-                            : 'https://api.github.com/repos/rtaserver-wrt/RTA-WRT/releases';
-                        
-                        const response = await fetch(apiUrl);
-                        
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                        }
-                        
-                        const data = this.releaseType === 'stable' ? await response.json() : (await response.json())[0];
-                        
-                        this.processReleaseData(data);
+                        const localResponse = await fetch(`./data/${this.releaseType === 'stable' ? 'stable_release.json' : 'all_releases.json'}`);
+                        if (!localResponse.ok) throw new Error('Local files not found');
+                            
+                        const localData = await localResponse.json();
+                        this.processReleaseData(localData);
                         
                     } catch (error) {
                         console.warn('GitHub API failed, trying local files...', error);
@@ -1037,8 +1029,8 @@
                         this.renderedChangelog = marked.parse(this.changelog.join('\n'), { gfm: true, breaks: true });
                     }
                 },
-
                 parseChangelogMD(content) {
+                    console.log('Latest version:', this.latestVersion !== undefined ? this.latestVersion : 'Not available');
                     const lines = content.split('\n');
                     let capturing = false; this.changelog = [];
                     const versionRegex = new RegExp(`^##\\s*\\[?${this.latestVersion.replace('.', '\\.')}\\]?`, 'i');
