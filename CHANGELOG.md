@@ -1,5 +1,9 @@
 # Changelog
 
+## [rtawrt-immortalwrt-24.10.2-24072025] - 2025-07-24
+- Update ImmortalWrt To Stable 24.10.2
+- Add Script Auto Fix ModemManager
+
 ## [rtawrt-openwrt-24.10.2-23072025] - 2025-07-23
 - Update OpenWrt To Stable 24.10.2
 - Remove Unused Packages
