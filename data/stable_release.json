@@ -1290,7 +1290,7 @@
       "state": "uploaded",
       "size": 410517003,
       "digest": "sha256:13743a1b4c2ba5c4b6f474735ca9473c271231990a5feb13dd9432ec6d516ead",
-      "download_count": 25,
+      "download_count": 26,
       "created_at": "2025-07-22T17:54:12Z",
       "updated_at": "2025-07-22T17:54:29Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
@@ -1326,7 +1326,7 @@
       "state": "uploaded",
       "size": 391143269,
       "digest": "sha256:bb01fdb181b7b2bcf5e41270fcf93f2e4006321ccba38c593c57f21912e9033e",
-      "download_count": 0,
+      "download_count": 2,
       "created_at": "2025-07-22T17:52:05Z",
       "updated_at": "2025-07-22T17:52:14Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Nexbox_A95X-k5.15.189.img.gz"
@@ -1722,7 +1722,7 @@
       "state": "uploaded",
       "size": 396037179,
       "digest": "sha256:40fba605a5c5f894660f181b325defa5771225f440d109af284a8724c22387c2",
-      "download_count": 0,
+      "download_count": 2,
       "created_at": "2025-07-22T17:53:52Z",
       "updated_at": "2025-07-22T17:54:03Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x3-H96Max-k6.1.146.img.gz"
