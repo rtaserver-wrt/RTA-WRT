@@ -966,7 +966,7 @@
       "state": "uploaded",
       "size": 391132961,
       "digest": "sha256:894e0794976976b66b04a065c028d25942356b15481e38729cc12f752db98262",
-      "download_count": 7,
+      "download_count": 9,
       "created_at": "2025-07-22T18:03:50Z",
       "updated_at": "2025-07-22T18:04:04Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-B860H_v1-v2-NONMOD-k5.15.189.img.gz"
@@ -1002,7 +1002,7 @@
       "state": "uploaded",
       "size": 395064489,
       "digest": "sha256:2c8cbdeeceae2713977af583c5fc4586627e2d38a496f2ef22bca507ac32a6aa",
-      "download_count": 5,
+      "download_count": 7,
       "created_at": "2025-07-22T18:03:50Z",
       "updated_at": "2025-07-22T18:04:05Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-B860H_v1-v2-NONMOD-k6.1.146.img.gz"
@@ -1074,7 +1074,7 @@
       "state": "uploaded",
       "size": 395095066,
       "digest": "sha256:b550866f3d6c606f342eb4e761302d704d8dd80705df77f927819cef973c2cb5",
-      "download_count": 25,
+      "download_count": 26,
       "created_at": "2025-07-22T17:53:32Z",
       "updated_at": "2025-07-22T17:53:46Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-HG680P-NONMOD-k6.1.146.img.gz"
