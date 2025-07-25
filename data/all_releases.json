@@ -355,7 +355,7 @@
         "state": "uploaded",
         "size": 478584588,
         "digest": "sha256:01992a67a7b7068baf580abb5e593265977c7d34ea245213a20d8389d1ee4730",
-        "download_count": 4,
+        "download_count": 7,
         "created_at": "2025-07-24T09:03:03Z",
         "updated_at": "2025-07-24T09:03:22Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Allwinner_OrangePi_Zero3-k6.1.31-AW64-DBAI.img.gz"
@@ -3385,7 +3385,7 @@
         "state": "uploaded",
         "size": 390209495,
         "digest": "sha256:dd7a174746adf3e0962b93464f33a388924fe841a9036a57f02bcca9f86470f6",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-07-22T18:01:18Z",
         "updated_at": "2025-07-22T18:01:30Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905-k5.15.189.img.gz"
@@ -3817,7 +3817,7 @@
         "state": "uploaded",
         "size": 391132961,
         "digest": "sha256:894e0794976976b66b04a065c028d25942356b15481e38729cc12f752db98262",
-        "download_count": 9,
+        "download_count": 10,
         "created_at": "2025-07-22T18:03:50Z",
         "updated_at": "2025-07-22T18:04:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-B860H_v1-v2-NONMOD-k5.15.189.img.gz"
@@ -4033,7 +4033,7 @@
         "state": "uploaded",
         "size": 410517065,
         "digest": "sha256:8f362d77be091e98834013c1efee09d4cbf8756a6090086d68f76c1350a87338",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T18:04:05Z",
         "updated_at": "2025-07-22T18:04:17Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k6.1.66-DBAI.img.gz"
