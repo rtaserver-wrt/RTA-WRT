@@ -3925,7 +3925,7 @@
         "state": "uploaded",
         "size": 395095066,
         "digest": "sha256:b550866f3d6c606f342eb4e761302d704d8dd80705df77f927819cef973c2cb5",
-        "download_count": 32,
+        "download_count": 36,
         "created_at": "2025-07-22T17:53:32Z",
         "updated_at": "2025-07-22T17:53:46Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-HG680P-NONMOD-k6.1.146.img.gz"
@@ -4105,7 +4105,7 @@
         "state": "uploaded",
         "size": 397514424,
         "digest": "sha256:3750e959f155b6ba4a9661f7fcf476eee3353d94bd40af73252f96c89d94ea9a",
-        "download_count": 10,
+        "download_count": 12,
         "created_at": "2025-07-22T17:53:32Z",
         "updated_at": "2025-07-22T17:53:44Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.146.img.gz"
@@ -4141,7 +4141,7 @@
         "state": "uploaded",
         "size": 410517003,
         "digest": "sha256:13743a1b4c2ba5c4b6f474735ca9473c271231990a5feb13dd9432ec6d516ead",
-        "download_count": 33,
+        "download_count": 35,
         "created_at": "2025-07-22T17:54:12Z",
         "updated_at": "2025-07-22T17:54:29Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
@@ -5617,7 +5617,7 @@
         "state": "uploaded",
         "size": 216751702,
         "digest": "sha256:764a8665f75d9c0b0f60e80ffc23caacd2bb028a1f12bb742c76b364c7722920",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Squashfs_Combined.img.gz"
@@ -5653,7 +5653,7 @@
         "state": "uploaded",
         "size": 216951710,
         "digest": "sha256:065c7f1adbfc549660fb1ebb9c4737c9b601dd25842bcb543f9c13ea159131cb",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Squashfs_Combined_EFI.img.gz"
