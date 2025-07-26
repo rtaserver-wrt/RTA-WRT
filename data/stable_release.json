@@ -354,7 +354,7 @@
       "state": "uploaded",
       "size": 480707674,
       "digest": "sha256:e1ad18a1fb80cba4ddb7bc5b58789b2095895a87a23c80ba16e133f04c204c82",
-      "download_count": 42,
+      "download_count": 54,
       "created_at": "2025-07-22T18:03:46Z",
       "updated_at": "2025-07-22T18:04:01Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_Zero3-k6.1.31-AW64-DBAI.img.gz"
