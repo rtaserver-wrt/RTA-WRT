@@ -2659,7 +2659,7 @@
         "state": "uploaded",
         "size": 273416087,
         "digest": "sha256:1639a5fca7a1711b52446807ce84ebf99be7dd7cd2763eb866a4afbcc5f63b6a",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-07-24T09:27:46Z",
         "updated_at": "2025-07-24T09:27:56Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-X86_64_Generic_Ext4_Combined.img.gz"
@@ -5509,7 +5509,7 @@
         "state": "uploaded",
         "size": 264919296,
         "digest": "sha256:3f38da74f16e131aa3db2e4471f37ab4682d6bc1a76de00c08cb64b59aab0691",
-        "download_count": 17,
+        "download_count": 18,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:02Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined.img.gz"
