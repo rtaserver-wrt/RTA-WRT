@@ -534,7 +534,7 @@
       "state": "uploaded",
       "size": 390209495,
       "digest": "sha256:dd7a174746adf3e0962b93464f33a388924fe841a9036a57f02bcca9f86470f6",
-      "download_count": 1,
+      "download_count": 11,
       "created_at": "2025-07-22T18:01:18Z",
       "updated_at": "2025-07-22T18:01:30Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905-k5.15.189.img.gz"
@@ -1038,7 +1038,7 @@
       "state": "uploaded",
       "size": 391111447,
       "digest": "sha256:e955a7909223fe2c8979cb31d74db0c355c54b5fd109a01a5734f879ca69a38f",
-      "download_count": 4,
+      "download_count": 5,
       "created_at": "2025-07-22T17:53:32Z",
       "updated_at": "2025-07-22T17:53:47Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-HG680P-NONMOD-k5.15.189.img.gz"
@@ -2010,7 +2010,7 @@
       "state": "uploaded",
       "size": 410135090,
       "digest": "sha256:72b454a9b3c93f3d816c41778c6b43e3f519affda8ec3675eb272d590a93a74e",
-      "download_count": 0,
+      "download_count": 1,
       "created_at": "2025-07-22T17:53:25Z",
       "updated_at": "2025-07-22T17:53:42Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x4-k6.1.66-DBAI.img.gz"
@@ -2262,7 +2262,7 @@
       "state": "uploaded",
       "size": 254769132,
       "digest": "sha256:0341ce0faf5090c7fbc9e449ca90d6747572077ed68cc7565ec6385cec584300",
-      "download_count": 3,
+      "download_count": 5,
       "created_at": "2025-07-22T17:56:52Z",
       "updated_at": "2025-07-22T17:57:04Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_3B-Ext4_Factory.img.gz"
@@ -2298,7 +2298,7 @@
       "state": "uploaded",
       "size": 254770202,
       "digest": "sha256:32ab5e99f40f358ddc55730e8a8e474d018b0ff4e1077de3f2e2b641e97ed496",
-      "download_count": 2,
+      "download_count": 4,
       "created_at": "2025-07-22T17:56:52Z",
       "updated_at": "2025-07-22T17:57:03Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_3B-Ext4_Sysupgrade.img.gz"
