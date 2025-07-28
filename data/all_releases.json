@@ -1291,7 +1291,7 @@
         "state": "uploaded",
         "size": 414429845,
         "digest": "sha256:059f33980eee9fe63a82d8a3632e37f3c543b641a3e99123beaaba8b36a47dec",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-24T09:02:11Z",
         "updated_at": "2025-07-24T09:02:23Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
@@ -4105,7 +4105,7 @@
         "state": "uploaded",
         "size": 397514424,
         "digest": "sha256:3750e959f155b6ba4a9661f7fcf476eee3353d94bd40af73252f96c89d94ea9a",
-        "download_count": 19,
+        "download_count": 20,
         "created_at": "2025-07-22T17:53:32Z",
         "updated_at": "2025-07-22T17:53:44Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.146.img.gz"
@@ -4141,7 +4141,7 @@
         "state": "uploaded",
         "size": 410517003,
         "digest": "sha256:13743a1b4c2ba5c4b6f474735ca9473c271231990a5feb13dd9432ec6d516ead",
-        "download_count": 45,
+        "download_count": 48,
         "created_at": "2025-07-22T17:54:12Z",
         "updated_at": "2025-07-22T17:54:29Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
@@ -5509,7 +5509,7 @@
         "state": "uploaded",
         "size": 264919296,
         "digest": "sha256:3f38da74f16e131aa3db2e4471f37ab4682d6bc1a76de00c08cb64b59aab0691",
-        "download_count": 18,
+        "download_count": 20,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:02Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined.img.gz"
