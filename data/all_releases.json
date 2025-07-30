@@ -2407,7 +2407,7 @@
         "state": "uploaded",
         "size": 261805449,
         "digest": "sha256:a8a3a695683ec91ffd876d205a7a032d1c171c0edd11ab593cee61df3ba2ddc8",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-07-24T08:54:21Z",
         "updated_at": "2025-07-24T08:54:28Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Broadcom_RaspberryPi_4B-Ext4_Factory.img.gz"
@@ -3925,7 +3925,7 @@
         "state": "uploaded",
         "size": 395095066,
         "digest": "sha256:b550866f3d6c606f342eb4e761302d704d8dd80705df77f927819cef973c2cb5",
-        "download_count": 47,
+        "download_count": 48,
         "created_at": "2025-07-22T17:53:32Z",
         "updated_at": "2025-07-22T17:53:46Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-HG680P-NONMOD-k6.1.146.img.gz"
@@ -5545,7 +5545,7 @@
         "state": "uploaded",
         "size": 265127336,
         "digest": "sha256:61cbd1de0be7765f23770959ec25adfa036db01471f9825fa312fe11839039b3",
-        "download_count": 36,
+        "download_count": 38,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:03Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined_EFI.img.gz"
@@ -5617,7 +5617,7 @@
         "state": "uploaded",
         "size": 216751702,
         "digest": "sha256:764a8665f75d9c0b0f60e80ffc23caacd2bb028a1f12bb742c76b364c7722920",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Squashfs_Combined.img.gz"
