@@ -1075,7 +1075,7 @@
         "state": "uploaded",
         "size": 398951147,
         "digest": "sha256:c60bf0f38e744e27570da7eb99e3c2eed4f1cb46e42abd94154d643a4d6d6f31",
-        "download_count": 8,
+        "download_count": 9,
         "created_at": "2025-07-24T08:52:31Z",
         "updated_at": "2025-07-24T08:52:44Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-HG680P-NONMOD-k6.1.146.img.gz"
@@ -2917,7 +2917,7 @@
         "state": "uploaded",
         "size": 479883998,
         "digest": "sha256:a40a98d2c137a818f4eac821952286054fcdc1863b602e7095d16d3f5f190dbf",
-        "download_count": 14,
+        "download_count": 15,
         "created_at": "2025-07-22T17:52:08Z",
         "updated_at": "2025-07-22T17:52:22Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_1Plus-k6.1.31-AW64-DBAI.img.gz"
@@ -3853,7 +3853,7 @@
         "state": "uploaded",
         "size": 395064489,
         "digest": "sha256:2c8cbdeeceae2713977af583c5fc4586627e2d38a496f2ef22bca507ac32a6aa",
-        "download_count": 18,
+        "download_count": 19,
         "created_at": "2025-07-22T18:03:50Z",
         "updated_at": "2025-07-22T18:04:05Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-B860H_v1-v2-NONMOD-k6.1.146.img.gz"
@@ -5113,7 +5113,7 @@
         "state": "uploaded",
         "size": 254769132,
         "digest": "sha256:0341ce0faf5090c7fbc9e449ca90d6747572077ed68cc7565ec6385cec584300",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2025-07-22T17:56:52Z",
         "updated_at": "2025-07-22T17:57:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_3B-Ext4_Factory.img.gz"
