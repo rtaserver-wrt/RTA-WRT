@@ -894,7 +894,7 @@
       "state": "uploaded",
       "size": 391112168,
       "digest": "sha256:2a0e59c08dd08ce67501eaae2714352d863e99fee54e57d950ab92fa79c36cbf",
-      "download_count": 1,
+      "download_count": 2,
       "created_at": "2025-07-22T17:53:15Z",
       "updated_at": "2025-07-22T17:53:28Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905w-X96_Mini-k5.15.189.img.gz"
@@ -930,7 +930,7 @@
       "state": "uploaded",
       "size": 395106007,
       "digest": "sha256:fc5ee3402f8acc10d664f6ace131738357f63ea8f7c4fe5286bd30e60e8f1462",
-      "download_count": 1,
+      "download_count": 2,
       "created_at": "2025-07-22T17:53:15Z",
       "updated_at": "2025-07-22T17:53:28Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905w-X96_Mini-k6.1.146.img.gz"
