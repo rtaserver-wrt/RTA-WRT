@@ -3493,7 +3493,7 @@
         "state": "uploaded",
         "size": 394172427,
         "digest": "sha256:95d8ea62d2dce7ddcb2082289948b15b7becc96c095a05fd6c56ef50317c6a41",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-07-22T17:58:23Z",
         "updated_at": "2025-07-22T17:58:34Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905-MXQPro_Plus-k6.1.146.img.gz"
@@ -4069,7 +4069,7 @@
         "state": "uploaded",
         "size": 393499158,
         "digest": "sha256:3dbe37eff0f0fce063a0c2969318bbbd06f807d6bdc127f6ffaa1275aeef6581",
-        "download_count": 23,
+        "download_count": 27,
         "created_at": "2025-07-22T17:53:32Z",
         "updated_at": "2025-07-22T17:53:47Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k5.15.189.img.gz"
