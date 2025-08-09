@@ -1903,7 +1903,7 @@
         "state": "uploaded",
         "size": 412192484,
         "digest": "sha256:124e815269f53059718cf7b3220781e98c5cacafb7b35a747d1d00d3fd97186f",
-        "download_count": 1,
+        "download_count": 3,
         "created_at": "2025-07-24T09:03:47Z",
         "updated_at": "2025-07-24T09:04:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x3-k6.1.66-DBAI.img.gz"
@@ -1939,7 +1939,7 @@
         "state": "uploaded",
         "size": 395956543,
         "digest": "sha256:0efce5d88e255114395193f7c2b5e2c179c2c84c792c1e55170c4530349c7f5c",
-        "download_count": 0,
+        "download_count": 4,
         "created_at": "2025-07-24T08:59:54Z",
         "updated_at": "2025-07-24T09:00:09Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x3-X96Max-k5.15.189.img.gz"
