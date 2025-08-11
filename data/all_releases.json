@@ -2407,7 +2407,7 @@
         "state": "uploaded",
         "size": 261805449,
         "digest": "sha256:a8a3a695683ec91ffd876d205a7a032d1c171c0edd11ab593cee61df3ba2ddc8",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-07-24T08:54:21Z",
         "updated_at": "2025-07-24T08:54:28Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Broadcom_RaspberryPi_4B-Ext4_Factory.img.gz"
@@ -5113,7 +5113,7 @@
         "state": "uploaded",
         "size": 254769132,
         "digest": "sha256:0341ce0faf5090c7fbc9e449ca90d6747572077ed68cc7565ec6385cec584300",
-        "download_count": 8,
+        "download_count": 9,
         "created_at": "2025-07-22T17:56:52Z",
         "updated_at": "2025-07-22T17:57:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_3B-Ext4_Factory.img.gz"
