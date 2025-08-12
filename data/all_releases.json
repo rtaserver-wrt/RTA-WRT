@@ -34,6 +34,7 @@
     "immutable": false,
     "prerelease": true,
     "created_at": "2025-07-24T07:36:01Z",
+    "updated_at": "2025-07-24T09:27:58Z",
     "published_at": "2025-07-24T07:40:55Z",
     "assets": [
       {
@@ -2884,6 +2885,7 @@
     "immutable": false,
     "prerelease": false,
     "created_at": "2025-07-22T16:54:31Z",
+    "updated_at": "2025-07-22T18:08:01Z",
     "published_at": "2025-07-22T17:20:26Z",
     "assets": [
       {
@@ -5734,6 +5736,7 @@
     "immutable": false,
     "prerelease": false,
     "created_at": "2025-07-22T16:45:49Z",
+    "updated_at": "2025-07-22T16:46:15Z",
     "published_at": "2025-07-22T16:46:15Z",
     "assets": [],
     "tarball_url": "https://api.github.com/repos/rtaserver-wrt/RTA-WRT/tarball/rtawrt-openwrt-24.10.2-22072025",
