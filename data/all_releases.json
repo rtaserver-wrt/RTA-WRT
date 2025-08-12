@@ -2660,7 +2660,7 @@
         "state": "uploaded",
         "size": 273416087,
         "digest": "sha256:1639a5fca7a1711b52446807ce84ebf99be7dd7cd2763eb866a4afbcc5f63b6a",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2025-07-24T09:27:46Z",
         "updated_at": "2025-07-24T09:27:56Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-X86_64_Generic_Ext4_Combined.img.gz"
@@ -3351,7 +3351,7 @@
         "state": "uploaded",
         "size": 394158766,
         "digest": "sha256:1b71d4776d52a087cbae28dc029a7b814e5d25c53167e0a8650bf36527eafac2",
-        "download_count": 1,
+        "download_count": 3,
         "created_at": "2025-07-22T18:01:09Z",
         "updated_at": "2025-07-22T18:01:24Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905-Beelink_Mini-k6.1.146.img.gz"
