@@ -1435,7 +1435,7 @@
       "state": "uploaded",
       "size": 390969967,
       "digest": "sha256:85543f1f062470213afba6eb6f3707842b107e0b52ed09d5fa64d65eace76a5c",
-      "download_count": 3,
+      "download_count": 4,
       "created_at": "2025-07-22T17:52:24Z",
       "updated_at": "2025-07-22T17:52:35Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x2-k5.15.189.img.gz"
