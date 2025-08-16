@@ -2919,7 +2919,7 @@
         "state": "uploaded",
         "size": 479883998,
         "digest": "sha256:a40a98d2c137a818f4eac821952286054fcdc1863b602e7095d16d3f5f190dbf",
-        "download_count": 20,
+        "download_count": 21,
         "created_at": "2025-07-22T17:52:08Z",
         "updated_at": "2025-07-22T17:52:22Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_1Plus-k6.1.31-AW64-DBAI.img.gz"
@@ -2955,7 +2955,7 @@
         "state": "uploaded",
         "size": 480077523,
         "digest": "sha256:8725384755bdb36b3b1588f1d95c04f0e8253d2869297e66f23d34a3e2159b1e",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2025-07-22T17:58:34Z",
         "updated_at": "2025-07-22T17:58:46Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_3-k6.1.31-AW64-DBAI.img.gz"
@@ -3027,7 +3027,7 @@
         "state": "uploaded",
         "size": 480256618,
         "digest": "sha256:9caa7f7a9f0c4c33ba27dbb6b70591408167eda0a4dbb8d297934f736d688eef",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-07-22T18:00:20Z",
         "updated_at": "2025-07-22T18:00:30Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_Lite2-k6.1.31-AW64-DBAI.img.gz"
@@ -3207,7 +3207,7 @@
         "state": "uploaded",
         "size": 480707674,
         "digest": "sha256:e1ad18a1fb80cba4ddb7bc5b58789b2095895a87a23c80ba16e133f04c204c82",
-        "download_count": 78,
+        "download_count": 79,
         "created_at": "2025-07-22T18:03:46Z",
         "updated_at": "2025-07-22T18:04:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_Zero3-k6.1.31-AW64-DBAI.img.gz"
@@ -3819,7 +3819,7 @@
         "state": "uploaded",
         "size": 391132961,
         "digest": "sha256:894e0794976976b66b04a065c028d25942356b15481e38729cc12f752db98262",
-        "download_count": 29,
+        "download_count": 36,
         "created_at": "2025-07-22T18:03:50Z",
         "updated_at": "2025-07-22T18:04:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-B860H_v1-v2-NONMOD-k5.15.189.img.gz"
@@ -3963,7 +3963,7 @@
         "state": "uploaded",
         "size": 393517240,
         "digest": "sha256:fb8fc1195a5aedf862fddcbbf1039f1eb1704cb60353d82a2dfabd55d0aeccd4",
-        "download_count": 26,
+        "download_count": 29,
         "created_at": "2025-07-22T18:03:50Z",
         "updated_at": "2025-07-22T18:04:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k5.15.189.img.gz"
