@@ -1724,7 +1724,7 @@
         "state": "uploaded",
         "size": 399914784,
         "digest": "sha256:c33a7adcc4bde12a5462d26c52790ec00f96a003ccfca47919a9a1fba7f50399",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-07-24T08:51:47Z",
         "updated_at": "2025-07-24T08:52:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x3-H96Max-k6.1.146.img.gz"
@@ -1940,7 +1940,7 @@
         "state": "uploaded",
         "size": 395956543,
         "digest": "sha256:0efce5d88e255114395193f7c2b5e2c179c2c84c792c1e55170c4530349c7f5c",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2025-07-24T08:59:54Z",
         "updated_at": "2025-07-24T09:00:09Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x3-X96Max-k5.15.189.img.gz"
@@ -3855,7 +3855,7 @@
         "state": "uploaded",
         "size": 395064489,
         "digest": "sha256:2c8cbdeeceae2713977af583c5fc4586627e2d38a496f2ef22bca507ac32a6aa",
-        "download_count": 44,
+        "download_count": 45,
         "created_at": "2025-07-22T18:03:50Z",
         "updated_at": "2025-07-22T18:04:05Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-B860H_v1-v2-NONMOD-k6.1.146.img.gz"
@@ -4539,7 +4539,7 @@
         "state": "uploaded",
         "size": 392078331,
         "digest": "sha256:e4b3b2e035a66c277b09571ad33db78f1c818e5ec120f1f387fe98b760d29344",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2025-07-22T17:53:52Z",
         "updated_at": "2025-07-22T17:54:03Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x3-H96Max-k5.15.189.img.gz"
@@ -4683,7 +4683,7 @@
         "state": "uploaded",
         "size": 392079533,
         "digest": "sha256:a0a02204ef7dfcf00c2b103c47f32303232b0b546108dfdc6d16cb7bb985e8cc",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-07-22T17:53:27Z",
         "updated_at": "2025-07-22T17:53:38Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x3-k5.15.189.img.gz"
@@ -4827,7 +4827,7 @@
         "state": "uploaded",
         "size": 396033180,
         "digest": "sha256:107532fbfa72fd11ff230c5e4649ab49f229d32b8a5ba9fb813a21300b2f7121",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2025-07-22T17:52:07Z",
         "updated_at": "2025-07-22T17:52:18Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x3-X96Max-k6.1.146.img.gz"
