@@ -3027,7 +3027,7 @@
         "state": "uploaded",
         "size": 480256618,
         "digest": "sha256:9caa7f7a9f0c4c33ba27dbb6b70591408167eda0a4dbb8d297934f736d688eef",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T18:00:20Z",
         "updated_at": "2025-07-22T18:00:30Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_Lite2-k6.1.31-AW64-DBAI.img.gz"
@@ -3927,7 +3927,7 @@
         "state": "uploaded",
         "size": 395095066,
         "digest": "sha256:b550866f3d6c606f342eb4e761302d704d8dd80705df77f927819cef973c2cb5",
-        "download_count": 83,
+        "download_count": 85,
         "created_at": "2025-07-22T17:53:32Z",
         "updated_at": "2025-07-22T17:53:46Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-HG680P-NONMOD-k6.1.146.img.gz"
@@ -4071,7 +4071,7 @@
         "state": "uploaded",
         "size": 393499158,
         "digest": "sha256:3dbe37eff0f0fce063a0c2969318bbbd06f807d6bdc127f6ffaa1275aeef6581",
-        "download_count": 45,
+        "download_count": 47,
         "created_at": "2025-07-22T17:53:32Z",
         "updated_at": "2025-07-22T17:53:47Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k5.15.189.img.gz"
@@ -4863,7 +4863,7 @@
         "state": "uploaded",
         "size": 410135090,
         "digest": "sha256:72b454a9b3c93f3d816c41778c6b43e3f519affda8ec3675eb272d590a93a74e",
-        "download_count": 7,
+        "download_count": 8,
         "created_at": "2025-07-22T17:53:25Z",
         "updated_at": "2025-07-22T17:53:42Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x4-k6.1.66-DBAI.img.gz"
