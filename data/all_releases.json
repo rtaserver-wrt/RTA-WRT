@@ -4107,7 +4107,7 @@
         "state": "uploaded",
         "size": 397514424,
         "digest": "sha256:3750e959f155b6ba4a9661f7fcf476eee3353d94bd40af73252f96c89d94ea9a",
-        "download_count": 36,
+        "download_count": 37,
         "created_at": "2025-07-22T17:53:32Z",
         "updated_at": "2025-07-22T17:53:44Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.146.img.gz"
