@@ -968,7 +968,7 @@
         "state": "uploaded",
         "size": 394983948,
         "digest": "sha256:dd0ebdd40162f558ba5bcee1bbcaeb0bab752dca6722030e0537f2edf5cdf17f",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2025-07-24T08:53:26Z",
         "updated_at": "2025-07-24T08:53:40Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-B860H_v1-v2-NONMOD-k5.15.189.img.gz"
@@ -1004,7 +1004,7 @@
         "state": "uploaded",
         "size": 398972211,
         "digest": "sha256:df5f3db4089b0f4ea80204cd88de73d3ddfcabe28f82c8825784382ec990963e",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2025-07-24T08:53:26Z",
         "updated_at": "2025-07-24T08:53:41Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-B860H_v1-v2-NONMOD-k6.1.146.img.gz"
@@ -1040,7 +1040,7 @@
         "state": "uploaded",
         "size": 394990375,
         "digest": "sha256:6f81f23edf9bf0e29d44ecbaea8df69c2f5fa263316ea7ecf1848e5301109896",
-        "download_count": 11,
+        "download_count": 12,
         "created_at": "2025-07-24T08:52:31Z",
         "updated_at": "2025-07-24T08:52:45Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-HG680P-NONMOD-k5.15.189.img.gz"
@@ -1076,7 +1076,7 @@
         "state": "uploaded",
         "size": 398951147,
         "digest": "sha256:c60bf0f38e744e27570da7eb99e3c2eed4f1cb46e42abd94154d643a4d6d6f31",
-        "download_count": 17,
+        "download_count": 18,
         "created_at": "2025-07-24T08:52:31Z",
         "updated_at": "2025-07-24T08:52:44Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-HG680P-NONMOD-k6.1.146.img.gz"
@@ -1112,7 +1112,7 @@
         "state": "uploaded",
         "size": 397384576,
         "digest": "sha256:76f91f5fe9824b25e9b2e210d6e2dace09c00e1c5f35b05424ff0536446848b1",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2025-07-24T08:53:26Z",
         "updated_at": "2025-07-24T08:53:37Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k5.15.189.img.gz"
@@ -1148,7 +1148,7 @@
         "state": "uploaded",
         "size": 401385226,
         "digest": "sha256:e3b6a2b2cf769ebd19a864ac01ef7118e3373d315fb72c41f9794e3c1340d06e",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2025-07-24T08:53:26Z",
         "updated_at": "2025-07-24T08:53:41Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k6.1.146.img.gz"
@@ -1184,7 +1184,7 @@
         "state": "uploaded",
         "size": 414410036,
         "digest": "sha256:45a27ff24f68d660e75be5099e30d8255f2c30999cefdc6de08b26437c8ac1ca",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2025-07-24T08:55:20Z",
         "updated_at": "2025-07-24T08:55:38Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k6.1.66-DBAI.img.gz"
@@ -1220,7 +1220,7 @@
         "state": "uploaded",
         "size": 397379792,
         "digest": "sha256:9ffea1d027ac15935c4ef34cfeeb87abcdd807b0e3e3f6b508a1e6c337973089",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2025-07-24T08:52:31Z",
         "updated_at": "2025-07-24T08:52:45Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k5.15.189.img.gz"
@@ -1256,7 +1256,7 @@
         "state": "uploaded",
         "size": 401373057,
         "digest": "sha256:7c64b02cc5d8b8234e9661e6d4c2502d81a6f952e6968923bdb42a64a4642a3e",
-        "download_count": 14,
+        "download_count": 15,
         "created_at": "2025-07-24T08:52:31Z",
         "updated_at": "2025-07-24T08:52:44Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.146.img.gz"
@@ -1292,7 +1292,7 @@
         "state": "uploaded",
         "size": 414429845,
         "digest": "sha256:059f33980eee9fe63a82d8a3632e37f3c543b641a3e99123beaaba8b36a47dec",
-        "download_count": 9,
+        "download_count": 10,
         "created_at": "2025-07-24T09:02:11Z",
         "updated_at": "2025-07-24T09:02:23Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
@@ -1436,7 +1436,7 @@
         "state": "uploaded",
         "size": 394885032,
         "digest": "sha256:e4de5596fd26c81b39245256c348599976500a14e3160e759ddcff0bf2278381",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-07-24T08:50:42Z",
         "updated_at": "2025-07-24T08:50:52Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x2-k5.15.189.img.gz"
@@ -1472,7 +1472,7 @@
         "state": "uploaded",
         "size": 398807181,
         "digest": "sha256:823f2aed7c5782f0b4f3913602a601dca9102ff20122231a264f23018d0fd3a4",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-07-24T08:50:42Z",
         "updated_at": "2025-07-24T08:50:53Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x2-k6.1.146.img.gz"
@@ -1508,7 +1508,7 @@
         "state": "uploaded",
         "size": 412937942,
         "digest": "sha256:f116b2b047f7dcd869bf2a2654f08cb9b08f902305fe65423b509ae482d9d36f",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-07-24T08:51:22Z",
         "updated_at": "2025-07-24T08:51:36Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x2-k6.1.66-DBAI.img.gz"
