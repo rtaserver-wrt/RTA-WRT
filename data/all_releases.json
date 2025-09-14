@@ -1184,7 +1184,7 @@
         "state": "uploaded",
         "size": 414410036,
         "digest": "sha256:45a27ff24f68d660e75be5099e30d8255f2c30999cefdc6de08b26437c8ac1ca",
-        "download_count": 5,
+        "download_count": 7,
         "created_at": "2025-07-24T08:55:20Z",
         "updated_at": "2025-07-24T08:55:38Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k6.1.66-DBAI.img.gz"
@@ -1292,7 +1292,7 @@
         "state": "uploaded",
         "size": 414429845,
         "digest": "sha256:059f33980eee9fe63a82d8a3632e37f3c543b641a3e99123beaaba8b36a47dec",
-        "download_count": 10,
+        "download_count": 12,
         "created_at": "2025-07-24T09:02:11Z",
         "updated_at": "2025-07-24T09:02:23Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
@@ -4035,7 +4035,7 @@
         "state": "uploaded",
         "size": 410517065,
         "digest": "sha256:8f362d77be091e98834013c1efee09d4cbf8756a6090086d68f76c1350a87338",
-        "download_count": 46,
+        "download_count": 48,
         "created_at": "2025-07-22T18:04:05Z",
         "updated_at": "2025-07-22T18:04:17Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k6.1.66-DBAI.img.gz"
@@ -4143,7 +4143,7 @@
         "state": "uploaded",
         "size": 410517003,
         "digest": "sha256:13743a1b4c2ba5c4b6f474735ca9473c271231990a5feb13dd9432ec6d516ead",
-        "download_count": 95,
+        "download_count": 98,
         "created_at": "2025-07-22T17:54:12Z",
         "updated_at": "2025-07-22T17:54:29Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
