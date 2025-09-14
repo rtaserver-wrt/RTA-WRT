@@ -1292,7 +1292,7 @@
         "state": "uploaded",
         "size": 414429845,
         "digest": "sha256:059f33980eee9fe63a82d8a3632e37f3c543b641a3e99123beaaba8b36a47dec",
-        "download_count": 12,
+        "download_count": 13,
         "created_at": "2025-07-24T09:02:11Z",
         "updated_at": "2025-07-24T09:02:23Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
@@ -1472,7 +1472,7 @@
         "state": "uploaded",
         "size": 398807181,
         "digest": "sha256:823f2aed7c5782f0b4f3913602a601dca9102ff20122231a264f23018d0fd3a4",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-24T08:50:42Z",
         "updated_at": "2025-07-24T08:50:53Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x2-k6.1.146.img.gz"
@@ -3135,7 +3135,7 @@
         "state": "uploaded",
         "size": 480176274,
         "digest": "sha256:0d004ce5fc6d997c70d8c23afceb34d29b1f8c20aeb2b61ed5e5008bcef1a109",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T17:53:58Z",
         "updated_at": "2025-07-22T17:54:18Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_Zero2-k6.1.31-AW64-DBAI.img.gz"
