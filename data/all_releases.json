@@ -1292,7 +1292,7 @@
         "state": "uploaded",
         "size": 414429845,
         "digest": "sha256:059f33980eee9fe63a82d8a3632e37f3c543b641a3e99123beaaba8b36a47dec",
-        "download_count": 13,
+        "download_count": 15,
         "created_at": "2025-07-24T09:02:11Z",
         "updated_at": "2025-07-24T09:02:23Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
