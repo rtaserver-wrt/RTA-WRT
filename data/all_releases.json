@@ -2156,7 +2156,7 @@
         "state": "uploaded",
         "size": 398435077,
         "digest": "sha256:31c48df03601e62b17ba762985e8948113459da504a932fe076b2a973a2ffdb3",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-07-24T08:50:54Z",
         "updated_at": "2025-07-24T08:51:05Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-immortalwrt-24.10.2-24072025/RTA-WRT-ImmortalWrt-24.10.2-Amlogic_s912-k6.1.146.img.gz"
