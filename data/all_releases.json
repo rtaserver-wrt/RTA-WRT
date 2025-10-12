@@ -1436,7 +1436,7 @@
         "state": "uploaded",
         "size": 403571230,
         "digest": "sha256:3cab9e180a7c228b9e0bef5371be4827fa6711ddf2e3ce2711f3ba46f1ab1c4a",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-10-09T08:41:27Z",
         "updated_at": "2025-10-09T08:41:43Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s912-H96Pro_Plus-k5.15.194.img.gz"
