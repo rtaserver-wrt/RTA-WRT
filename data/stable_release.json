@@ -2623,7 +2623,7 @@
       "state": "uploaded",
       "size": 355879283,
       "digest": "sha256:beadf7390c6bf8855d57f8477324af7ef9c9be03aca53e8a3477736e50f207a3",
-      "download_count": 2,
+      "download_count": 5,
       "created_at": "2025-07-22T18:00:20Z",
       "updated_at": "2025-07-22T18:00:35Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Rockchip_rk3318_H96-MAX-k6.1.146.img.gz"
