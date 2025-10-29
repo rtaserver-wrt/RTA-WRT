@@ -1796,7 +1796,7 @@
         "state": "uploaded",
         "size": 259611696,
         "digest": "sha256:92004ec7b5568247a426946e38ba0d122976faba8fec61e1d5f68b9f414d5438",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:49:56Z",
         "updated_at": "2025-10-09T08:50:05Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Broadcom_RaspberryPi_4B-Ext4_Factory.img.gz"
@@ -3280,7 +3280,7 @@
         "state": "uploaded",
         "size": 393517240,
         "digest": "sha256:fb8fc1195a5aedf862fddcbbf1039f1eb1704cb60353d82a2dfabd55d0aeccd4",
-        "download_count": 60,
+        "download_count": 61,
         "created_at": "2025-07-22T18:03:50Z",
         "updated_at": "2025-07-22T18:04:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k5.15.189.img.gz"
