@@ -3676,7 +3676,7 @@
         "state": "uploaded",
         "size": 408947149,
         "digest": "sha256:e924b349a5c4c8541549a75c3578e891899aeb94a68070b3d28b1ad963e9c8b6",
-        "download_count": 21,
+        "download_count": 22,
         "created_at": "2025-07-22T18:00:34Z",
         "updated_at": "2025-07-22T18:00:49Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x2-k6.1.66-DBAI.img.gz"
@@ -4432,7 +4432,7 @@
         "state": "uploaded",
         "size": 254769132,
         "digest": "sha256:0341ce0faf5090c7fbc9e449ca90d6747572077ed68cc7565ec6385cec584300",
-        "download_count": 15,
+        "download_count": 16,
         "created_at": "2025-07-22T17:56:52Z",
         "updated_at": "2025-07-22T17:57:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_3B-Ext4_Factory.img.gz"
@@ -4504,7 +4504,7 @@
         "state": "uploaded",
         "size": 203982135,
         "digest": "sha256:6cdee0322962b6813e3228b88237adf573ccde7ccc857c64bcdbb54203b59605",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-07-22T17:56:52Z",
         "updated_at": "2025-07-22T17:57:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_3B-Squashfs_Factory.img.gz"
@@ -4864,7 +4864,7 @@
         "state": "uploaded",
         "size": 265127336,
         "digest": "sha256:61cbd1de0be7765f23770959ec25adfa036db01471f9825fa312fe11839039b3",
-        "download_count": 87,
+        "download_count": 88,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:03Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined_EFI.img.gz"
