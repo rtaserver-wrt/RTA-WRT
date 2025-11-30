@@ -2263,7 +2263,7 @@
       "state": "uploaded",
       "size": 254769132,
       "digest": "sha256:0341ce0faf5090c7fbc9e449ca90d6747572077ed68cc7565ec6385cec584300",
-      "download_count": 16,
+      "download_count": 17,
       "created_at": "2025-07-22T17:56:52Z",
       "updated_at": "2025-07-22T17:57:04Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_3B-Ext4_Factory.img.gz"
