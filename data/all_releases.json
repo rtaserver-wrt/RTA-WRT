@@ -2012,7 +2012,7 @@
         "state": "uploaded",
         "size": 271194451,
         "digest": "sha256:8e21afa2f986efcf0fc699a20dc5bf9b12a1526f22e8622ffce1b5f86252b713",
-        "download_count": 13,
+        "download_count": 14,
         "created_at": "2025-10-09T08:49:01Z",
         "updated_at": "2025-10-09T08:49:11Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-X86_64_Generic_Ext4_Combined_EFI.img.gz"
@@ -2084,7 +2084,7 @@
         "state": "uploaded",
         "size": 222323738,
         "digest": "sha256:e0ed10bf8af4f06abc92dffef99c62555a1ec4d100dd3c3afb605595b114cf00",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-10-09T08:49:01Z",
         "updated_at": "2025-10-09T08:49:10Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-X86_64_Generic_Squashfs_Combined.img.gz"
@@ -4864,7 +4864,7 @@
         "state": "uploaded",
         "size": 265127336,
         "digest": "sha256:61cbd1de0be7765f23770959ec25adfa036db01471f9825fa312fe11839039b3",
-        "download_count": 131,
+        "download_count": 132,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:03Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined_EFI.img.gz"
@@ -4936,7 +4936,7 @@
         "state": "uploaded",
         "size": 216751702,
         "digest": "sha256:764a8665f75d9c0b0f60e80ffc23caacd2bb028a1f12bb742c76b364c7722920",
-        "download_count": 13,
+        "download_count": 14,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Squashfs_Combined.img.gz"
