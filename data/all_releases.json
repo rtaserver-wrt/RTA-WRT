@@ -752,7 +752,7 @@
         "state": "uploaded",
         "size": 410645101,
         "digest": "sha256:7982acb679f8f273461d61a2d583bfa180c81b1f2b80414807a5a4fa36c26f8e",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2025-10-09T08:40:55Z",
         "updated_at": "2025-10-09T08:41:09Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k6.1.155.img.gz"
@@ -788,7 +788,7 @@
         "state": "uploaded",
         "size": 406518560,
         "digest": "sha256:5dfbd9d8777db73ff8c4801bef1ec85abada538771be2fc8778c0a6d347466bf",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:49:35Z",
         "updated_at": "2025-10-09T08:49:48Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-Mod_SDCard-HG680P-k5.15.194.img.gz"
@@ -824,7 +824,7 @@
         "state": "uploaded",
         "size": 410497109,
         "digest": "sha256:60534b1a24db41cf75349b52777037dc468a7ab1eedee3dd2c5c7678609e04d6",
-        "download_count": 5,
+        "download_count": 7,
         "created_at": "2025-10-09T08:49:35Z",
         "updated_at": "2025-10-09T08:49:50Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.155.img.gz"
@@ -2164,7 +2164,7 @@
     ],
     "tarball_url": "https://api.github.com/repos/rtaserver-wrt/RTA-WRT/tarball/rtawrt-openwrt-24.10.3-09102025",
     "zipball_url": "https://api.github.com/repos/rtaserver-wrt/RTA-WRT/zipball/rtawrt-openwrt-24.10.3-09102025",
-    "body": "# 🚀 RTA-WRT - Release Information\n\n## 📥 Download Statistics\n![GitHub Downloads](https://img.shields.io/github/downloads/rtaserver-wrt/RTA-WRT/rtawrt-openwrt-24.10.3-09102025/total?style=for-the-badge&logo=Openwrt)\n\n## 📢 Support Channels\n[![Channel](https://img.shields.io/badge/Telegram-Channel-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/rtawrt)\n[![Group](https://img.shields.io/badge/Telegram-Group-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/backup_rtawrt)\n[![Personal](https://img.shields.io/badge/Telegram-Personal-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/RizkiKotet)\n\n## NOTES\n`Amlogic s905x Support Mod SDCard`\n\n## ��� Changelog Firmware\n[**Changelog Firmware**](https://github.com/rtaserver-wrt/RTA-WRT/blob/dev/CHANGELOG.md)\n\n\n## What's Changed\n* Dev by @rizkikotet-dev in https://github.com/rtaserver-wrt/RTA-WRT/pull/1\n* p by @rizkikotet-dev in https://github.com/rtaserver-wrt/RTA-WRT/pull/2\n* Bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/rtaserver-wrt/RTA-WRT/pull/3\n* Dev by @rizkikotet-dev in https://github.com/rtaserver-wrt/RTA-WRT/pull/4\n\n## New Contributors\n* @rizkikotet-dev made their first contribution in https://github.com/rtaserver-wrt/RTA-WRT/pull/1\n\n**Full Changelog**: https://github.com/rtaserver-wrt/RTA-WRT/compare/rtawrt-immortalwrt-24.10.2-24072025...rtawrt-openwrt-24.10.3-09102025",
+    "body": "# 🚀 RTA-WRT - Release Information\n\n## 📥 Download Statistics\n![GitHub Downloads](https://img.shields.io/github/downloads/rtaserver-wrt/RTA-WRT/rtawrt-openwrt-24.10.3-09102025/total?style=for-the-badge&logo=Openwrt)\n\n## 📢 Support Channels\n[![Channel](https://img.shields.io/badge/Telegram-Channel-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/rtawrt)\n[![Group](https://img.shields.io/badge/Telegram-Group-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/backup_rtawrt)\n[![Personal](https://img.shields.io/badge/Telegram-Personal-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/RizkiKotet)\n\n## NOTES\n`Amlogic s905x Support Mod SDCard`\n\n## 📝 Changelog Firmware\n[**Changelog Firmware**](https://github.com/rtaserver-wrt/RTA-WRT/blob/dev/CHANGELOG.md)\n\n\n## What's Changed\n* Dev by @rizkikotet-dev in https://github.com/rtaserver-wrt/RTA-WRT/pull/1\n* p by @rizkikotet-dev in https://github.com/rtaserver-wrt/RTA-WRT/pull/2\n* Bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/rtaserver-wrt/RTA-WRT/pull/3\n* Dev by @rizkikotet-dev in https://github.com/rtaserver-wrt/RTA-WRT/pull/4\n\n## New Contributors\n* @rizkikotet-dev made their first contribution in https://github.com/rtaserver-wrt/RTA-WRT/pull/1\n\n**Full Changelog**: https://github.com/rtaserver-wrt/RTA-WRT/compare/rtawrt-immortalwrt-24.10.2-24072025...rtawrt-openwrt-24.10.3-09102025",
     "mentions_count": 2
   },
   {
@@ -3064,7 +3064,7 @@
         "state": "uploaded",
         "size": 391112168,
         "digest": "sha256:2a0e59c08dd08ce67501eaae2714352d863e99fee54e57d950ab92fa79c36cbf",
-        "download_count": 11,
+        "download_count": 12,
         "created_at": "2025-07-22T17:53:15Z",
         "updated_at": "2025-07-22T17:53:28Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905w-X96_Mini-k5.15.189.img.gz"
@@ -3460,7 +3460,7 @@
         "state": "uploaded",
         "size": 410517003,
         "digest": "sha256:13743a1b4c2ba5c4b6f474735ca9473c271231990a5feb13dd9432ec6d516ead",
-        "download_count": 141,
+        "download_count": 142,
         "created_at": "2025-07-22T17:54:12Z",
         "updated_at": "2025-07-22T17:54:29Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
