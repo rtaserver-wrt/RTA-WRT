@@ -1976,7 +1976,7 @@
         "state": "uploaded",
         "size": 270980462,
         "digest": "sha256:7f134e4f6e86cba294bd6e11d8526caced80f14aae475b370e5c29fe06a76e5f",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-10-09T08:49:01Z",
         "updated_at": "2025-10-09T08:49:11Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-X86_64_Generic_Ext4_Combined.img.gz"
@@ -2012,7 +2012,7 @@
         "state": "uploaded",
         "size": 271194451,
         "digest": "sha256:8e21afa2f986efcf0fc699a20dc5bf9b12a1526f22e8622ffce1b5f86252b713",
-        "download_count": 14,
+        "download_count": 15,
         "created_at": "2025-10-09T08:49:01Z",
         "updated_at": "2025-10-09T08:49:11Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-X86_64_Generic_Ext4_Combined_EFI.img.gz"
@@ -4828,7 +4828,7 @@
         "state": "uploaded",
         "size": 264919296,
         "digest": "sha256:3f38da74f16e131aa3db2e4471f37ab4682d6bc1a76de00c08cb64b59aab0691",
-        "download_count": 107,
+        "download_count": 108,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:02Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined.img.gz"
