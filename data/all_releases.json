@@ -572,7 +572,7 @@
         "state": "uploaded",
         "size": 404143037,
         "digest": "sha256:c811a0e9fa8e59385166484d398924966751bf6200f5ca5326a520382dfc2996",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2025-10-09T08:40:55Z",
         "updated_at": "2025-10-09T08:41:07Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-B860H_v1-v2-NONMOD-k5.15.194.img.gz"
