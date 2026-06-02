@@ -572,7 +572,7 @@
         "state": "uploaded",
         "size": 404143037,
         "digest": "sha256:c811a0e9fa8e59385166484d398924966751bf6200f5ca5326a520382dfc2996",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2025-10-09T08:40:55Z",
         "updated_at": "2025-10-09T08:41:07Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-B860H_v1-v2-NONMOD-k5.15.194.img.gz"
@@ -608,7 +608,7 @@
         "state": "uploaded",
         "size": 408206684,
         "digest": "sha256:2b73a566af39f689bdaf63ecdcc9ad3ee1d6b6500e4394e24ecafb1adc57ccdb",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2025-10-09T08:40:55Z",
         "updated_at": "2025-10-09T08:41:07Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-B860H_v1-v2-NONMOD-k6.1.155.img.gz"
@@ -752,7 +752,7 @@
         "state": "uploaded",
         "size": 410645101,
         "digest": "sha256:7982acb679f8f273461d61a2d583bfa180c81b1f2b80414807a5a4fa36c26f8e",
-        "download_count": 9,
+        "download_count": 11,
         "created_at": "2025-10-09T08:40:55Z",
         "updated_at": "2025-10-09T08:41:09Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-Mod_SDCard-B860H_v1-v2-k6.1.155.img.gz"
