@@ -1256,7 +1256,7 @@
         "state": "uploaded",
         "size": 409069298,
         "digest": "sha256:75abd7564aff030c3639a381186f92386eac33ed988374fbd35ce9a1bdf319d7",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-10-09T08:47:10Z",
         "updated_at": "2025-10-09T08:47:23Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x3-HK1-k6.1.155.img.gz"
@@ -2992,7 +2992,7 @@
         "state": "uploaded",
         "size": 391109077,
         "digest": "sha256:84ce1729f4d1b405174decd5d9db8b6f4c2703e0d6630d013b75a961e3c38558",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-07-22T17:53:02Z",
         "updated_at": "2025-07-22T17:53:12Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905w-X96W-k5.15.189.img.gz"
@@ -3460,7 +3460,7 @@
         "state": "uploaded",
         "size": 410517003,
         "digest": "sha256:13743a1b4c2ba5c4b6f474735ca9473c271231990a5feb13dd9432ec6d516ead",
-        "download_count": 147,
+        "download_count": 148,
         "created_at": "2025-07-22T17:54:12Z",
         "updated_at": "2025-07-22T17:54:29Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Mod_SDCard-HG680P-k6.1.66-DBAI.img.gz"
@@ -3640,7 +3640,7 @@
         "state": "uploaded",
         "size": 394897350,
         "digest": "sha256:6446b872857eb354939297947391fa4881ef170dcec3f0c4c8ec230d25d1d730",
-        "download_count": 26,
+        "download_count": 27,
         "created_at": "2025-07-22T17:52:24Z",
         "updated_at": "2025-07-22T17:52:36Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x2-k6.1.146.img.gz"
@@ -4000,7 +4000,7 @@
         "state": "uploaded",
         "size": 392079533,
         "digest": "sha256:a0a02204ef7dfcf00c2b103c47f32303232b0b546108dfdc6d16cb7bb985e8cc",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-07-22T17:53:27Z",
         "updated_at": "2025-07-22T17:53:38Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x3-k5.15.189.img.gz"
@@ -4648,7 +4648,7 @@
         "state": "uploaded",
         "size": 203462285,
         "digest": "sha256:52ae4bcf3c151ecd11602edab99b5e36e4deb0e6332421bffbc560f3c0cb0bfe",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T18:03:13Z",
         "updated_at": "2025-07-22T18:03:19Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_4B-Squashfs_Factory.img.gz"
