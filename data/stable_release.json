@@ -859,7 +859,7 @@
       "state": "uploaded",
       "size": 395095601,
       "digest": "sha256:80ce9463260c37bcd1281d512564bef7309045949dbd083ef43327b7d4e28ecb",
-      "download_count": 0,
+      "download_count": 1,
       "created_at": "2025-07-22T17:53:02Z",
       "updated_at": "2025-07-22T17:53:14Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905w-X96W-k6.1.146.img.gz"
@@ -2191,7 +2191,7 @@
       "state": "uploaded",
       "size": 390575013,
       "digest": "sha256:c69b8cc432887ec7110d69ee32ae3871a85dd8b9aa73f52627b583a485974710",
-      "download_count": 0,
+      "download_count": 1,
       "created_at": "2025-07-22T17:52:19Z",
       "updated_at": "2025-07-22T17:52:29Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s912-X92-k5.15.189.img.gz"
@@ -2443,7 +2443,7 @@
       "state": "uploaded",
       "size": 254213472,
       "digest": "sha256:4611f4ac73ffc8338f05cff91aec218a849ad4c681bf5d6c4e52b60d7f59a2e8",
-      "download_count": 14,
+      "download_count": 15,
       "created_at": "2025-07-22T18:03:13Z",
       "updated_at": "2025-07-22T18:03:22Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_4B-Ext4_Sysupgrade.img.gz"
@@ -2695,7 +2695,7 @@
       "state": "uploaded",
       "size": 265127336,
       "digest": "sha256:61cbd1de0be7765f23770959ec25adfa036db01471f9825fa312fe11839039b3",
-      "download_count": 141,
+      "download_count": 142,
       "created_at": "2025-07-22T18:02:51Z",
       "updated_at": "2025-07-22T18:03:03Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined_EFI.img.gz"
