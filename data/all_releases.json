@@ -1472,7 +1472,7 @@
         "state": "uploaded",
         "size": 407551359,
         "digest": "sha256:e70cdf0dc2dbdf96b355c12313bfc57f4f98a6f4411df570e8cc763d2bbcc2e5",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-10-09T08:41:27Z",
         "updated_at": "2025-10-09T08:41:45Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s912-H96Pro_Plus-k6.1.155.img.gz"
@@ -1616,7 +1616,7 @@
         "state": "uploaded",
         "size": 407498847,
         "digest": "sha256:c4b59c9ea0a78eb12b182f8977f052f80935e7a7baa8321453cea5fb6ab25a1f",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:39:33Z",
         "updated_at": "2025-10-09T08:39:44Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s912-X92-k6.1.155.img.gz"
@@ -2236,7 +2236,7 @@
         "state": "uploaded",
         "size": 479883998,
         "digest": "sha256:a40a98d2c137a818f4eac821952286054fcdc1863b602e7095d16d3f5f190dbf",
-        "download_count": 85,
+        "download_count": 86,
         "created_at": "2025-07-22T17:52:08Z",
         "updated_at": "2025-07-22T17:52:22Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_1Plus-k6.1.31-AW64-DBAI.img.gz"
@@ -2956,7 +2956,7 @@
         "state": "uploaded",
         "size": 395104944,
         "digest": "sha256:73b6b9175607babdc7152f9233aded7c880da715494149bd2d336f4ab6c079b7",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-07-22T17:52:16Z",
         "updated_at": "2025-07-22T17:52:27Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905w-W95-k6.1.146.img.gz"
@@ -4432,7 +4432,7 @@
         "state": "uploaded",
         "size": 254769132,
         "digest": "sha256:0341ce0faf5090c7fbc9e449ca90d6747572077ed68cc7565ec6385cec584300",
-        "download_count": 27,
+        "download_count": 28,
         "created_at": "2025-07-22T17:56:52Z",
         "updated_at": "2025-07-22T17:57:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_3B-Ext4_Factory.img.gz"
@@ -4792,7 +4792,7 @@
         "state": "uploaded",
         "size": 355879283,
         "digest": "sha256:beadf7390c6bf8855d57f8477324af7ef9c9be03aca53e8a3477736e50f207a3",
-        "download_count": 11,
+        "download_count": 12,
         "created_at": "2025-07-22T18:00:20Z",
         "updated_at": "2025-07-22T18:00:35Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Rockchip_rk3318_H96-MAX-k6.1.146.img.gz"
