@@ -500,7 +500,7 @@
         "state": "uploaded",
         "size": 404105238,
         "digest": "sha256:12501ff57bad97af55ddb6c81bf8599371da530441adef8f24fa1903322e0574",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-10-09T08:39:32Z",
         "updated_at": "2025-10-09T08:39:43Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905w-X96_Mini-k5.15.194.img.gz"
@@ -788,7 +788,7 @@
         "state": "uploaded",
         "size": 406518560,
         "digest": "sha256:5dfbd9d8777db73ff8c4801bef1ec85abada538771be2fc8778c0a6d347466bf",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-10-09T08:49:35Z",
         "updated_at": "2025-10-09T08:49:48Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-Mod_SDCard-HG680P-k5.15.194.img.gz"
@@ -2632,7 +2632,7 @@
         "state": "uploaded",
         "size": 390216888,
         "digest": "sha256:856772074c19c7ca8f4011307eb2282b12d67991cffa94053e13a93fa2e8d5e4",
-        "download_count": 38,
+        "download_count": 39,
         "created_at": "2025-07-22T18:01:09Z",
         "updated_at": "2025-07-22T18:01:24Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905-Beelink_Mini-k5.15.189.img.gz"
@@ -3604,7 +3604,7 @@
         "state": "uploaded",
         "size": 390969967,
         "digest": "sha256:85543f1f062470213afba6eb6f3707842b107e0b52ed09d5fa64d65eace76a5c",
-        "download_count": 18,
+        "download_count": 19,
         "created_at": "2025-07-22T17:52:24Z",
         "updated_at": "2025-07-22T17:52:35Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x2-k5.15.189.img.gz"
@@ -4540,7 +4540,7 @@
         "state": "uploaded",
         "size": 203983205,
         "digest": "sha256:ea83127c25c7b9bf298f08f8aec36417818b3fa05a2a1506c07f87dab16c5502",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-07-22T17:56:52Z",
         "updated_at": "2025-07-22T17:57:03Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_3B-Squashfs_Sysupgrade.img.gz"
