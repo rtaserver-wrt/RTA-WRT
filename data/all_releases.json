@@ -608,7 +608,7 @@
         "state": "uploaded",
         "size": 408206684,
         "digest": "sha256:2b73a566af39f689bdaf63ecdcc9ad3ee1d6b6500e4394e24ecafb1adc57ccdb",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2025-10-09T08:40:55Z",
         "updated_at": "2025-10-09T08:41:07Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-B860H_v1-v2-NONMOD-k6.1.155.img.gz"
@@ -680,7 +680,7 @@
         "state": "uploaded",
         "size": 408085018,
         "digest": "sha256:3627de8a88ce5b0f593072207d7fb1fbe6254b2de0b594c796acf0c0e49e0a30",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2025-10-09T08:49:35Z",
         "updated_at": "2025-10-09T08:49:52Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-HG680P-NONMOD-k6.1.155.img.gz"
@@ -1688,7 +1688,7 @@
         "state": "uploaded",
         "size": 260112576,
         "digest": "sha256:c0b0fcc8628341be239cf8959abf9cbafc991cd7d42d67e56b7ef3bb18216a92",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-10-09T08:50:53Z",
         "updated_at": "2025-10-09T08:51:03Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Broadcom_RaspberryPi_3B-Ext4_Sysupgrade.img.gz"
@@ -2156,7 +2156,7 @@
         "state": "uploaded",
         "size": 216049328,
         "digest": "sha256:b9ab55672a1548d18638f716d15139212feff5d0aefa05e384573b2a972b6b65",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2025-10-09T08:49:01Z",
         "updated_at": "2025-10-09T08:49:10Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-X86_64_Generic_Squashfs_Rootfs.img.gz"
@@ -2848,7 +2848,7 @@
         "state": "uploaded",
         "size": 391108183,
         "digest": "sha256:bc72c300a91a263bf5491d677a472bdb7486c4ddf9d9b3a60e25f9d59f172a3f",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T18:01:32Z",
         "updated_at": "2025-07-22T18:01:47Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905w-k5.15.189.img.gz"
@@ -3496,7 +3496,7 @@
         "state": "uploaded",
         "size": 391143269,
         "digest": "sha256:bb01fdb181b7b2bcf5e41270fcf93f2e4006321ccba38c593c57f21912e9033e",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2025-07-22T17:52:05Z",
         "updated_at": "2025-07-22T17:52:14Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x-Nexbox_A95X-k5.15.189.img.gz"
@@ -4936,7 +4936,7 @@
         "state": "uploaded",
         "size": 216751702,
         "digest": "sha256:764a8665f75d9c0b0f60e80ffc23caacd2bb028a1f12bb742c76b364c7722920",
-        "download_count": 14,
+        "download_count": 15,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Squashfs_Combined.img.gz"
@@ -4972,7 +4972,7 @@
         "state": "uploaded",
         "size": 216951710,
         "digest": "sha256:065c7f1adbfc549660fb1ebb9c4737c9b601dd25842bcb543f9c13ea159131cb",
-        "download_count": 27,
+        "download_count": 28,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Squashfs_Combined_EFI.img.gz"
