@@ -68,7 +68,7 @@
         "state": "uploaded",
         "size": 403211201,
         "digest": "sha256:1fb878857d4c52c8b71ad03556bb5f9dfd747d29ffe4b70324707bf3c1fce960",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2025-10-09T08:40:53Z",
         "updated_at": "2025-10-09T08:41:09Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905-Beelink_Mini-k5.15.194.img.gz"
