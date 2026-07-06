@@ -607,7 +607,7 @@
       "state": "uploaded",
       "size": 390225873,
       "digest": "sha256:275481b69e8c55c13efb46b5b42d189e51aea69abaa719c380b382cd376de639",
-      "download_count": 2,
+      "download_count": 3,
       "created_at": "2025-07-22T17:58:23Z",
       "updated_at": "2025-07-22T17:58:33Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905-MXQPro_Plus-k5.15.189.img.gz"
@@ -1615,7 +1615,7 @@
       "state": "uploaded",
       "size": 390939023,
       "digest": "sha256:c3f3b9dffdbfd45ccab4640487d5c08ddb17d6c3b0cabe0465ff680db8960fbd",
-      "download_count": 1,
+      "download_count": 2,
       "created_at": "2025-07-22T18:00:54Z",
       "updated_at": "2025-07-22T18:01:08Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x2-X96Max-2G-k5.15.189.img.gz"
