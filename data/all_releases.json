@@ -140,7 +140,7 @@
         "state": "uploaded",
         "size": 403250330,
         "digest": "sha256:974ab7d61d9194c2ba39660e80fd08eddaec54353f3ccfd979eb2a2190fc3be2",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-10-09T08:41:02Z",
         "updated_at": "2025-10-09T08:41:18Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905-k5.15.194.img.gz"
@@ -860,7 +860,7 @@
         "state": "uploaded",
         "size": 404113880,
         "digest": "sha256:4b79060ebc1483b384066022cca83be2a08ced068d1971a41a790c1461ae724e",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:39:31Z",
         "updated_at": "2025-10-09T08:39:40Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-Nexbox_A95X-k5.15.194.img.gz"
@@ -5016,6 +5016,6 @@
     ],
     "tarball_url": "https://api.github.com/repos/rtaserver-wrt/RTA-WRT/tarball/rtawrt-openwrt-24.10.2-23072025",
     "zipball_url": "https://api.github.com/repos/rtaserver-wrt/RTA-WRT/zipball/rtawrt-openwrt-24.10.2-23072025",
-    "body": "# 🚀 RTA-WRT - Release Information\n\n## ��� Download Statistics\n![GitHub Downloads](https://img.shields.io/github/downloads/rtaserver-wrt/RTA-WRT/rtawrt-openwrt-24.10.2-23072025/total?style=for-the-badge&logo=Openwrt)\n\n## 📢 Support Channels\n[![Channel](https://img.shields.io/badge/Telegram-Channel-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/rtawrt)\n[![Group](https://img.shields.io/badge/Telegram-Group-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/backup_rtawrt)\n[![Personal](https://img.shields.io/badge/Telegram-Personal-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/RizkiKotet)\n\n## NOTES\n`Amlogic s905x Support Mod SDCard`\n\n## 📝 Changelog Firmware\n[**Changelog Firmware**](https://github.com/rtaserver-wrt/RTA-WRT/blob/main/CHANGELOG.md)\n"
+    "body": "# 🚀 RTA-WRT - Release Information\n\n## 📥 Download Statistics\n![GitHub Downloads](https://img.shields.io/github/downloads/rtaserver-wrt/RTA-WRT/rtawrt-openwrt-24.10.2-23072025/total?style=for-the-badge&logo=Openwrt)\n\n## 📢 Support Channels\n[![Channel](https://img.shields.io/badge/Telegram-Channel-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/rtawrt)\n[![Group](https://img.shields.io/badge/Telegram-Group-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/backup_rtawrt)\n[![Personal](https://img.shields.io/badge/Telegram-Personal-%23059dfa?style=for-the-badge&logo=Telegram)](https://t.me/RizkiKotet)\n\n## NOTES\n`Amlogic s905x Support Mod SDCard`\n\n## 📝 Changelog Firmware\n[**Changelog Firmware**](https://github.com/rtaserver-wrt/RTA-WRT/blob/main/CHANGELOG.md)\n"
   }
 ]
