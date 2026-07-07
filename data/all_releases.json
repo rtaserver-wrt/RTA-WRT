@@ -1544,7 +1544,7 @@
         "state": "uploaded",
         "size": 407545676,
         "digest": "sha256:adcdc8ae3342101e2ce6ab8e70142fee1fdafe48163d88701631ece33d7b4f03",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-10-09T08:48:30Z",
         "updated_at": "2025-10-09T08:48:42Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s912-k6.1.155.img.gz"
@@ -1904,7 +1904,7 @@
         "state": "uploaded",
         "size": 208367321,
         "digest": "sha256:3b58fc82783e5fc5933a97941766bafac926a9e2ea073cb3a30143e7ab5f5263",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:49:56Z",
         "updated_at": "2025-10-09T08:50:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Broadcom_RaspberryPi_4B-Squashfs_Sysupgrade.img.gz"
