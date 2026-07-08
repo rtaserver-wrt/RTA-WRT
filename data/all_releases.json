@@ -2084,7 +2084,7 @@
         "state": "uploaded",
         "size": 222323738,
         "digest": "sha256:e0ed10bf8af4f06abc92dffef99c62555a1ec4d100dd3c3afb605595b114cf00",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-10-09T08:49:01Z",
         "updated_at": "2025-10-09T08:49:10Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-X86_64_Generic_Squashfs_Combined.img.gz"
