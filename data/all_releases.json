@@ -1292,7 +1292,7 @@
         "state": "uploaded",
         "size": 405071571,
         "digest": "sha256:8f8ea77583030c039f717a3df3b69e12ebcce0c0b6077d66f08bf7b753d775dd",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:47:49Z",
         "updated_at": "2025-10-09T08:48:00Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x3-k5.15.194.img.gz"
@@ -2380,7 +2380,7 @@
         "state": "uploaded",
         "size": 480375592,
         "digest": "sha256:1205149168556a41a3829ea12f00ae571e2be7ba727bc5742e7c9b39bea173dd",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2025-07-22T17:54:05Z",
         "updated_at": "2025-07-22T17:54:21Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_PC2-k6.1.31-AW64-DBAI.img.gz"
