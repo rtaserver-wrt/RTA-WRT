@@ -1868,7 +1868,7 @@
         "state": "uploaded",
         "size": 208366475,
         "digest": "sha256:161756e661f52937e35b51b18f5ec6555162a419025c33ccfb0ce449f2b10520",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:49:56Z",
         "updated_at": "2025-10-09T08:50:03Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Broadcom_RaspberryPi_4B-Squashfs_Factory.img.gz"
