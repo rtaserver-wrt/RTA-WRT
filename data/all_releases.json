@@ -464,7 +464,7 @@
         "state": "uploaded",
         "size": 408088719,
         "digest": "sha256:33e88a3cc1a0b2c46c6bc217aebe91a7aefc83a562eb889e534093c3e6163f0c",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:39:32Z",
         "updated_at": "2025-10-09T08:39:45Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905w-X96W-k6.1.155.img.gz"
