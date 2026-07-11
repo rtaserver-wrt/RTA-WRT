@@ -1976,7 +1976,7 @@
         "state": "uploaded",
         "size": 270980462,
         "digest": "sha256:7f134e4f6e86cba294bd6e11d8526caced80f14aae475b370e5c29fe06a76e5f",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-10-09T08:49:01Z",
         "updated_at": "2025-10-09T08:49:11Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-X86_64_Generic_Ext4_Combined.img.gz"
@@ -4252,7 +4252,7 @@
         "state": "uploaded",
         "size": 394522903,
         "digest": "sha256:c8d36592758fbf48115d250d981674fc84aea230e3bb2f9a59e29d5b672c57bc",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T18:01:13Z",
         "updated_at": "2025-07-22T18:01:24Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s912-H96Pro_Plus-k6.1.146.img.gz"
