@@ -2515,7 +2515,7 @@
       "state": "uploaded",
       "size": 203463131,
       "digest": "sha256:c2d29715c7b7671c0726c11e12aac36f14ed125d170fa8c9de8e503c1a2bbb8b",
-      "download_count": 1,
+      "download_count": 2,
       "created_at": "2025-07-22T18:03:13Z",
       "updated_at": "2025-07-22T18:03:19Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_4B-Squashfs_Sysupgrade.img.gz"
