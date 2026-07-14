@@ -608,7 +608,7 @@
         "state": "uploaded",
         "size": 408206684,
         "digest": "sha256:2b73a566af39f689bdaf63ecdcc9ad3ee1d6b6500e4394e24ecafb1adc57ccdb",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2025-10-09T08:40:55Z",
         "updated_at": "2025-10-09T08:41:07Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x-B860H_v1-v2-NONMOD-k6.1.155.img.gz"
@@ -1004,7 +1004,7 @@
         "state": "uploaded",
         "size": 403940378,
         "digest": "sha256:e3894f9413c32b7babb0b6c6adf1f151a2fde7383541b35be0662e4b64ca205d",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:39:32Z",
         "updated_at": "2025-10-09T08:39:43Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x2-KM3-k5.15.194.img.gz"
@@ -4972,7 +4972,7 @@
         "state": "uploaded",
         "size": 216951710,
         "digest": "sha256:065c7f1adbfc549660fb1ebb9c4737c9b601dd25842bcb543f9c13ea159131cb",
-        "download_count": 29,
+        "download_count": 30,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Squashfs_Combined_EFI.img.gz"
