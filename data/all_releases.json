@@ -1580,7 +1580,7 @@
         "state": "uploaded",
         "size": 403600344,
         "digest": "sha256:1a58c47f103cdf58eff277eb6c03e1fda94e7e9f28c6174db245c0f5cf3f6360",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:39:33Z",
         "updated_at": "2025-10-09T08:39:43Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s912-X92-k5.15.194.img.gz"
@@ -2048,7 +2048,7 @@
         "state": "uploaded",
         "size": 264726205,
         "digest": "sha256:e14521f16ba9214cc1a9d46ecc950c374d0c130d464cb04e985d1294fc13c543",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:49:01Z",
         "updated_at": "2025-10-09T08:49:12Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-X86_64_Generic_Ext4_Rootfs.img.gz"
@@ -4900,7 +4900,7 @@
         "state": "uploaded",
         "size": 258632141,
         "digest": "sha256:0c0c980d7b9e36f58a438118ed7dd0b04e62b5a49f0ecc3370cfff985f98bb29",
-        "download_count": 15,
+        "download_count": 16,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:04Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Rootfs.img.gz"
