@@ -175,7 +175,7 @@
       "state": "uploaded",
       "size": 480256618,
       "digest": "sha256:9caa7f7a9f0c4c33ba27dbb6b70591408167eda0a4dbb8d297934f736d688eef",
-      "download_count": 13,
+      "download_count": 14,
       "created_at": "2025-07-22T18:00:20Z",
       "updated_at": "2025-07-22T18:00:30Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_Lite2-k6.1.31-AW64-DBAI.img.gz"
@@ -463,7 +463,7 @@
       "state": "uploaded",
       "size": 390216888,
       "digest": "sha256:856772074c19c7ca8f4011307eb2282b12d67991cffa94053e13a93fa2e8d5e4",
-      "download_count": 40,
+      "download_count": 41,
       "created_at": "2025-07-22T18:01:09Z",
       "updated_at": "2025-07-22T18:01:24Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905-Beelink_Mini-k5.15.189.img.gz"
