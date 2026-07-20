@@ -247,7 +247,7 @@
       "state": "uploaded",
       "size": 480421448,
       "digest": "sha256:7f18cf1781ef65520fa5dfe2b138d6aaeaddba2a940ab92ab063971f13f4a6f4",
-      "download_count": 3,
+      "download_count": 4,
       "created_at": "2025-07-22T17:59:52Z",
       "updated_at": "2025-07-22T18:00:03Z",
       "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_Prime-k6.1.31-AW64-DBAI.img.gz"
