@@ -3820,7 +3820,7 @@
         "state": "uploaded",
         "size": 394891615,
         "digest": "sha256:a0950cd5444175b3f651e8c97f2ccfe601f5356dbb0e8bc89b761df304b82055",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T18:00:54Z",
         "updated_at": "2025-07-22T18:01:11Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x2-X96Max-2G-k6.1.146.img.gz"
