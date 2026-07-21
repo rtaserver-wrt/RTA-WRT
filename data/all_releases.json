@@ -1112,7 +1112,7 @@
         "state": "uploaded",
         "size": 407920294,
         "digest": "sha256:773242e8f0cc2246de22f262bded75d8b9a02af0eb8e542cf8d982f2f5c010cf",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2025-10-09T08:45:53Z",
         "updated_at": "2025-10-09T08:46:06Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-Amlogic_s905x2-X96Max-2G-k6.1.155.img.gz"
@@ -2992,7 +2992,7 @@
         "state": "uploaded",
         "size": 391109077,
         "digest": "sha256:84ce1729f4d1b405174decd5d9db8b6f4c2703e0d6630d013b75a961e3c38558",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T17:53:02Z",
         "updated_at": "2025-07-22T17:53:12Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905w-X96W-k5.15.189.img.gz"
@@ -3964,7 +3964,7 @@
         "state": "uploaded",
         "size": 396041957,
         "digest": "sha256:94791ae00b0a77b4a65da049343a92bb158336252312053e9138568883e311d9",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T18:07:44Z",
         "updated_at": "2025-07-22T18:08:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s905x3-HK1-k6.1.146.img.gz"
@@ -4828,7 +4828,7 @@
         "state": "uploaded",
         "size": 264919296,
         "digest": "sha256:3f38da74f16e131aa3db2e4471f37ab4682d6bc1a76de00c08cb64b59aab0691",
-        "download_count": 115,
+        "download_count": 116,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:02Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined.img.gz"
