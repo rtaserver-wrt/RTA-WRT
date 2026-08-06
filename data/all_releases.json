@@ -4396,7 +4396,7 @@
         "state": "uploaded",
         "size": 394524586,
         "digest": "sha256:32d44e5ca8e03e4c631401e5ae9f028e9c8ed7afe83e9b6ce46a982302f2bb7f",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2025-07-22T17:52:19Z",
         "updated_at": "2025-07-22T17:52:30Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Amlogic_s912-X92-k6.1.146.img.gz"
