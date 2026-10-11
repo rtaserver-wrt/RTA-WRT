@@ -2120,7 +2120,7 @@
         "state": "uploaded",
         "size": 222521710,
         "digest": "sha256:9eea0d0e8287ea4deb8880689b10d91ba3ef403aa334c2590551b1616d62f581",
-        "download_count": 7,
+        "download_count": 8,
         "created_at": "2025-10-09T08:49:01Z",
         "updated_at": "2025-10-09T08:49:10Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.3-09102025/RTA-WRT-OpenWrt-24.10.3-X86_64_Generic_Squashfs_Combined_EFI.img.gz"
@@ -4684,7 +4684,7 @@
         "state": "uploaded",
         "size": 203463131,
         "digest": "sha256:c2d29715c7b7671c0726c11e12aac36f14ed125d170fa8c9de8e503c1a2bbb8b",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2025-07-22T18:03:13Z",
         "updated_at": "2025-07-22T18:03:19Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_4B-Squashfs_Sysupgrade.img.gz"
@@ -4864,7 +4864,7 @@
         "state": "uploaded",
         "size": 265127336,
         "digest": "sha256:61cbd1de0be7765f23770959ec25adfa036db01471f9825fa312fe11839039b3",
-        "download_count": 152,
+        "download_count": 153,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:03Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined_EFI.img.gz"
@@ -4936,7 +4936,7 @@
         "state": "uploaded",
         "size": 216751702,
         "digest": "sha256:764a8665f75d9c0b0f60e80ffc23caacd2bb028a1f12bb742c76b364c7722920",
-        "download_count": 19,
+        "download_count": 20,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:01Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Squashfs_Combined.img.gz"
