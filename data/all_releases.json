@@ -2308,7 +2308,7 @@
         "state": "uploaded",
         "size": 480383846,
         "digest": "sha256:0232607f6253a27c8f8d82ffee6b3900ad39d770eb42cd4eaaca56f136670d05",
-        "download_count": 36,
+        "download_count": 37,
         "created_at": "2025-07-22T18:00:47Z",
         "updated_at": "2025-07-22T18:01:05Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Allwinner_OrangePi_3LTS-k6.1.31-AW64-DBAI.img.gz"
@@ -4612,7 +4612,7 @@
         "state": "uploaded",
         "size": 254213472,
         "digest": "sha256:4611f4ac73ffc8338f05cff91aec218a849ad4c681bf5d6c4e52b60d7f59a2e8",
-        "download_count": 21,
+        "download_count": 22,
         "created_at": "2025-07-22T18:03:13Z",
         "updated_at": "2025-07-22T18:03:22Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-Broadcom_RaspberryPi_4B-Ext4_Sysupgrade.img.gz"
@@ -4864,7 +4864,7 @@
         "state": "uploaded",
         "size": 265127336,
         "digest": "sha256:61cbd1de0be7765f23770959ec25adfa036db01471f9825fa312fe11839039b3",
-        "download_count": 155,
+        "download_count": 156,
         "created_at": "2025-07-22T18:02:51Z",
         "updated_at": "2025-07-22T18:03:03Z",
         "browser_download_url": "https://github.com/rtaserver-wrt/RTA-WRT/releases/download/rtawrt-openwrt-24.10.2-23072025/RTA-WRT-OpenWrt-24.10.2-X86_64_Generic_Ext4_Combined_EFI.img.gz"
